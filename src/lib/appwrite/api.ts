@@ -242,16 +242,70 @@ export async function updatePost(post: IUpdatePost) {
 
 export async function getRecentPosts() {
     try {
-      const posts = await databases.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.postCollectionId,
-        [Query.orderDesc("$createdAt"), Query.limit(20)]
-      );
-  
-      if (!posts) throw Error;
-  
-      return posts;
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            [Query.orderDesc("$createdAt"), Query.limit(20)]
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
+}
+
+export async function likePost(postId: string, likesArray: string[]) {
+    try {
+        const likedPost = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            postId,
+            {
+                likes: likesArray,
+            }
+        );
+
+        if (!likedPost) throw Error;
+
+        return likedPost;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function savePost(postId: string, userId: string) {
+    try {
+        const updatedPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            ID.unique(),
+            {
+                user: userId,
+                post: postId,
+            }
+        );
+
+        if (!updatedPost) throw Error;
+
+        return updatedPost;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function deleteSavedPost(savedRecordId: string) {
+    try {
+        const statusCode = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.savesCollectionId,
+            savedRecordId
+        );
+
+        if (!statusCode) throw Error;
+        return statusCode;
+    } catch (error) {
+        console.log(error);
+    }
+}

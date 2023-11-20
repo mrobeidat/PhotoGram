@@ -32,18 +32,18 @@ const PostCard = ({ post }: PostCardProps) => {
           <img src="assets/icons/edit.svg" alt="edit" width={20} height={20} />
         </Link>
       </div>
-      <Link to ={`/post/${post.$id}`}>
+      <Link to={`/post/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-        <p>{post.caption}</p>
-        <ul className="flex gap-1 mt-2">
-          {post.tags.map((tag:string)=>(
-            <li className="text-light-3" key={tag}>#{tag}</li>
-          ))}
-        </ul>
+          <p>{post.caption}</p>
+          <ul className="flex gap-1 mt-2">
+            {post.tags.map((tag: string) => (
+              <li className="text-light-3" key={tag}>#{tag}</li>
+            ))}
+          </ul>
         </div>
-        <img 
-          src={post.imageUrl|| 'assets/icons/post-placeholder.svg'} 
-          alt="post image" 
+        <img
+          src={post.imageUrl || 'assets/icons/post-placeholder.svg'}
+          alt="post image"
           className="post-card_img"
         />
       </Link>
