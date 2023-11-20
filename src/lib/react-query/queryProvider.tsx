@@ -1,7 +1,7 @@
-import { QueryClient, QueryClientProvider, useMutation, useQueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useMutation, /*useQueryClient*/ } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 import { SignInAccount, createUserAccount } from '../appwrite/api'
-import { INewPost, INewUser, IUpdatePost } from '@/types'
+import { /*INewPost*/ INewUser, /*IUpdatePost*/ } from '@/types'
 
 
 

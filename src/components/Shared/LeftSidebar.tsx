@@ -7,7 +7,7 @@ import { sidebarLinks } from "@/constants"
 import { INavLink } from "@/types"
 
 const LeftSidebar = () => {
-  const { pathName } = useLocation()
+  const { pathname } = useLocation()
   const { mutate: signOut, isSuccess } = useSignOutAccount()
   const { user } = useUserContext()
   const navigate = useNavigate()
@@ -46,7 +46,7 @@ const LeftSidebar = () => {
 
         <ul className="flex flex-col gap-6 ">
           {sidebarLinks.map((link: INavLink) => {
-            const isActive = pathName === link.route
+            const isActive = pathname === link.route
             return (
               <li key={link.label} className={`leftsidebar-link group ${isActive && 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'}`}>
                 <NavLink to={link.route}
