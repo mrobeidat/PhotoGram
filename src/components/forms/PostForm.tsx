@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "../ui/textarea"
 import FileUploader from "../Shared/FileUploader"
 import Loader from "../Shared/Loader"
-import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
+import { useCreatePost, useDeletePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
 
 
 type PostFormProps = {
@@ -40,6 +40,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
         useCreatePost();
     const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
         useUpdatePost();
+    // const { mutateAsync: deletePost, isPending: isLoadingDelete } =
+    // useDeletePost();
 
 
     const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
