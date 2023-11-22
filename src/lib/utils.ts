@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(dateString: string): string {
+export function formatDate(dateString: string=""): string {
   const currentDate: Date = new Date();
   const inputDate: Date = new Date(dateString);
 
