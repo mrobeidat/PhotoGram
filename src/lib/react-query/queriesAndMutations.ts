@@ -1,6 +1,6 @@
 import { INewPost, INewUser, IUpdatePost, /*IUpdateUser*/ } from "@/types";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery, /*useInfiniteQuery*/ } from '@tanstack/react-query'
-import { SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, /*searchPosts*/ } from '../appwrite/api'
+import { SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, } from '../appwrite/api'
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
