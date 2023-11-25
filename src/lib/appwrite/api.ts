@@ -1,7 +1,6 @@
 import { ID, Query } from 'appwrite'
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { error, log } from 'console';
 
 
 export async function createUserAccount(user: INewUser) {
@@ -414,14 +413,13 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
             appwriteConfig.postCollectionId,
             queries
         )
-        if (!posts) throw error
+        if (!posts) throw Error
         return posts
     } catch (error) {
         console.log(error);
 
     }
 }
-
 
 export async function searchPosts(searchTerm: string) {
 
@@ -431,7 +429,7 @@ export async function searchPosts(searchTerm: string) {
             appwriteConfig.postCollectionId,
             [Query.search('caption', searchTerm)]
         )
-        if (!posts) throw error
+        if (!posts) throw Error
         return posts
     } catch (error) {
         console.log(error);
