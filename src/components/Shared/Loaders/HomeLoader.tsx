@@ -8,12 +8,6 @@ const InstagramStyle = ({ ...rest }) => (
   <rect x="0" y="60" rx="2" ry="2" width="400" height="400" />
   </ContentLoader>
 )
-InstagramStyle.metadata = {
-    name: 'DaniloWoz',
-    github: 'danilowoz',
-    description: 'Instagram style',
-    filename: 'Instagram',
-  }
-  
+
 
 export default InstagramStyle

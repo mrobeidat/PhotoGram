@@ -422,17 +422,32 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
 }
 
 export async function searchPosts(searchTerm: string) {
-
     try {
         const posts = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
-            [Query.search('caption', searchTerm)]
-        )
-        if (!posts) throw Error
-        return posts
+            [Query.search("caption", searchTerm)]
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
     } catch (error) {
         console.log(error);
+    }
+}
+export async function getUserById(userId: string) {
+    try {
+        const user = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            userId
+        );
 
+        if (!user) throw Error;
+
+        return user;
+    } catch (error) {
+        console.log(error);
     }
 }
