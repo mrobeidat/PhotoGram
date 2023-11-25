@@ -1,10 +1,13 @@
 import GridPostsList from "@/components/Shared/GridPostsList"
-import Loader from "@/components/Shared/Loader"
+// import Loader from "@/components/Shared/Loader"
 import SearchResults from "@/components/Shared/SearchResults"
 import { Input } from "@/components/ui/input"
 // import useDebounce from "@/hooks/useDebounce"
 import { useGetPosts, /*useSearchPost*/ } from "@/lib/react-query/queriesAndMutations"
 import { useState } from "react"
+import ExploreLoader from '../../components/Shared/Loaders/ExploreLoader'
+// import Loader from "@/components/Shared/Loader"
+
 
 const Explore = () => {
   const { data: posts /*fetchNextPage, hasNextPage*/ } = useGetPosts()
@@ -14,7 +17,11 @@ const Explore = () => {
   if (!posts) {
     return (
       <div className="flex-center w-full h-full">
-        <Loader />
+        <div className="flex flex-col sm:flex-row resize-y">
+          <ExploreLoader />
+          <ExploreLoader />
+          <ExploreLoader />
+        </div>
       </div>
     )
   }
@@ -52,7 +59,7 @@ const Explore = () => {
       </div>
       <div className="flex flex-wrap gap-9 w-full max-w-5xl">
         {shouldShowSearchResults ? (
-          <SearchResults 
+          <SearchResults
           // isSearchFetching={isSearchFetching}
           // searchedPosts={searchedPosts}
           />
