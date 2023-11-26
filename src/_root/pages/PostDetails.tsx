@@ -18,13 +18,13 @@ const PostDetails = () => {
   const { id } = useParams();
   const { user } = useUserContext();
   const { data: post, isPending } = useGetPostById(id || "");
-  const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
-  const { mutate: deletePost, isPending: isDeletingPost } = useDeletePost();
+  const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
+  const { mutate: deletePost } = useDeletePost();
   const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
 
   const handleDeletePost = async () => {
     deletePost({ postId: id, imageId: post?.imageId });
-    // navigate(-1);
+    navigate(-1);
   };
 
 
@@ -45,10 +45,8 @@ const PostDetails = () => {
         </Button>
       </div>
 
-      {isPending || !post || isDeletingPost ? (
-        <div className="flex justify-center items-center w-full h-full">
-          <DetailsLoader />
-        </div>
+      {isPending || !post ? (
+        <Loader />
       ) : (
         <div className="post_details-card">
           <img
@@ -101,8 +99,9 @@ const PostDetails = () => {
                 <Button
                   onClick={handleDeletePost}
                   variant="ghost"
-                  className={`ost_details-delete_btn ${user.id !== post?.creator.$id && "hidden"
-                    }`}>
+                  className={`ost_details-delete_btn ${
+                    user.id !== post?.creator.$id && "hidden"
+                  }`}>
                   <img
                     src={"/assets/icons/delete.svg"}
                     alt="delete"
@@ -118,17 +117,23 @@ const PostDetails = () => {
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
               <p>{post?.caption}</p>
               <ul className="flex gap-1 mt-2">
-                {post?.tags.map((tag: string) => (
-                  <li className="text-light-3" key={tag}>#{tag}</li>
+                {post?.tags.map((tag: string, index: string) => (
+                  <li
+                    key={`${tag}${index}`}
+                    className="text-light-3 small-regular">
+                    #{tag}
+                  </li>
                 ))}
               </ul>
             </div>
+
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
             </div>
           </div>
         </div>
       )}
+
       <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
@@ -136,14 +141,17 @@ const PostDetails = () => {
           More Related Posts
         </h3>
         {isUserPostLoading || !relatedPosts ? (
-          <Loader />
+          <div className="flex">
+          <DetailsLoader />
+          <DetailsLoader/>
+          </div>
         ) : (
           <GridPostList posts={relatedPosts} />
         )}
       </div>
     </div>
-
-  )
+  );
+  
 }
 
 export default PostDetails
