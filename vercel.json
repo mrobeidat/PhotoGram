@@ -1,15 +1,15 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "./App.js", 
-        "use": "@vercel/node"
-      }
+        {
+            "src": "./App.tsx",
+            "use": "@vercel/node"
+        }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/App.js (It may be another name but this file should listen to the server)"
-      }
+        {
+            "src": "/(.*)",
+            "dest": "/App.tsx (It may be another name but this file should listen to the server)"
+        }
     ]
-  }
+}
