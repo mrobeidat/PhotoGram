@@ -2,14 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "./App.tsx",
+            "src": "./main.tsx",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/App.tsx (It may be another name but this file should listen to the server)"
+            "dest": "/main.tsx"
         }
     ]
 }
