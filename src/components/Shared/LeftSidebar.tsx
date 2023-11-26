@@ -31,9 +31,9 @@ const LeftSidebar = () => {
       <div className='flex flex-col gap-11'>
         <Link to='/' className="flex gap-3 items-center" onClick={() => window.location.reload()}>
           <img
-            src="/assets/images/webgram.png"
+            src="/assets/images/photogram.png"
             alt="logo"
-            width={220}
+            width={170}
           // height={30}
           />
         </Link>

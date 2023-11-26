@@ -18,7 +18,7 @@ const Topbar = () => {
       <div className="flex-between py-4 px-5">
         <Link to='/' className="flex gap-3 items-center" onClick={() => window.location.reload()}>
           <img
-            src="/assets/images/webgram.png"
+            src="/assets/images/photogram.png"
             alt="logo"
             width={110}
           />
