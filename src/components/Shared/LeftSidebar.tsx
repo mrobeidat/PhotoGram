@@ -29,7 +29,7 @@ const LeftSidebar = () => {
   return (
     <nav className='leftsidebar'>
       <div className='flex flex-col gap-11'>
-        <Link to='/' className="flex gap-3 items-center">
+        <Link to='/' className="flex gap-3 items-center" onClick={() => window.location.reload()}>
           <img
             src="/assets/images/webgram.png"
             alt="logo"
@@ -67,7 +67,6 @@ const LeftSidebar = () => {
                     alt={link.label}
                     className={`group-hover:invert-white ${isActive && 'invert-white'}`}
                   />
-
                   {link.label}
                 </NavLink>
               </li>

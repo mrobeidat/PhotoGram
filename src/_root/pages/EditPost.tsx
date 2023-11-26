@@ -1,13 +1,21 @@
 import PostForm from '@/components/forms/PostForm'
 import { useGetPostById } from '@/lib/react-query/queriesAndMutations'
-import { Loader } from 'lucide-react'
+import EditLoader from '../../components/Shared/Loaders/EditLoader'
 import { useParams } from 'react-router-dom'
 
 const EditPost = () => {
 
   const { id } = useParams()
   const { data: post, isPending } = useGetPostById(id || '')
-  if (isPending) return <Loader />  
+  if (isPending) return (
+    <div className="flex flex-1">
+      <div className="home-container">
+        <div className="home-posts">
+          <EditLoader />
+        </div>
+      </div>
+    </div>
+  )
 
 
   return (
