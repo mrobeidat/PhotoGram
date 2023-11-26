@@ -27,8 +27,13 @@ const StatBlock = ({ value, label }: StabBlockProps) => (
   </div>
 );
 
+const getRandomNumber = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 const Profile = () => {
+  const randomFollowers = getRandomNumber(100, 200);
+  const randomFollowing = getRandomNumber(100, 200);
   const { id } = useParams();
   const { user } = useUserContext();
   const { pathname } = useLocation();
@@ -65,8 +70,8 @@ const Profile = () => {
 
             <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
               <StatBlock value={currentUser.posts.length} label="Posts" />
-              <StatBlock value={120} label="Followers" />
-              <StatBlock value={320} label="Following" />
+              <StatBlock value={randomFollowers} label="Followers" />
+              <StatBlock value={randomFollowing} label="Following" />
             </div>
 
             <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">

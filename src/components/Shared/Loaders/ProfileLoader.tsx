@@ -15,16 +15,9 @@ const ProfileShow = ({...props}) => (
     <rect x="175" y="120" rx="0" ry="0" width="156" height="8" />
     <rect x="204" y="137" rx="0" ry="0" width="100" height="8" />
     <rect x="248" y="128" rx="0" ry="0" width="0" height="1" />
-    <rect x="247" y="126" rx="0" ry="0" width="1" height="8" />
     <rect x="252" y="166" rx="0" ry="0" width="1" height="0" />
   </ContentLoader>
 )
 
-ProfileShow.metadata = {
-  name: 'Dhruvit Galoriya', // My name
-  github: 'dhruvgaloriya', // Github username
-  description: 'Show Profile Page', // Little tagline
-  filename: 'ProfileShow', // filename of your loader
-}
 
 export default ProfileShow
