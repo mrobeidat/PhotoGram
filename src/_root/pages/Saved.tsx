@@ -1,6 +1,6 @@
 import { Models } from "appwrite";
 import GridPostList from "@/components/Shared/GridPostsList";
-import Loader from "@/components/Shared/Loader";
+import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
 
 const Saved = () => {
@@ -27,17 +27,22 @@ const Saved = () => {
         <h2 className="h3-bold md:h2-bold text-left w-full">Saved Posts</h2>
       </div>
 
-      {!currentUser ? (
-        <Loader />
-      ) : (
-        <ul className="w-full flex justify-center max-w-5xl gap-9">
-          {savePosts.length === 0 ? (
-            <p className="text-light-4">No available posts</p>
-          ) : (
-            <GridPostList posts={savePosts} showStats={false} />
-          )}
-        </ul>
-      )}
+      <div style={{ display: 'flex' }}>
+        {!currentUser ? (
+          // Render ExploreLoader components when currentUser is falsy
+          [...Array(3)].map((_, index) => (
+            <ExploreLoader key={index} />
+          ))
+        ) : (
+          <ul className="w-full flex justify-center max-w-5xl gap-9">
+            {savePosts.length === 0 ? (
+              <p className="text-light-4">No available posts</p>
+            ) : (
+              <GridPostList posts={savePosts} showStats={false} />
+            )}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };

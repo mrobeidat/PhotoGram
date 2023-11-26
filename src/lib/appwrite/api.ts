@@ -108,41 +108,48 @@ export async function createPost(post: INewPost) {
     try {
         const uploadedFile = await uploadFile(post.file[0]);
 
-        if (!uploadedFile) throw Error;
-
-        const fileUrl = getFilePreview(uploadedFile.$id);
-        if (!fileUrl) {
-            await deleteFile(uploadedFile.$id);
-            throw Error;
+        if (!uploadedFile) {
+            throw new Error('File upload failed');
         }
 
-        const tags = post.tags?.replace(/ /g, "").split(",") || [];
+        const fileUrl = getFilePreview(uploadedFile.$id);
 
-        // Create post
-        const newPost = await databases.createDocument(
-            appwriteConfig.databaseId,
-            appwriteConfig.postCollectionId,
-            ID.unique(),
-            {
-                creator: post.userId,
-                caption: post.caption,
-                imageUrl: fileUrl,
-                imageId: uploadedFile.$id,
-                location: post.location,
-                tags: tags,
-            }
-        );
+        if (!fileUrl) {
+            await deleteFile(uploadedFile.$id);
+            throw new Error('File preview not available');
+        }
+
+        const tags = post.tags?.replace(/ /g, '').split(',') || [];
+
+        // Create post and delete file in parallel
+        const [newPost] = await Promise.all([
+            databases.createDocument(
+                appwriteConfig.databaseId,
+                appwriteConfig.postCollectionId,
+                ID.unique(),
+                {
+                    creator: post.userId,
+                    caption: post.caption,
+                    imageUrl: fileUrl,
+                    imageId: uploadedFile.$id,
+                    location: post.location,
+                    tags: tags,
+                }
+            ),
+            deleteFile(uploadedFile.$id),
+        ]);
 
         if (!newPost) {
-            await deleteFile(uploadedFile.$id);
-            throw Error;
+            throw new Error('Post creation failed');
         }
 
         return newPost;
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        throw error; // Re-throw the error to propagate it to the caller
     }
 }
+
 
 export async function uploadFile(file: File) {
     try {
@@ -179,13 +186,18 @@ export function getFilePreview(fileId: string) {
 
 export async function deleteFile(fileId: string) {
     try {
-        await storage.deleteFile(appwriteConfig.storageId, fileId);
+        // Initiating the deletion in the background
+        storage.deleteFile(appwriteConfig.storageId, fileId);
 
-        return { status: "ok" };
+        // Returning a response immediately
+        return { status: 'ok' };
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        // You might want to throw the error to propagate it or handle it accordingly
+        throw error;
     }
 }
+
 
 export async function updatePost(post: IUpdatePost) {
     const hasFileToUpdate = post.file.length > 0;
