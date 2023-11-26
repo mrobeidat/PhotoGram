@@ -17,8 +17,14 @@ const AllUsers = () => {
         <h2 className="h3-bold md:h2-bold text-left w-full">All Users</h2>
         {isLoading && !creators ? (
           <div className="flex-center w-full h-full">
-            <div className="flex flex-col-center sm:flex-row resize-y">
-              <UsersLoader />
+            <div className="flex flex-wrap">
+              {[...Array(16)].map((_, index) => (
+                <div key={index} className="w-1/4 p-2">
+                  <div className="flex flex-col-center sm:flex-row resize-y">
+                    <UsersLoader />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ) : (

@@ -27,13 +27,15 @@ const Saved = () => {
         <h2 className="h3-bold md:h2-bold text-left w-full">Saved Posts</h2>
       </div>
 
-      <div style={{ display: 'flex' }}>
-        {!currentUser ? (
-          // Render ExploreLoader components when currentUser is falsy
-          [...Array(3)].map((_, index) => (
-            <ExploreLoader key={index} />
-          ))
-        ) : (
+      <div className="flex flex-wrap">
+  {!currentUser ? (
+    // Render ExploreLoader components when currentUser is falsy
+    [...Array(6)].map((_, index) => (
+      <div key={index} className="w-full sm:w-1/2 lg:w-1/3 p-2">
+        <ExploreLoader />
+      </div>
+    ))
+  ) : (
           <ul className="w-full flex justify-center max-w-5xl gap-9">
             {savePosts.length === 0 ? (
               <p className="text-light-4">No available posts</p>
