@@ -12,11 +12,11 @@ import { LikedPosts } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
 import GridPostList  from "@/components/Shared/GridPostsList";
-import Loader from "@/components/Shared/Loader";
+import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
 
 
 interface StabBlockProps {
-  value: string | number;
+  value: string | number ;
   label: string;
 }
 
@@ -26,6 +26,7 @@ const StatBlock = ({ value, label }: StabBlockProps) => (
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
   </div>
 );
+
 
 const Profile = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const Profile = () => {
   if (!currentUser)
     return (
       <div className="flex-center w-full h-full">
-        <Loader />
+        <ProfileLoader />
       </div>
     );
 

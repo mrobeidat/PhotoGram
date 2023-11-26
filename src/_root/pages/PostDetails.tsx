@@ -4,22 +4,29 @@ import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext"
 import {
   useGetPostById,
-  // useDeletePost,
+  useDeletePost,
+  useGetUserPosts
 } from "@/lib/react-query/queriesAndMutations";
+
 import { formatDate } from "@/lib/utils"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
+import GridPostList from "@/components/Shared/GridPostsList";
+import Loader from "@/components/Shared/Loader";
 const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUserContext();
+  const { data: post, isPending } = useGetPostById(id || "");
+  const { data: userPosts, isLoading: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
+  const { mutate: deletePost, isPending: isDeletingPost } = useDeletePost();
+  const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
 
-  const { data: post, isPending } = useGetPostById(id || '');
-  // const { mutate: deletePost } = useDeletePost();
-  const handleDeletePost = () => {
-    // deletePost({ postId: id, imageId: post?.imageId });
+  const handleDeletePost = async () => {
+    deletePost({ postId: id, imageId: post?.imageId });
     // navigate(-1);
   };
+
 
   return (
     <div className="post_details-container">
@@ -38,10 +45,10 @@ const PostDetails = () => {
         </Button>
       </div>
 
-      {isPending || !post ? (
+      {isPending || !post || isDeletingPost ? (
         <div className="flex justify-center items-center w-full h-full">
-        <DetailsLoader />
-      </div>
+          <DetailsLoader />
+        </div>
       ) : (
         <div className="post_details-card">
           <img
@@ -122,8 +129,20 @@ const PostDetails = () => {
           </div>
         </div>
       )}
+      <div className="w-full max-w-5xl">
+        <hr className="border w-full border-dark-4/80" />
 
+        <h3 className="body-bold md:h3-bold w-full my-10">
+          More Related Posts
+        </h3>
+        {isUserPostLoading || !relatedPosts ? (
+          <Loader />
+        ) : (
+          <GridPostList posts={relatedPosts} />
+        )}
+      </div>
     </div>
+
   )
 }
 

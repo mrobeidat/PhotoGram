@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
+
 
 export function formatDate(dateString: string=""): string {
   const currentDate: Date = new Date();
