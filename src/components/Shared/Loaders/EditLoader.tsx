@@ -9,11 +9,4 @@ const YoutubeFresh = ({...props}) => (
   </ContentLoader>
 )
 
-YoutubeFresh.metadata = {
-  name: 'Costal Oktopus',
-  github: 'coktopus', // Github username
-  description: 'Youtube fresh',
-  filename: 'YoutubeFresh', // filename of your loader
-}
-
 export default YoutubeFresh
