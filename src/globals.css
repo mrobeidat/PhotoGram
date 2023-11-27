@@ -270,7 +270,7 @@
   /* Topbar */
   .topbar {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.573) !important;
-    @apply sticky top-0 z-50 md:hidden shadow-lg w-full;
+    @apply sticky top-0 z-50 backdrop-blur-xl md:hidden shadow-lg w-full;
   }
 
   /* User card */
