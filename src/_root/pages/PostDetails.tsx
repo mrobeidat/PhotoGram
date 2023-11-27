@@ -11,8 +11,8 @@ import {
 import { formatDate } from "@/lib/utils"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
-import GridPostList from "@/components/Shared/GridPostsList";
 import Loader from "@/components/Shared/Loader";
+import RelatedPosts from "@/components/Shared/RelatedPosts";
 const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -99,9 +99,8 @@ const PostDetails = () => {
                 <Button
                   onClick={handleDeletePost}
                   variant="ghost"
-                  className={`ost_details-delete_btn ${
-                    user.id !== post?.creator.$id && "hidden"
-                  }`}>
+                  className={`ost_details-delete_btn ${user.id !== post?.creator.$id && "hidden"
+                    }`}>
                   <img
                     src={"/assets/icons/delete.svg"}
                     alt="delete"
@@ -142,16 +141,16 @@ const PostDetails = () => {
         </h3>
         {isUserPostLoading || !relatedPosts ? (
           <div className="flex">
-          <DetailsLoader />
-          <DetailsLoader/>
+            <DetailsLoader />
+            <DetailsLoader />
           </div>
         ) : (
-          <GridPostList posts={relatedPosts} />
+          <RelatedPosts posts={relatedPosts} />
         )}
       </div>
     </div>
   );
-  
+
 }
 
 export default PostDetails

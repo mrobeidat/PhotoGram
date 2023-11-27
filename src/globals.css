@@ -10,13 +10,14 @@
   }
 
   body {
-    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgb(14, 14, 77) 93.2%);
+    background: rgb(63, 94, 251);
+    background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%);
     @apply text-white min-h-screen font-inter;
   }
 }
 
 @media (width < 750px) {
-  
+
   .custom-scrollbar::-webkit-scrollbar {
     display: none;
     width: 3px;
@@ -170,7 +171,7 @@
   .post_details-card {
     background: rgba(5, 4, 2, 0.369);
     border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 30px rgba(179, 162, 162, 0.1);
     backdrop-filter: blur(60px);
     -webkit-backdrop-filter: blur(60px);
     border: 1px solid rgba(5, 4, 2, 0.055);
@@ -254,16 +255,18 @@
   }
 
   .leftsidebar-link:hover {
-    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgba(27, 24, 113, 1) 93.2%);
+      background: #000428;
+      background: -webkit-linear-gradient(to left, #004e92, #000428);
+      background: linear-gradient(to left, #004e92, #000428);
   }
 
   /* Post Card */
-  .post-card { 
-    background: rgba(5, 4, 2, 0.369);
+  .post-card {
+    background: rgba(5, 4, 2, 0.253);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(117, 115, 115, 0.211);
-    backdrop-filter: blur(60px);
-    -webkit-backdrop-filter: blur(60px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(5, 4, 2, 0.16);
     @apply rounded-3xl border p-5 lg:p-7 w-full max-w-screen-sm;
   }
@@ -307,7 +310,7 @@
   }
 
   .shad-textarea {
-    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%,  rgba(27, 24, 113, 0.339) 93.2%);
+    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgba(27, 24, 113, 0.339) 93.2%);
     @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 

@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import { LikedPosts } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
-import GridPostList  from "@/components/Shared/GridPostsList";
 import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
+import RelatedPosts from "@/components/Shared/RelatedPosts";
 
 
 interface StabBlockProps {
@@ -138,7 +138,7 @@ const Profile = () => {
       <Routes>
         <Route
           index
-          element={<GridPostList posts={currentUser.posts} showUser={false} />}
+          element={<RelatedPosts posts={currentUser.posts} showUser={false} />}
         />
         {currentUser.$id === user.id && (
           <Route path="/liked-posts" element={<LikedPosts />} />

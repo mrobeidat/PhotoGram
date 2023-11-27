@@ -1,5 +1,3 @@
-// import Loader from "@/components/Shared/Loader"
-// import SearchResults from "@/components/Shared/SearchResults"
 import { Input } from "@/components/ui/input"
 import useDebounce from "@/hooks/useDebounce"
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queriesAndMutations"
@@ -8,6 +6,8 @@ import ExploreLoader from '../../components/Shared/Loaders/ExploreLoader'
 import Loader from "@/components/Shared/Loader"
 import { useInView } from "react-intersection-observer"
 import GridPostList from "@/components/Shared/GridPostsList"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export type SearchResultProps = {
@@ -28,9 +28,29 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 };
 
 const Explore = () => {
+  const showAlert = () => {
+    toast.info('This page displays posts that were created exclusively within the past 24 hours!', {
+      position: 'top-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      style: {
+        backgroundColor: "rgb(63, 94, 251)",
+        background: "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)"
+      },
+    });
+  };
+
+  useEffect(() => {
+    showAlert()
+  }, [])
+
   const { ref, inView } = useInView();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
-
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 500);
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
@@ -57,6 +77,7 @@ const Explore = () => {
     posts.pages.every((item) => item.documents.length === 0);
   return (
     <div className="explore-container">
+      <ToastContainer />
       <div className="explore-inner_container">
         <h2 className="h3-bold md:h2-bold w-full">Search Posts</h2>
         <div className="flex gap-1 px-4 w-full rounded-lg bg-dark-4">
@@ -76,7 +97,6 @@ const Explore = () => {
       </div>
       <div className="flex-between w-full max-w-5xl mt-16 mb-7">
         <h3 className="body-bold md:h3-bold">Popular Today</h3>
-        <p className="flex-center gap-2 text-light-3">This page displays posts that were created exclusively within the past 24 hours.</p>
         <div className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer">
           <p className="small-medium md:base-medium text-light-2">All</p>
           <img src="/assets/icons/filter.svg"
