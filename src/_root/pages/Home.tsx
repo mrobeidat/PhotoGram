@@ -6,8 +6,7 @@ import PostCard from "@/components/Shared/PostCard";
 import HomeLoader from '../../components/Shared/Loaders/HomeLoader'
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
-
-const Home = () => {
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';const Home = () => {
 
   const {
     data: posts,
@@ -54,7 +53,7 @@ const Home = () => {
         </div>
       </div>
       <div className="home-creators">
-        <h3 className="h3-bold text-light-1">Top Creators</h3>
+        <h3 className="h3-bold text-light-1">PhotoGrammers <PeopleAltIcon/></h3>
         {isUserLoading && !creators ? (
           <div className="grid grid-cols-2 gap-4">
             {[...Array(10)].map((_, index) => (

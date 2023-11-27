@@ -6,8 +6,7 @@ const ProfileShow = ({...props}) => (
     width={1200}
     height={900}
     viewBox="0 0 500 200"
-    backgroundColor="#000"
-    foregroundColor="#ecebeb"
+    backgroundColor='rgba(17, 15.5, 61, 1)' foregroundColor='#CCCCCC'
     {...props}
   >
     <circle cx="248" cy="59" r="49" />

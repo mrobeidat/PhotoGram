@@ -8,7 +8,7 @@ import ExploreLoader from '../../components/Shared/Loaders/ExploreLoader'
 import Loader from "@/components/Shared/Loader"
 import { useInView } from "react-intersection-observer"
 import GridPostList from "@/components/Shared/GridPostsList"
-// import { Models } from "appwrite"
+
 
 export type SearchResultProps = {
   isSearchFetching: boolean;

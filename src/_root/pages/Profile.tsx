@@ -83,7 +83,7 @@ const Profile = () => {
             <div className={`${user.id !== currentUser.$id && "hidden"}`}>
               <Link
                 to={`/update-profile/${currentUser.$id}`}
-                className={`h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.$id && "hidden"
+                className={`h-12 bg-gray-900 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.$id && "hidden"
                   }`}>
                 <img
                   src={"/assets/icons/edit.svg"}
@@ -98,13 +98,13 @@ const Profile = () => {
             </div>
             <div className={`${user.id === id && "hidden"}`}>
               <Button type="button" className="shad-button_primary px-8">
-                Follow
+                View Profile
               </Button>
             </div>
           </div>
         </div>
       </div>
-
+      <hr className="border w-4/5 border-dark-4/80" />
       {currentUser.$id === user.id && (
         <div className="flex max-w-5xl w-full">
           <Link
@@ -133,6 +133,7 @@ const Profile = () => {
           </Link>
         </div>
       )}
+       
 
       <Routes>
         <Route

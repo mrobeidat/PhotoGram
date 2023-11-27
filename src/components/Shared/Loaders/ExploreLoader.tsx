@@ -1,13 +1,12 @@
 import ContentLoader from 'react-content-loader'
 
-const DoorDashFavorite = ({...props}) => (
+const DoorDashFavorite = ({ ...props }) => (
   <ContentLoader
     width={450}
     height={400}
     viewBox="0 0 450 400"
-    backgroundColor="#000"
-    foregroundColor="#dedede"
-    style={{display:"flex", flexDirection:"column"}}
+    backgroundColor='rgba(17, 15.5, 61, 1)' foregroundColor='#CCCCCC'
+    style={{ display: "flex", flexDirection: "column" }}
     {...props}
   >
     <rect x="43" y="304" rx="4" ry="4" width="271" height="9" />
