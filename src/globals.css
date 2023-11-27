@@ -16,9 +16,6 @@
 }
 
 @media (width < 750px) {
-  body {
-    overflow-y: hidden
-  }
   
   .custom-scrollbar::-webkit-scrollbar {
     display: none;
