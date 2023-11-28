@@ -1446,6 +1446,13 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/dompurify@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-3.0.5.tgz#02069a2fcb89a163bacf1a788f73cb415dd75cb7"
+  integrity sha512-1Wg0g3BtQF7sSb27fJQAKck1HECM6zV1EB66j8JH9i3LCjYabJa0FSdiSgsD5K/RbrsR0SiraKacLB+T8ZVYAg==
+  dependencies:
+    "@types/trusted-types" "*"
+
 "@types/estree-jsx@^1.0.0":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@types/estree-jsx/-/estree-jsx-1.0.3.tgz#f8aa833ec986d82b8271a294a92ed1565bf2c66a"
@@ -1572,6 +1579,11 @@
   version "7.5.4"
   resolved "https://registry.npmjs.org/@types/semver/-/semver-7.5.4.tgz"
   integrity sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==
+
+"@types/trusted-types@*":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.7.tgz#baccb07a970b91707df3a3e8ba6896c57ead2d11"
+  integrity sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==
 
 "@types/unist@*", "@types/unist@^3.0.0":
   version "3.0.2"
@@ -2577,6 +2589,11 @@ domain-browser@^4.22.0:
   version "4.23.0"
   resolved "https://registry.npmjs.org/domain-browser/-/domain-browser-4.23.0.tgz"
   integrity sha512-ArzcM/II1wCCujdCNyQjXrAFwS4mrLh4C7DZWlaI8mdh7h3BfKdNd3bKXITfl2PT9FtfQqaGvhi1vPRQPimjGA==
+
+dompurify@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.6.tgz#925ebd576d54a9531b5d76f0a5bef32548351dae"
+  integrity sha512-ilkD8YEnnGh1zJ240uJsW7AzE+2qpbOUYjacomn3AvJ6J4JhKGSZ2nh4wUIXPZrEPppaCLx5jFe8T89Rk8tQ7w==
 
 dotenv@^16.3.1:
   version "16.3.1"
@@ -5934,6 +5951,16 @@ sucrase@^3.32.0:
     mz "^2.7.0"
     pirates "^4.0.1"
     ts-interface-checker "^0.1.9"
+
+suneditor-react@^3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/suneditor-react/-/suneditor-react-3.6.1.tgz#62bd64784a48f5402e8bae19362fd3d32a7c2fd3"
+  integrity sha512-12f9KLnEB6pAdyHJINTzRBg3UOWVZZ+jVYSEtwdBTDYQW4amUZr0xOnpikbBAlxb9rcTYV5RHAsad3gnNhLsuA==
+
+suneditor@^2.45.1:
+  version "2.45.1"
+  resolved "https://registry.yarnpkg.com/suneditor/-/suneditor-2.45.1.tgz#5ce56a2d67bfd31e2c21f777cc7f5a522631eb06"
+  integrity sha512-fLxc0nLwd77vaPuf78D+VAFNAgX9hLps6h96JA/LUCpqt4LeYnEaIE1RfJojX+BhSA+krl5qZ8pdgqcoo3dN3g==
 
 supports-color@^5.3.0:
   version "5.5.0"

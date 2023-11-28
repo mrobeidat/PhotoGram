@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils"
 import { Models } from "appwrite"
 import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
+import DOMPurify from 'dompurify';
 
 type PostCardProps = {
   post: Models.Document
@@ -12,8 +13,13 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext()
   if (!post.creator) return;
 
+
+  // Function to sanitize HTML content
+  const sanitizeHTML = (htmlString: string) => ({
+    __html: DOMPurify.sanitize(htmlString),
+  });
   return (
-    <div className="post-card">
+    <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <Link to={`/profile/${post.creator.$id}`}>
@@ -50,12 +56,8 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-          <p>{post.caption}</p>
-          <ul className="flex gap-1 mt-2">
-            {post.tags.map((tag: string) => (
-              <li className="text-light-3" key={tag}>#{tag}</li>
-            ))}
-          </ul>
+          {/* Render the sanitized SunEditor content */}
+          <div dangerouslySetInnerHTML={sanitizeHTML(post.caption || '')} />
         </div>
         <img
           src={post.imageUrl || 'assets/icons/post-placeholder.svg'}

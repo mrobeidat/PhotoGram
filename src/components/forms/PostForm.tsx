@@ -14,6 +14,8 @@ import FileUploader from "../Shared/FileUploader"
 import Loader from "../Shared/Loader"
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
 
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
 
 type PostFormProps = {
     post?: Models.Document;
@@ -40,9 +42,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
         useCreatePost();
     const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
         useUpdatePost();
-    // const { mutateAsync: deletePost, isPending: isLoadingDelete } =
-    // useDeletePost();
-
+  
 
     const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
         // ACTION = UPDATE
