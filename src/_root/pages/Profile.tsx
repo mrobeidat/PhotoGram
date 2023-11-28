@@ -16,7 +16,7 @@ import RelatedPosts from "@/components/Shared/RelatedPosts";
 
 
 interface StabBlockProps {
-  value: string | number ;
+  value: string | number;
   label: string;
 }
 
@@ -52,17 +52,24 @@ const Profile = () => {
       <div className="profile-inner_container">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <img
-            src={
-              currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"
-            }
+            src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="profile"
             className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover"
           />
           <div className="flex flex-col flex-1 justify-between md:mt-2">
             <div className="flex flex-col w-full">
-              <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
-                {currentUser.name}
-              </h1>
+              <div className="xl:justify-start flex items-center justify-center w-full"> {/* Center the content */}
+                <h3 className="text-center xl:text-left h3-bold md:h2-semibold">
+                  {currentUser.name}
+                </h3>
+                <img
+                  alt="badge"
+                  width={25}
+                  src={"/assets/icons/verified-1.png"}
+                  className="ml-2" // Adjusted margin
+                  title="Verified"
+                />
+              </div>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
                 @{currentUser.username}
               </p>
@@ -133,7 +140,7 @@ const Profile = () => {
           </Link>
         </div>
       )}
-       
+
 
       <Routes>
         <Route

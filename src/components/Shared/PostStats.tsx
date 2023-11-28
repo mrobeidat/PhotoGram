@@ -62,7 +62,7 @@ const PostStats = ({ post, userId }: postStatsPorps) => {
       <div className="flex gap-2 mr-5">
         <i
           className={`pi ${checkIsLiked(likes, userId) ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
-          style={{ color: '#ff0000', fontSize: '20px' }} // Adjust the fontSize or other styles as needed
+          style={{ color: '#ff0000', fontSize: '20px' }}
           onClick={handleLike}
         ></i>
         <p className="small-medium lg:base-medium">{likes.length}</p>
