@@ -1,7 +1,7 @@
 import { useUserContext } from "@/context/AuthContext"
 import { formatDate } from "@/lib/utils"
 import { Models } from "appwrite"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import PostStats from "./PostStats"
 // import DOMPurify from 'dompurify';
 
@@ -13,11 +13,12 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext()
   if (!post.creator) return;
 
-
   // Function to sanitize HTML content
   // const sanitizeHTML = (htmlString: string) => ({
   //   __html: DOMPurify.sanitize(htmlString),
   // });
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
@@ -30,7 +31,18 @@ const PostCard = ({ post }: PostCardProps) => {
             />
           </Link>
           <div className="flex flex-col">
-            <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
+            <div className="flex">
+              <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
+              {post.creator.$id === YousefID && (
+                <img
+                  alt="badge"
+                  width={20}
+                  src={"/assets/icons/verified-1.png"}
+                  className="ml-2 object-contain"
+                  title="Website Creator"
+                />
+              )}
+            </div>
             <div className="flex-center gap-2 text-light-3">
               <p className="subtle-semibold lg:small-regular">{formatDate(post.$createdAt)}</p>
               -
@@ -55,8 +67,8 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </div>
       <Link to={`/posts/${post.$id}`}>
-      <div className="small-medium lg:base-medium py-5">
-          <p>{post.caption}</p>
+        <div className="small-medium lg:base-medium py-5">
+          <p style={{fontSize:"15px"}}>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">

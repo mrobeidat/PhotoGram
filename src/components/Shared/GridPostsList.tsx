@@ -31,6 +31,7 @@ const GridPostList = ({
   const filteredPosts = posts.filter((post) =>
     isPostFromToday(post?.$createdAt)
   );
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   return (
     <ul className="grid-container">
@@ -52,7 +53,18 @@ const GridPostList = ({
                   alt="creator"
                   className="w-8 h-8 rounded-full"
                 />
-                <p className="line-clamp-1">{post?.creator?.name}</p>
+                <div className="flex">
+                  <p className="line-clamp-1">{post?.creator?.name}</p>
+                  {post?.creator?.$id === YousefID && (
+                    <img
+                      alt="badge"
+                      width={18}
+                      src={"/assets/icons/verified-1.png"}
+                      className="ml-2 object-contain"
+                      title="Website Creator"
+                      />
+                  )}
+                </div>
               </div>
             )}
             {showStats && <PostStats post={post} userId={user.id} />}

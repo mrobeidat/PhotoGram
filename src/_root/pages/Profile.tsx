@@ -14,7 +14,6 @@ import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
 import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
 import RelatedPosts from "@/components/Shared/RelatedPosts";
 
-
 interface StabBlockProps {
   value: string | number;
   label: string;
@@ -46,6 +45,7 @@ const Profile = () => {
         <ProfileLoader />
       </div>
     );
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   return (
     <div className="profile-container">
@@ -62,13 +62,15 @@ const Profile = () => {
                 <h3 className="text-center xl:text-left h3-bold md:h2-semibold">
                   {currentUser.name}
                 </h3>
-                <img
-                  alt="badge"
-                  width={25}
-                  src={"/assets/icons/verified-1.png"}
-                  className="ml-2" // Adjusted margin
-                  title="Verified"
-                />
+                {currentUser.$id === YousefID && (
+                  <img
+                    alt="badge"
+                    width={25}
+                    src={"/assets/icons/verified-1.png"}
+                    className="ml-2"
+                    title="Website Creator"
+                    />
+                )}
               </div>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
                 @{currentUser.username}
