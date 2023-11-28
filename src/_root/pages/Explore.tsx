@@ -29,7 +29,7 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 
 const Explore = () => {
   const showAlert = () => {
-    toast.info('This page displays posts that were created within the past 24 hours!', {
+    toast.info('This page displays posts created within the past 24 hours!', {
       position: 'top-center',
       autoClose: 5000,
       hideProgressBar: false,
