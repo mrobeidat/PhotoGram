@@ -17,7 +17,11 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <Link to={`/profile/${post.creator.$id}`}>
-            <img src={post?.creator?.imageUrl || 'assets/icons/profile-placeholder.svg'} alt="avatar" className="w-12 lg:h-12 rounded-full" />
+            <img
+              src={post?.creator?.imageUrl || 'assets/icons/profile-placeholder.svg'}
+              alt="avatar"
+              className="w-12 lg:h-12 rounded-full"
+            />
           </Link>
           <div className="flex flex-col">
             <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
@@ -28,9 +32,21 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
-        <Link className={`${user.id !== post.creator.$id && "hidden"}`} to={`/update-post/${post.$id}`}>
-          <img src="assets/icons/edit.svg" alt="edit" width={20} height={20} />
-        </Link>
+        {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
+          <div className="pin-icon-container">
+            <img
+              src="assets/icons/pin.png"
+              alt="pin"
+              width={40}
+              height={20}
+            />
+            <span className="tooltip">Pinned Post</span>
+          </div>
+        ) : (
+          <Link className={`${user.id !== post.creator.$id && "hidden"}`} to={`/update-post/${post.$id}`}>
+            <img src="assets/icons/edit.svg" alt="edit" width={20} height={50} />
+          </Link>
+        )}
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
@@ -49,7 +65,8 @@ const PostCard = ({ post }: PostCardProps) => {
       </Link>
       <PostStats post={post} userId={user.id} />
     </div>
-  )
+  );
+
 }
 
 export default PostCard

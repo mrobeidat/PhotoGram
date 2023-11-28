@@ -255,13 +255,14 @@
   }
 
   .leftsidebar-link:hover {
-      background: #000428;
-      background: -webkit-linear-gradient(to left, #004e92, #000428);
-      background: linear-gradient(to left, #004e92, #000428);
+    background: #000428;
+    background: -webkit-linear-gradient(to left, #004e92, #000428);
+    background: linear-gradient(to left, #004e92, #000428);
   }
 
   /* Post Card */
   .post-card {
+    position: relative;
     background: rgba(5, 4, 2, 0.253);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(117, 115, 115, 0.211);
@@ -269,6 +270,37 @@
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(5, 4, 2, 0.16);
     @apply rounded-3xl border p-5 lg:p-7 w-full max-w-screen-sm;
+  }
+
+  .pin-icon-container {
+    position: relative;
+    display: inline-block;
+    /* Ensure the container takes the size of its contents */
+  }
+
+  .tooltip {
+    visibility: hidden;
+    width: 120px;
+    backdrop-filter: blur(70px);
+    background: linear-gradient(to right, #004e92, #000428);
+    -webkit-backdrop-filter: blur(70px);
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: small;
+  }
+
+  .pin-icon-container:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
   }
 
   .post-card_img {

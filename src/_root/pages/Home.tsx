@@ -6,7 +6,9 @@ import PostCard from "@/components/Shared/PostCard";
 import HomeLoader from '../../components/Shared/Loaders/HomeLoader'
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';const Home = () => {
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+
+const Home = () => {
 
   const {
     data: posts,
@@ -32,6 +34,22 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';const Home = () => {
     );
   }
 
+  //***********/ Pin My post to the top of the array of posts //***********/
+  if (posts?.documents) {
+    const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
+    console.log("post:", postIdToMoveToTop);
+
+    const updatedPosts = [...posts.documents];
+
+    const postIndex = updatedPosts.findIndex((post) => post.$id === postIdToMoveToTop);
+
+    if (postIndex !== -1) {
+      const postToMove = updatedPosts.splice(postIndex, 1)[0];
+      updatedPosts.unshift(postToMove);
+    }
+    // Update the posts variable with the modified array
+    posts.documents = updatedPosts;
+  }
   return (
     <div className="flex flex-1">
       <div className="home-container">
@@ -53,7 +71,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';const Home = () => {
         </div>
       </div>
       <div className="home-creators">
-        <h3 className="h3-bold text-light-1">PhotoGrammers <PeopleAltIcon/></h3>
+        <h3 className="h3-bold text-light-1">PhotoGrammers <PeopleAltIcon /></h3>
         {isUserLoading && !creators ? (
           <div className="grid grid-cols-2 gap-4">
             {[...Array(10)].map((_, index) => (
