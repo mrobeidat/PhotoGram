@@ -140,8 +140,7 @@ const PostDetails = () => {
           More Related Posts
         </h3>
         {isUserPostLoading || !relatedPosts ? (
-          <div className="flex">
-            <DetailsLoader />
+            <div className="details-loader-wrapper sm:flex gap-3">
             <DetailsLoader />
           </div>
         ) : (

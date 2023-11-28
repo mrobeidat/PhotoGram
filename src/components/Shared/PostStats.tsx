@@ -3,7 +3,7 @@ import { checkIsLiked } from "@/lib/utils"
 import { Models } from "appwrite"
 import React, { useEffect, useState } from "react"
 import Loader from "./Loader"
-
+import 'primeicons/primeicons.css';
 
 type postStatsPorps = {
   post?: Models.Document,
@@ -60,28 +60,51 @@ const PostStats = ({ post, userId }: postStatsPorps) => {
   return (
     <div className="flex justify-between items-center z-20">
       <div className="flex gap-2 mr-5">
-        <img
-          className="cursor-pointer"
-          src={checkIsLiked(likes, userId) ? "/assets/icons/liked.svg" : "/assets/icons/like.svg"}
-          alt="like"
-          width={20}
-          height={20}
+        <i
+          className={`pi ${checkIsLiked(likes, userId) ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
+          style={{ color: '#ff0000', fontSize: '20px' }} // Adjust the fontSize or other styles as needed
           onClick={handleLike}
-        />
+        ></i>
         <p className="small-medium lg:base-medium">{likes.length}</p>
       </div>
 
       <div className="flex gap-2">
-        {isSavingPost || isDeletingPost ? <Loader /> : <img
-          className="cursor-pointer"
-          src={isSaved ? "/assets/icons/saved.svg" : "/assets/icons/save.svg"}
-          alt="save"
-          width={20}
-          height={20}
-          onClick={handleSave}
-        />}
+        {isSavingPost || isDeletingPost ? (
+          <Loader />
+        ) : (
+          <>
+            {isSaved ? (
+              <i
+                className="pi pi-bookmark-fill cursor-pointer"
+                style={{
+                  fontSize: '20px',
+                  backgroundImage: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  color: 'transparent',
+                  transition: 'background-position 0.5s',
+                }}
+                onClick={handleSave}
+              ></i>
+            ) : (
+              <i
+                className="pi pi-bookmark cursor-pointer"
+                style={{
+                  fontSize: '20px',
+                  backgroundImage: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  color: 'transparent',
+                  transition: 'background-position 0.5s',
+                }}
+                onClick={handleSave}
+              ></i>
+            )}
+          </>
+        )}
+
       </div>
-    </div>
+    </div >
   )
 }
 

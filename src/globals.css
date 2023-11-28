@@ -24,6 +24,12 @@
     height: 3px;
     border-radius: 2px;
   }
+  .tooltip {
+    visibility: hidden;
+    width: 85px;
+    text-align: center;
+    padding: 1px  ;
+  }
 
 }
 
