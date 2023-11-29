@@ -23,13 +23,17 @@ const UserCard = ({ user }: UserCardProps) => {
             {user.name}
           </p>
           {user.$id === YousefID && (
-            <img
-              alt="badge"
-              width={18}
-              src={"/assets/icons/verified-1.png"}
-              className="ml-2 object-contain"
-              title="Website Creator"
-            />
+          <div className="group relative pin-icon-container">
+          <img
+            alt="badge"
+            width={20}
+            src={"/assets/icons/verified-1.svg"}
+            className="ml-2 object-contain"
+          />
+          <div className="tooltip-verified absolute transition-opacity duration-300 ">
+            Website Creator
+          </div>
+        </div>
           )}
         </div>
         <p className="small-regular text-light-3 text-center line-clamp-1">

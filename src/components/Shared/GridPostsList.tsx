@@ -56,13 +56,17 @@ const GridPostList = ({
                 <div className="flex">
                   <p className="line-clamp-1">{post?.creator?.name}</p>
                   {post?.creator?.$id === YousefID && (
-                    <img
-                      alt="badge"
-                      width={18}
-                      src={"/assets/icons/verified-1.png"}
-                      className="ml-2 object-contain"
-                      title="Website Creator"
-                      />
+                   <div className="group relative pin-icon-container">
+                   <img
+                     alt="badge"
+                     width={20}
+                     src={"/assets/icons/verified-1.svg"}
+                     className="ml-2 object-contain"
+                   />
+                   <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                     Website Creator
+                   </div>
+                 </div>
                   )}
                 </div>
               </div>

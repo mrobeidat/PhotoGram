@@ -16,6 +16,9 @@ const RelatedPostsList = ({
 }: RelatedPostsListProps) => {
     const { user } = useUserContext();
 
+
+    const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
     return (
         <ul className="grid-container">
             {posts.map((post) => (
@@ -37,6 +40,20 @@ const RelatedPostsList = ({
                                     className="w-8 h-8 rounded-full"
                                 />
                                 <p className="line-clamp-1">{post?.creator?.name}</p>
+                                {post.creator.$id === YousefID && (
+                                    <div className="group relative pin-icon-container">
+                                        <img
+                                            alt="badge"
+                                            width={18}
+                                            src={"/assets/icons/verified-1.svg"}
+                                            className="ml-0 object-contain"
+                                        />
+                                        <div className="tooltip-verified absolute transition-opacity duration-300 top-0 left-1/2 transform -translate-x-1/2 z-9999">
+                                            Website Creator
+                                        </div>
+                                    </div>
+
+                                )}
                             </div>
                         )}
                         {showStats && <PostStats post={post} userId={user.id} />}

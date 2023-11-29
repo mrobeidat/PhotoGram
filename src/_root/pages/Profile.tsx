@@ -63,13 +63,17 @@ const Profile = () => {
                   {currentUser.name}
                 </h3>
                 {currentUser.$id === YousefID && (
+                  <div className="group relative pin-icon-container">
                   <img
                     alt="badge"
-                    width={25}
-                    src={"/assets/icons/verified-1.png"}
-                    className="ml-2"
-                    title="Website Creator"
-                    />
+                    width={20}
+                    src={"/assets/icons/verified-1.svg"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                    Website Creator
+                  </div>
+                </div>
                 )}
               </div>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">

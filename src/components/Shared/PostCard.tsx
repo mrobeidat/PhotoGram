@@ -31,16 +31,22 @@ const PostCard = ({ post }: PostCardProps) => {
             />
           </Link>
           <div className="flex flex-col">
-            <div className="flex">
-              <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
+            <div className="flex items-center">
+              <Link to={`/profile/${post.creator.$id}`}>
+                <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
+              </Link>
               {post.creator.$id === YousefID && (
-                <img
-                  alt="badge"
-                  width={20}
-                  src={"/assets/icons/verified-1.png"}
-                  className="ml-2 object-contain"
-                  title="Website Creator"
-                />
+                <div className="group relative pin-icon-container">
+                  <img
+                    alt="badge"
+                    width={17}
+                    src={"/assets/icons/verified-1.svg"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                    Website Creator
+                  </div>
+                </div>
               )}
             </div>
             <div className="flex-center gap-2 text-light-3">
@@ -68,7 +74,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-          <p style={{fontSize:"15px"}}>{post.caption}</p>
+          <p style={{ fontSize: "15px" }}>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">

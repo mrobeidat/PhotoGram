@@ -27,6 +27,8 @@ const PostDetails = () => {
     navigate(-1);
   };
 
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
 
   return (
     <div className="post_details-container">
@@ -69,9 +71,24 @@ const PostDetails = () => {
                   className="w-8 h-8 lg:w-12 lg:h-12 rounded-full"
                 />
                 <div className="flex gap-1 flex-col">
+                  <div className="flex items-center">
                   <p className="base-medium lg:body-bold text-light-1">
                     {post?.creator.name}
                   </p>
+                  {post.creator.$id === YousefID && (
+                <div className="group relative pin-icon-container">
+                  <img
+                    alt="badge"
+                    width={17 }
+                    src={"/assets/icons/verified-1.svg"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                    Website Creator
+                  </div>
+                </div>
+              )}
+              </div>
                   <div className="flex-center gap-2 text-light-3">
                     <p className="subtle-semibold lg:small-regular ">
                       {formatDate(post?.$createdAt)}
