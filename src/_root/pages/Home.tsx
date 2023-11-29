@@ -37,7 +37,6 @@ const Home = () => {
   //***********/ Pin My post to the top of the array of posts //***********/
   if (posts?.documents) {
     const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
-    console.log("post:", postIdToMoveToTop);
 
     const updatedPosts = [...posts.documents];
 

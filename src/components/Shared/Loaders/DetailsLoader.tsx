@@ -1,7 +1,13 @@
 import ContentLoader from 'react-content-loader';
 
-const DevtoCard = ({...props}) => (
-  <ContentLoader backgroundColor='rgba(17, 15.5, 61, 1)' foregroundColor='#CCCCCC' viewBox="0 0 600 600" height={600} width={600} {...props}>
+const DevtoCard = ({ ...props }) => (
+  <ContentLoader className='max-w-xs md:max-w-full' // Apply max-w-xs on mobile and max-w-full on desktop
+    backgroundColor='rgba(17, 15.5, 61, 1)'
+    foregroundColor='#CCCCCC'
+    viewBox="0 0 600 600"
+    height={600}
+    width={600}
+    {...props}>
     <circle cx="50" cy="358" r="50" />
     <rect x="125" y="333" rx="6" ry="6" width="150" height="20" />
     <rect x="125" y="370" rx="6" ry="6" width="75" height="12" />
