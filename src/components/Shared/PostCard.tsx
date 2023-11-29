@@ -1,7 +1,7 @@
 import { useUserContext } from "@/context/AuthContext"
 import { formatDate } from "@/lib/utils"
 import { Models } from "appwrite"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 // import DOMPurify from 'dompurify';
 
