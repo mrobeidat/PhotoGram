@@ -18,7 +18,7 @@ const UserCard = ({ user }: UserCardProps) => {
       />
 
       <div className="flex-center flex-col gap-1">
-        <div className="flex">
+        <div className="flex items-center">
           <p className="base-medium text-light-1 text-center line-clamp-1">
             {user.name}
           </p>
@@ -26,7 +26,7 @@ const UserCard = ({ user }: UserCardProps) => {
           <div className="group relative pin-icon-container">
           <img
             alt="badge"
-            width={20}
+            width={16}
             src={"/assets/icons/verified-1.svg"}
             className="ml-2 object-contain"
           />
