@@ -59,7 +59,7 @@ const GridPostList = ({
                    <div className="group relative pin-icon-container">
                    <img
                      alt="badge"
-                     width={20}
+                     width={14}
                      src={"/assets/icons/verified-1.svg"}
                      className="ml-2 object-contain"
                    />
