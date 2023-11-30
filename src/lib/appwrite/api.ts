@@ -136,7 +136,7 @@ export async function createPost(post: INewPost) {
                     tags: tags,
                 }
             ),
-            deleteFile(uploadedFile.$id),
+            // deleteFile(uploadedFile.$id),
         ]);
 
         if (!newPost) {
