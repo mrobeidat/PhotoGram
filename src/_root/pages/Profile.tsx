@@ -45,6 +45,7 @@ const Profile = () => {
         <ProfileLoader />
       </div>
     );
+  const hasThreeOrMorePosts = currentUser.posts.length >= 3;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   return (
@@ -62,18 +63,33 @@ const Profile = () => {
                 <h3 className="text-center xl:text-left h3-bold md:h2-semibold">
                   {currentUser.name}
                 </h3>
+                {/* Display the badge only for top creators */}
+                {hasThreeOrMorePosts && currentUser.$id !== YousefID && (
+                  <div className="group relative pin-icon-container">
+                    <img
+                      src={"/assets/icons/top-creator.png"}
+                      alt="badge"
+                      width={21}
+                      className="ml-2 object-contain"
+                    />
+                    <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
+                      Top Creator
+                    </div>
+                  </div>
+                )}
+                {/* This badge for the website creator */}
                 {currentUser.$id === YousefID && (
                   <div className="group relative pin-icon-container">
-                  <img
-                    alt="badge"
-                    width={16}
-                    src={"/assets/icons/verified-1.svg"}
-                    className="ml-2 object-contain"
-                  />
-                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                    Website Creator
+                    <img
+                      alt="badge"
+                      width={16}
+                      src={"/assets/icons/verified-1.svg"}
+                      className="ml-2 object-contain"
+                    />
+                    <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                      Website Creator
+                    </div>
                   </div>
-                </div>
                 )}
               </div>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
