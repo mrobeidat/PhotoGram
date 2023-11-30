@@ -53,7 +53,7 @@ const GridPostList = ({
                   alt="creator"
                   className="w-8 h-8 rounded-full"
                 />
-                <div className="flex">
+                <div className="flex items-center">
                   <p className="line-clamp-1">{post?.creator?.name}</p>
                   {post?.creator?.$id === YousefID && (
                    <div className="group relative pin-icon-container">
