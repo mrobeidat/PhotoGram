@@ -39,7 +39,7 @@ const PostCard = ({ post }: PostCardProps) => {
                 <div className="group relative pin-icon-container">
                   <img
                     alt="badge"
-                    width={17}
+                    width={15}
                     src={"/assets/icons/verified-1.svg"}
                     className="ml-2 object-contain"
                   />

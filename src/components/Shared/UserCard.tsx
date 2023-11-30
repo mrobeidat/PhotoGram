@@ -26,7 +26,7 @@ const UserCard = ({ user }: UserCardProps) => {
           <div className="group relative pin-icon-container">
           <img
             alt="badge"
-            width={16}
+            width={14}
             src={"/assets/icons/verified-1.svg"}
             className="ml-2 object-contain"
           />
