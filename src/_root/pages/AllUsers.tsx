@@ -11,14 +11,28 @@ const AllUsers = () => {
     toast({ title: "Something went wrong." });
     return;
   }
-
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
   let sortedCreators = creators?.documents || [];
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
   // Find Yousef's card and move it to the beginning of the array
-  const yousefIndex = sortedCreators.findIndex((creator) => creator?.$id === YousefID);
+  const yousefIndex = sortedCreators.findIndex(
+    (creator) => creator?.$id === YousefID && TopCreator
+  );
+
   if (yousefIndex !== -1) {
-    const yousefCard = sortedCreators.splice(yousefIndex, 1)[0];
-    sortedCreators = [yousefCard, ...sortedCreators];
+    // Move Yousef's card to the beginning
+    sortedCreators.unshift(sortedCreators.splice(yousefIndex, 1)[0]);
+  }
+
+  // Find the index of the TOP CREATOR card 
+  const topCreatorIndex = sortedCreators.findIndex(
+    (creator) => creator?.$id === TopCreator
+  );
+
+  if (topCreatorIndex !== -1) {
+    // Move the TOP Creator card to the second position
+    sortedCreators.splice(1, 0, sortedCreators.splice(topCreatorIndex, 1)[0]);
   }
 
   return (
@@ -40,7 +54,7 @@ const AllUsers = () => {
         ) : (
           <ul className="user-grid">
             {sortedCreators.map((creator) => (
-              <li key={creator?.$id} className="flex-1 min-w-[200px] w-full  ">
+              <li key={creator?.$id} className="flex-1 min-w-[200px] w-full">
                 <UserCard user={creator} />
               </li>
             ))}

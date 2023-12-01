@@ -18,7 +18,7 @@ const PostCard = ({ post }: PostCardProps) => {
   //   __html: DOMPurify.sanitize(htmlString),
   // });
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
@@ -35,6 +35,19 @@ const PostCard = ({ post }: PostCardProps) => {
               <Link to={`/profile/${post.creator.$id}`}>
                 <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
               </Link>
+              {post.creator.$id === TopCreator && (
+                <div className="group relative pin-icon-container">
+                  <img
+                    alt="badge"
+                    width={16}
+                    src={"/assets/icons/top-creator.png"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
+                    Top Creator
+                  </div>
+                </div>
+              )}
               {post.creator.$id === YousefID && (
                 <div className="group relative pin-icon-container">
                   <img

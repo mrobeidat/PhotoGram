@@ -25,6 +25,8 @@ const LeftSidebar = () => {
     setUser(INITIAL_USER);
     navigate("/sign-in");
   };
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
   return (
     <nav className='leftsidebar'>
@@ -43,13 +45,40 @@ const LeftSidebar = () => {
           <img
             className="h-14 w-14 rounded-full"
             src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
-            style={{objectFit:"cover"}}
-
+            style={{ objectFit: "cover" }}
           />
           <div className="flex flex-col">
-            <p className="body-bold">
-              {user.name}
-            </p>
+            <div className="flex items-center">
+              <p className="body-bold">
+                {user.name}
+              </p>
+              {user.id === YousefID && (
+                <div className="group relative pin-icon-container">
+                  <img
+                    alt="badge"
+                    width={15}
+                    src={"/assets/icons/verified-1.svg"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                    Website Creator
+                  </div>
+                </div>
+              )}
+              {user.id === TopCreator && (
+                <div className="group relative pin-icon-container">
+                  <img
+                    alt="badge"
+                    width={16}
+                    src={"/assets/icons/top-creator.png"}
+                    className="ml-2 object-contain"
+                  />
+                  <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
+                    Top Creator
+                  </div>
+                </div>
+              )}
+            </div>
             <p className="small-regular text-light-3">
               @{user.username}
             </p>
