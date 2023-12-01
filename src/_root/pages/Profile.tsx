@@ -163,7 +163,6 @@ const Profile = () => {
         </div>
       )}
 
-
       <Routes>
         <Route
           index

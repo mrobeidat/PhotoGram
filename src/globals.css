@@ -282,7 +282,6 @@
   .pin-icon-container {
     position: relative;
     display: inline-block;
-    /* Ensure the container takes the size of its contents */
   }
 
   .tooltip {
@@ -323,9 +322,7 @@
     position: absolute;
     z-index: 1;
     top: 40%;
-    /* Adjust this value to control the distance from the top */
     left: 110%;
-    /* Adjust this value to control the distance from the right edge */
     transform: translate(0, -50%);
     opacity: 0;
     transition: opacity 0.3s;
@@ -334,20 +331,18 @@
 
   .tooltip-verified-creator {
     visibility: hidden;
-    width: 100px;
+    width: 80px;
     backdrop-filter: blur(70px);
     background: linear-gradient(45deg, #ff8a00, rgba(150, 109, 12, 0.679));
     -webkit-backdrop-filter: blur(70px);
     color: #fff;
     text-align: center;
-    padding: 5px;
+    padding: 2px;
     border-radius: 5px;
     position: absolute;
     z-index: 1;
     top: 40%;
-    /* Adjust this value to control the distance from the top */
     left: 110%;
-    /* Adjust this value to control the distance from the right edge */
     transform: translate(0, -50%);
     opacity: 0;
     transition: opacity 0.3s;

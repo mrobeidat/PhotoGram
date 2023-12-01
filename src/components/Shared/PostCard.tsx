@@ -59,7 +59,7 @@ const PostCard = ({ post }: PostCardProps) => {
         {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
           <div className="pin-icon-container">
             <img
-              src="assets/icons/pin.png"
+              src="assets/icons/post-pin.png"
               alt="pin"
               width={35}
               height={20}

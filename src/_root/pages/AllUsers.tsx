@@ -11,6 +11,16 @@ const AllUsers = () => {
     toast({ title: "Something went wrong." });
     return;
   }
+
+  let sortedCreators = creators?.documents || [];
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  // Find Yousef's card and move it to the beginning of the array
+  const yousefIndex = sortedCreators.findIndex((creator) => creator?.$id === YousefID);
+  if (yousefIndex !== -1) {
+    const yousefCard = sortedCreators.splice(yousefIndex, 1)[0];
+    sortedCreators = [yousefCard, ...sortedCreators];
+  }
+
   return (
     <div className="common-container">
       <div className="user-container">
@@ -29,7 +39,7 @@ const AllUsers = () => {
           </div>
         ) : (
           <ul className="user-grid">
-            {creators?.documents.map((creator) => (
+            {sortedCreators.map((creator) => (
               <li key={creator?.$id} className="flex-1 min-w-[200px] w-full  ">
                 <UserCard user={creator} />
               </li>

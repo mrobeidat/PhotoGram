@@ -9,7 +9,6 @@ import UserCard from "@/components/Shared/UserCard";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 const Home = () => {
-
   const {
     data: posts,
     isLoading: isPostLoading,
@@ -20,9 +19,9 @@ const Home = () => {
     isLoading: isUserLoading,
     isError: isErrorCreators,
   } = useGetUsers(10);
-
+  
   if (isErrorPosts || isErrorCreators) {
-    return (
+      return (
       <div className="flex flex-1">
         <div className="home-container">
           <p className="body-medium text-light-1">Something bad happened</p>
@@ -34,7 +33,7 @@ const Home = () => {
     );
   }
 
-  //***********/ Pin My post to the top of the array of posts //***********/
+  //***********/ Pin Yousef post to the top of the array of posts //***********/
   if (posts?.documents) {
     const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
 
@@ -49,6 +48,17 @@ const Home = () => {
     // Update the posts variable with the modified array
     posts.documents = updatedPosts;
   }
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
+  const sortedCreators = [...creators?.documents || []].sort((a, b) => {
+    if (a.$id === YousefID) {
+      return -1; // Yousef's card comes first
+    }
+    if (b.$id === YousefID) {
+      return 1; // Yousef's card comes first
+    }
+    return 0;
+  });
   return (
     <div className="flex flex-1">
       <div className="home-container">
@@ -79,12 +89,12 @@ const Home = () => {
           </div>
         ) : (
           <ul className="grid 2xl:grid-cols-2 gap-6">
-            {creators?.documents.map((creator) => (
-              <li key={creator?.$id}>
-                {isUserLoading ? <UsersLoader /> : <UserCard user={creator} />}
-              </li>
-            ))}
-          </ul>
+              {sortedCreators.map((creator) => (
+                <li key={creator?.$id}>
+                  {isUserLoading ? <UsersLoader /> : <UserCard user={creator} />}
+                </li>
+              ))}
+            </ul>
         )}
       </div>
 
