@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import useDebounce from "@/hooks/useDebounce"
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queriesAndMutations"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import ExploreLoader from '../../components/Shared/Loaders/ExploreLoader'
 import Loader from "@/components/Shared/Loader"
 import { useInView } from "react-intersection-observer"
