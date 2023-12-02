@@ -106,84 +106,81 @@ export async function SignOutAccount() {
 
 export async function createPost(post: INewPost) {
     try {
-        const uploadedFile = await uploadFile(post.file[0]);
-
-        if (!uploadedFile) {
-            throw new Error('File upload failed');
+      // Upload file to appwrite storage
+      const uploadedFile = await uploadFile(post.file[0]);
+  
+      if (!uploadedFile) throw Error;
+  
+      // Get file url
+      const fileUrl = getFilePreview(uploadedFile.$id);
+      if (!fileUrl) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+  
+      // Convert tags into array
+      const tags = post.tags?.replace(/ /g, "").split(",") || [];
+  
+      // Create post
+      const newPost = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        ID.unique(),
+        {
+          creator: post.userId,
+          caption: post.caption,
+          imageUrl: fileUrl,
+          imageId: uploadedFile.$id,
+          location: post.location,
+          tags: tags,
         }
-
-        const fileUrl = getFilePreview(uploadedFile.$id);
-
-        if (!fileUrl) {
-            await deleteFile(uploadedFile.$id);
-            throw new Error('File preview not available');
-        }
-
-        const tags = post.tags?.replace(/ /g, '').split(',') || [];
-
-        // Create post and delete file in parallel
-        const [newPost] = await Promise.all([
-            databases.createDocument(
-                appwriteConfig.databaseId,
-                appwriteConfig.postCollectionId,
-                ID.unique(),
-                {
-                    creator: post.userId,
-                    caption: post.caption,
-                    imageUrl: fileUrl,
-                    imageId: uploadedFile.$id,
-                    location: post.location,
-                    tags: tags,
-                }
-            ),
-            // deleteFile(uploadedFile.$id),
-        ]);
-
-        if (!newPost) {
-            throw new Error('Post creation failed');
-        }
-
-        return newPost;
+      );
+  
+      if (!newPost) {
+        await deleteFile(uploadedFile.$id);
+        throw Error;
+      }
+  
+      return newPost;
     } catch (error) {
-        console.error(error);
-        throw error; // Re-throw the error to propagate it to the caller
+      console.log(error);
     }
-}
-
-
-export async function uploadFile(file: File) {
+  }
+  
+  // ============================== UPLOAD FILE
+  export async function uploadFile(file: File) {
     try {
-        const uploadedFile = await storage.createFile(
-            appwriteConfig.storageId,
-            ID.unique(),
-            file
-        );
-
-        return uploadedFile;
+      const uploadedFile = await storage.createFile(
+        appwriteConfig.storageId,
+        ID.unique(),
+        file
+      );
+  
+      return uploadedFile;
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}
-
-export function getFilePreview(fileId: string) {
+  }
+  
+  // ============================== GET FILE URL
+  export function getFilePreview(fileId: string) {
     try {
-        const fileUrl = storage.getFilePreview(
-            appwriteConfig.storageId,
-            fileId,
-            2000,
-            2000,
-            "top",
-            100
-        );
-
-        if (!fileUrl) throw Error;
-
-        return fileUrl;
+      const fileUrl = storage.getFilePreview(
+        appwriteConfig.storageId,
+        fileId,
+        2000,
+        2000,
+        "top",
+        100
+      );
+  
+      if (!fileUrl) throw Error;
+  
+      return fileUrl;
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}
-
+  }
 export async function deleteFile(fileId: string) {
     try {
         // Initiating the deletion in the background
