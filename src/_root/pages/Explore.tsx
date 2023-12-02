@@ -131,9 +131,7 @@ const Explore = () => {
       </div>
       {hasNextPage && !searchValue && (
         <div ref={ref} className="mt-10 flex-center w-full h-full">
-          <ExploreLoader />
-          <ExploreLoader />
-          <ExploreLoader />
+          <Loader/>
         </div>
       )}
     </div>
