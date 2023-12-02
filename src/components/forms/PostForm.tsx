@@ -42,35 +42,54 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
 
     const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
-        // ACTION = UPDATE
-        if (post && action === "Update") {
-            const updatedPost = await updatePost({
+        try {
+            // ACTION = UPDATE
+            if (post && action === "Update") {
+                const updatedPost = await updatePost({
+                    ...value,
+                    postId: post.$id,
+                    imageId: post.imageId,
+                    imageUrl: post.imageUrl,
+                });
+
+                if (updatedPost) {
+                    toast({
+                        title: "Post updated successfully!",
+                        style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
+
+                    });
+                    navigate(`/posts/${post.$id}`);
+                } else {
+                    toast({
+                        title: "Update post failed. Please try again.",
+                        style: { background: "rgb(251,63,63) " }
+                    });
+                }
+                return;
+            }
+
+            // ACTION = CREATE
+            const newPost = await createPost({
                 ...value,
-                postId: post.$id,
-                imageId: post.imageId,
-                imageUrl: post.imageUrl,
+                userId: user.id,
             });
 
-            if (!updatedPost) {
+            if (newPost) {
                 toast({
-                    title: `${action} post failed. Please try again.`,
+                    title: "Post created successfully!",
+                });
+                navigate("/");
+            } else {
+                toast({
+                    title: "Create post failed. Please try again.",
                 });
             }
-            return navigate(`/posts/${post.$id}`);
-        }
-
-        // ACTION = CREATE
-        const newPost = await createPost({
-            ...value,
-            userId: user.id,
-        });
-
-        if (!newPost) {
+        } catch (error) {
+            console.error("Error handling form submission:", error);
             toast({
-                title: `${action} post failed. Please try again.`,
+                title: "An unexpected error occurred. Please try again.",
             });
         }
-        navigate("/");
     };
     return (
         <Form {...form}>

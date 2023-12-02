@@ -2,6 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import { useGetUsers } from "@/lib/react-query/queriesAndMutations";
+import { useMemo } from "react";
 
 const AllUsers = () => {
   const { toast } = useToast();
@@ -11,29 +12,36 @@ const AllUsers = () => {
     toast({ title: "Something went wrong." });
     return;
   }
+
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
-  let sortedCreators = creators?.documents || [];
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
-  // Find Yousef's card and move it to the beginning of the array
-  const yousefIndex = sortedCreators.findIndex(
-    (creator) => creator?.$id === YousefID && TopCreator
-  );
+  let sortedCreators = creators?.documents || [];
 
-  if (yousefIndex !== -1) {
-    // Move Yousef's card to the beginning
-    sortedCreators.unshift(sortedCreators.splice(yousefIndex, 1)[0]);
+  // Memoize indices using useMemo
+  const indices = useMemo(() => {
+    const yousefIndex = sortedCreators.findIndex((creator) => creator?.$id === YousefID);
+    const topCreatorIndex = sortedCreators.findIndex((creator) => creator?.$id === TopCreator);
+    return { yousefIndex, topCreatorIndex };
+  }, [sortedCreators, YousefID, TopCreator]);
+
+  // Create a new array with the desired order
+  const newSortedCreators = [];
+
+  if (indices.yousefIndex !== -1) {
+    // Add Yousef's card to the new array
+    newSortedCreators.push(sortedCreators[indices.yousefIndex]);
   }
 
-  // Find the index of the TOP CREATOR card 
-  const topCreatorIndex = sortedCreators.findIndex(
-    (creator) => creator?.$id === TopCreator
-  );
-
-  if (topCreatorIndex !== -1) {
-    // Move the TOP Creator card to the second position
-    sortedCreators.splice(1, 0, sortedCreators.splice(topCreatorIndex, 1)[0]);
+  if (indices.topCreatorIndex !== -1) {
+    // Add TOP Creator's card to the new array
+    newSortedCreators.push(sortedCreators[indices.topCreatorIndex]);
   }
+
+  // Add the remaining cards to the new array
+  newSortedCreators.push(
+    ...sortedCreators.filter((_, index) => index !== indices.yousefIndex && index !== indices.topCreatorIndex)
+  );
 
   return (
     <div className="common-container">
@@ -53,7 +61,7 @@ const AllUsers = () => {
           </div>
         ) : (
           <ul className="user-grid">
-            {sortedCreators.map((creator) => (
+            {newSortedCreators.map((creator) => (
               <li key={creator?.$id} className="flex-1 min-w-[200px] w-full">
                 <UserCard user={creator} />
               </li>

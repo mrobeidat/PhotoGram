@@ -472,7 +472,7 @@ export async function getUsers(limit?: number) {
     const queries: any[] = [Query.orderDesc("$createdAt")];
 
     if (limit) {
-        queries.push(Query.limit(limit));
+        queries.push(Query.limit(100));
     }
 
     try {

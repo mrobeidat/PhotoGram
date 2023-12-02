@@ -7,21 +7,24 @@ import HomeLoader from '../../components/Shared/Loaders/HomeLoader'
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { useMemo } from "react";
 
 const Home = () => {
-  const {
-    data: posts,
-    isLoading: isPostLoading,
-    isError: isErrorPosts,
-  } = useGetRecentPosts();
+  const recentPostsQuery = useGetRecentPosts();
+
+  // Memoize the query result using useMemo
+  const { data: posts, isLoading: isPostLoading, isError: isErrorPosts } = useMemo(() => {
+    return recentPostsQuery;
+  }, [recentPostsQuery]);
+  
   const {
     data: creators,
     isLoading: isUserLoading,
     isError: isErrorCreators,
   } = useGetUsers(10);
-  
+
   if (isErrorPosts || isErrorCreators) {
-      return (
+    return (
       <div className="flex flex-1">
         <div className="home-container">
           <p className="body-medium text-light-1">Something bad happened</p>
@@ -48,17 +51,24 @@ const Home = () => {
     // Update the posts variable with the modified array
     posts.documents = updatedPosts;
   }
+  // Yousef Account ID
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
-  const sortedCreators = [...creators?.documents || []].sort((a, b) => {
-    if (a.$id === YousefID) {
-      return -1; // Yousef's card comes first
-    }
-    if (b.$id === YousefID) {
-      return 1; // Yousef's card comes first
-    }
-    return 0;
-  });
+  // Pin yousef's post to the top and useMemo to memorize its position
+  const sortedCreators = useMemo(() => {
+    const sorted = [...creators?.documents || []].sort((a, b) => {
+      if (a.$id === YousefID) {
+        return -1; // Yousef's card comes first
+      }
+      if (b.$id === YousefID) {
+        return 1; // Yousef's card comes first
+      }
+      return 0;
+    });
+    return sorted;
+  }, [creators]);
+
+
   return (
     <div className="flex flex-1">
       <div className="home-container">
@@ -89,15 +99,14 @@ const Home = () => {
           </div>
         ) : (
           <ul className="grid 2xl:grid-cols-2 gap-6">
-              {sortedCreators.map((creator) => (
-                <li key={creator?.$id}>
-                  {isUserLoading ? <UsersLoader /> : <UserCard user={creator} />}
-                </li>
-              ))}
-            </ul>
+            {sortedCreators.map((creator) => (
+              <li key={creator?.$id}>
+                {isUserLoading ? <UsersLoader /> : <UserCard user={creator} />}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-
     </div>
   );
 };
