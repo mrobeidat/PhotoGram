@@ -55,14 +55,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
                 if (updatedPost) {
                     toast({
                         title: "Post updated successfully!",
-                        style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
-
+                        style: { background: "rgb(3, 73, 26)" }
                     });
                     navigate(`/posts/${post.$id}`);
                 } else {
                     toast({
                         title: "Update post failed. Please try again.",
-                        style: { background: "rgb(251,63,63) " }
+                        style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
                     });
                 }
                 return;
@@ -77,11 +76,14 @@ const PostForm = ({ post, action }: PostFormProps) => {
             if (newPost) {
                 toast({
                     title: "Post created successfully!",
+                    style: { background: "rgb(3, 73, 26)" }
                 });
                 navigate("/");
             } else {
                 toast({
                     title: "Create post failed. Please try again.",
+                    style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
+
                 });
             }
         } catch (error) {
