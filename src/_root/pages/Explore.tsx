@@ -86,19 +86,6 @@ const Explore = () => {
     posts.pages.every((item) => item.documents.length === 0);
 
 
-  const searchResults = useMemo(() => (
-    <SearchResults
-      isSearchFetching={isSearchFetching}
-      searchedPosts={searchedPosts}
-    />
-  ), [isSearchFetching, searchedPosts]);
-
-  const gridPostLists = useMemo(() => (
-    posts.pages.map((item, index) => (
-      <GridPostList key={`page-${index}`} posts={item.documents} />
-    ))
-  ), [posts.pages]);
-
   return (
     <div className="explore-container">
       <ToastContainer />
@@ -132,11 +119,16 @@ const Explore = () => {
       </div>
       <div className="flex flex-wrap gap-9 w-full max-w-5xl">
         {shouldShowSearchResults ? (
-          searchResults
+          <SearchResults
+            isSearchFetching={isSearchFetching}
+            searchedPosts={searchedPosts}
+          />
         ) : shouldShowPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
-          gridPostLists
+          posts.pages.map((item, index) => (
+            <GridPostList key={`page-${index}`} posts={item.documents} />
+          ))
         )}
       </div>
       {hasNextPage && !searchValue && (

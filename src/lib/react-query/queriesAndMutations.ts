@@ -150,7 +150,7 @@ export const useGetPostById = (postId: string) => {
 
 export const useGetPosts = () => {
   return useInfiniteQuery({
-    initialPageParam: undefined,
+    initialPageParam: "",
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
     queryFn: getInfinitePosts as any,
     getNextPageParam: (lastPage: any) => {
