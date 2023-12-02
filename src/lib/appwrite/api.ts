@@ -251,36 +251,22 @@ export async function updatePost(post: IUpdatePost) {
     }
 }
 
+// ============================== GET HOME POSTS
 export async function getRecentPosts() {
     try {
-        // Check if posts are already cached in localStorage
-        const cachedPosts = localStorage.getItem('cachedRecentPosts');
-
-        if (cachedPosts) {
-            // Parse and return cached posts
-            return JSON.parse(cachedPosts);
-        }
-
-        // Fetch posts from Appwrite
-        const posts = await databases.listDocuments(
-            appwriteConfig.databaseId,
-            appwriteConfig.postCollectionId,
-            [Query.orderDesc("$createdAt"), Query.limit(20)]
-        );
-
-        if (!posts) {
-            throw Error("Failed to fetch posts");
-        }
-
-        // Cache the fetched posts in localStorage
-        localStorage.setItem('cachedRecentPosts', JSON.stringify(posts));
-
-        return posts;
+      const posts = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc("$createdAt"), Query.limit(20)]
+      );
+  
+      if (!posts) throw Error;
+  
+      return posts;
     } catch (error) {
-        console.error('Error fetching recent posts:', error);
-        throw error;
+      console.log(error);
     }
-}
+  }
 
 
 export async function likePost(postId: string, likesArray: string[]) {
