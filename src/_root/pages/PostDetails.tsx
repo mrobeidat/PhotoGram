@@ -28,6 +28,7 @@ const PostDetails = () => {
   };
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
 
   return (
@@ -75,6 +76,19 @@ const PostDetails = () => {
                     <p className="base-medium lg:body-bold text-light-1">
                       {post?.creator.name}
                     </p>
+                    {post.creator.$id === TopCreator && (
+                      <div className="group relative pin-icon-container">
+                        <img
+                          alt="badge"
+                          width={15}
+                          src={"/assets/icons/top-creator.png"}
+                          className="ml-2 object-contain"
+                        />
+                        <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                          Website Creator
+                        </div>
+                      </div>
+                    )}
                     {post.creator.$id === YousefID && (
                       <div className="group relative pin-icon-container">
                         <img

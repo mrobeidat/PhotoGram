@@ -320,7 +320,7 @@
     padding: 5px;
     border-radius: 5px;
     position: absolute;
-    z-index: 1;
+    z-index: 9999;
     top: 40%;
     left: 110%;
     transform: translate(0, -50%);
@@ -340,7 +340,7 @@
     padding: 2px;
     border-radius: 5px;
     position: absolute;
-    z-index: 1;
+    z-index: 9999;
     top: 40%;
     left: 110%;
     transform: translate(0, -50%);
@@ -352,11 +352,13 @@
   .pin-icon-container:hover .tooltip-verified-creator {
     visibility: visible;
     opacity: 1;
+    z-index: 9999;
   }
 
   .pin-icon-container:hover .tooltip-verified {
     visibility: visible;
     opacity: 1;
+    z-index: 9999;
   }
 
 
