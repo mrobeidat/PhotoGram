@@ -4,7 +4,10 @@ import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
 
 const Saved = () => {
+  // Fetch the current user's data using a custom React Query hook
   const { data: currentUser } = useGetCurrentUser();
+
+  // Map saved posts and reverse the order
   const savePosts = currentUser?.save
     .map((savePost: Models.Document) => ({
       ...savePost.post,

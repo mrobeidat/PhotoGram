@@ -72,23 +72,23 @@ const PostDetails = () => {
                 />
                 <div className="flex gap-1 flex-col">
                   <div className="flex items-center">
-                  <p className="base-medium lg:body-bold text-light-1">
-                    {post?.creator.name}
-                  </p>
-                  {post.creator.$id === YousefID && (
-                <div className="group relative pin-icon-container">
-                  <img
-                    alt="badge"
-                    width={14}
-                    src={"/assets/icons/verified-1.svg"}
-                    className="ml-2 object-contain"
-                  />
-                  <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                    Website Creator
+                    <p className="base-medium lg:body-bold text-light-1">
+                      {post?.creator.name}
+                    </p>
+                    {post.creator.$id === YousefID && (
+                      <div className="group relative pin-icon-container">
+                        <img
+                          alt="badge"
+                          width={14}
+                          src={"/assets/icons/verified-1.svg"}
+                          className="ml-2 object-contain"
+                        />
+                        <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                          Website Creator
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
-              </div>
                   <div className="flex-center gap-2 text-light-3">
                     <p className="subtle-semibold lg:small-regular ">
                       {formatDate(post?.$createdAt)}
@@ -157,7 +157,7 @@ const PostDetails = () => {
           More Related Posts
         </h3>
         {isUserPostLoading || !relatedPosts ? (
-            <div className="details-loader-wrapper sm:flex gap-3">
+          <div className="details-loader-wrapper sm:flex gap-3">
             <DetailsLoader />
           </div>
         ) : (

@@ -10,19 +10,22 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useMemo } from "react";
 
 const Home = () => {
+  // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
 
   // Memoize the query result using useMemo
   const { data: posts, isLoading: isPostLoading, isError: isErrorPosts } = useMemo(() => {
     return recentPostsQuery;
   }, [recentPostsQuery]);
-  
+
+  // Fetch recent users using the custom hook
   const {
     data: creators,
     isLoading: isUserLoading,
     isError: isErrorCreators,
   } = useGetUsers(10);
 
+  // Handle error cases
   if (isErrorPosts || isErrorCreators) {
     return (
       <div className="flex flex-1">

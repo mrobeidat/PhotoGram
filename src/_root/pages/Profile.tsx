@@ -30,20 +30,29 @@ const getRandomNumber = (min: number, max: number) => {
 };
 
 const Profile = () => {
+  // Generate random follower and following counts
   const randomFollowers = getRandomNumber(100, 200);
   const randomFollowing = getRandomNumber(100, 200);
+
+  // Extract user ID from route parameters
   const { id } = useParams();
+
+  // Access user context
   const { user } = useUserContext();
   const { pathname } = useLocation();
 
+  // Fetch user data by ID using a custom hook
   const { data: currentUser } = useGetUserById(id || "");
 
+  // Display loader while fetching user data
   if (!currentUser)
     return (
       <div className="flex-center w-full h-full">
         <ProfileLoader />
       </div>
     );
+
+  // Determine if the user has three or more posts
   const hasThreeOrMorePosts = currentUser.posts.length >= 3;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 

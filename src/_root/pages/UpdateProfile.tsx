@@ -26,6 +26,8 @@ const UpdateProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user, setUser } = useUserContext();
+
+  // Form initialization
   const form = useForm<z.infer<typeof ProfileValidation>>({
     resolver: zodResolver(ProfileValidation),
     defaultValues: {
@@ -42,6 +44,7 @@ const UpdateProfile = () => {
   const { mutateAsync: updateUser, isPending: isLoadingUpdate } =
     useUpdateUser();
 
+  // Loading state while fetching user data
   if (!currentUser)
     return (
       <div className="flex-center w-full h-full">
@@ -60,18 +63,22 @@ const UpdateProfile = () => {
       imageId: currentUser.imageId,
     });
 
+    // Display toast message on update failure
     if (!updatedUser) {
       toast({
         title: `Update user failed. Please try again.`,
       });
     }
 
+    // Update user context
     setUser({
       ...user,
       name: updatedUser?.name,
       bio: updatedUser?.bio,
       imageUrl: updatedUser?.imageUrl,
     });
+
+    // Navigate back to the user's profile page after update
     return navigate(`/profile/${id}`);
   };
 
