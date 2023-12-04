@@ -85,7 +85,7 @@ const PostDetails = () => {
                           className="ml-2 object-contain"
                         />
                         <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                          Website Creator
+                          Top Creator
                         </div>
                       </div>
                     )}
