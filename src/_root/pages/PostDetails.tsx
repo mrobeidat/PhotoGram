@@ -84,7 +84,7 @@ const PostDetails = () => {
                           src={"/assets/icons/top-creator.png"}
                           className="ml-2 object-contain"
                         />
-                        <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                        <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                           Top Creator
                         </div>
                       </div>
