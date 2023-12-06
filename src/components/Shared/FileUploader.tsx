@@ -26,7 +26,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
     })
     return (
         <div className="flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer"{...getRootProps()}>
-            <input {...getInputProps()} className="cursor-pointer" />
+            <input accept="image/*" {...getInputProps()} className="cursor-pointer" />
             {
                 fileUrl ? (
                     <>
