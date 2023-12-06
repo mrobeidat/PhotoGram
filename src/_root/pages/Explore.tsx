@@ -31,7 +31,7 @@ const Explore = () => {
   const hasShownAlert = sessionStorage.getItem('hasShownAlert');
   const showAlert = () => {
     if (!hasShownAlert) {
-      toast.info('This page displays posts created within the past week!', {
+      toast.info('This page displays posts created within this week!', {
         position: 'top-center',
         autoClose: 5000,
         hideProgressBar: false,
