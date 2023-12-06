@@ -18,7 +18,7 @@ const RelatedPostsList = ({
 
 
     const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-
+    
     return (
         <ul className="grid-container">
             {posts.map((post) => (

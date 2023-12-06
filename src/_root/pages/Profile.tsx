@@ -174,7 +174,7 @@ const Profile = () => {
       <Routes>
         <Route
           index
-          element={<RelatedPosts posts={currentUser.posts} showUser={false} />}
+          element={<RelatedPosts posts={currentUser.posts.reverse()} showUser={false} />}
         />
         {currentUser.$id === user.id && (
           <Route path="/liked-posts" element={<LikedPosts />} />

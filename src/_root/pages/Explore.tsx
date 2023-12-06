@@ -28,21 +28,27 @@ const SearchResults = ({ isSearchFetching, searchedPosts }: SearchResultProps) =
 };
 
 const Explore = () => {
+  const hasShownAlert = sessionStorage.getItem('hasShownAlert');
   const showAlert = () => {
-    toast.info('This page displays posts created within the past 24 hours!', {
-      position: 'top-center',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'dark',
-      style: {
-        backgroundColor: "rgb(63, 94, 251)",
-        background: "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)"
-      },
-    });
+    if (!hasShownAlert) {
+      toast.info('This page displays posts created within the past week!', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+        style: {
+          backgroundColor: "rgb(63, 94, 251)",
+          background: "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)",
+          width: "fit-content"
+        },
+      });
+    }
+    sessionStorage.setItem('hasShownAlert', 'true');
+
   };
 
   useEffect(() => {

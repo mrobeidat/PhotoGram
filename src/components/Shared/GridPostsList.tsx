@@ -15,23 +15,28 @@ const GridPostList = ({
   showStats = true,
 }: GridPostListProps) => {
   const { user } = useUserContext();
+// Get the current date and time
+const currentDate = new Date();
 
-  // Get the current date and time
-  const currentDate = new Date();
+// Function to check if a post is from the current week
+const isPostFromCurrentWeek = (postDate: string) => {
+  const inputDate = new Date(postDate);
 
-  // Function to check if a post is from today
-  const isPostFromToday = (postDate: string) => {
-    const inputDate = new Date(postDate);
-    const timeDifference = currentDate.getTime() - inputDate.getTime();
-    const hoursDifference = timeDifference / (1000 * 3600);
-    return hoursDifference <= 24;
-  };
+  // Calculate the difference in days
+  const timeDifference = currentDate.getTime() - inputDate.getTime();
+  const daysDifference = timeDifference / (1000 * 3600 * 24);
 
-  // Filter posts that are from today
-  const filteredPosts = posts.filter((post) =>
-    isPostFromToday(post?.$createdAt)
-  );
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  // Check if the post is from the current week (within the last 7 days)
+  return daysDifference <= 7;
+};
+
+// Filter posts that are from the current week
+const filteredPosts = posts.filter((post) =>
+  isPostFromCurrentWeek(post?.$createdAt)
+);
+
+const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+
 
   return (
     <ul className="grid-container">
