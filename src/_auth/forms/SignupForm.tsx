@@ -39,7 +39,7 @@ const SignupForm = () => {
 
       if (!newUser) {
         toast({ title: "Sign up failed. Please try again.", });
-        
+
         return;
       }
 
@@ -50,9 +50,9 @@ const SignupForm = () => {
 
       if (!session) {
         toast({ title: "Something went wrong. Please login your new account", });
-        
+
         navigate("/sign-in");
-        
+
         return;
       }
 
@@ -64,7 +64,7 @@ const SignupForm = () => {
         navigate("/");
       } else {
         toast({ title: "Login failed. Please try again.", });
-        
+
         return;
       }
     } catch (error) {
@@ -75,9 +75,9 @@ const SignupForm = () => {
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
-        <img 
-        width={320}
-        src="/assets/images/photogram.png" alt="logo" />
+        <img
+          width={320}
+          src="/assets/images/photogram.png" alt="logo" />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Create a new account
         </h2>
@@ -147,7 +147,7 @@ const SignupForm = () => {
           <Button type="submit" className="shad-button_primary">
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
-                <Loader /> Loading...
+                <span className="general-loader"></span> Loading...
               </div>
             ) : (
               "Sign Up"
