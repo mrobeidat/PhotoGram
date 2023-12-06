@@ -2,7 +2,7 @@ import { useDeleteSavedPost, useGetCurrentUser, useLikePost, useSavePost } from 
 import { checkIsLiked } from "@/lib/utils"
 import { Models } from "appwrite"
 import React, { useEffect, useState } from "react"
-import Loader from "./Loader"
+// import Loader from "./Loader"
 import 'primeicons/primeicons.css';
 
 type postStatsPorps = {
@@ -70,7 +70,7 @@ const PostStats = ({ post, userId }: postStatsPorps) => {
 
       <div className="flex gap-2">
         {isSavingPost || isDeletingPost ? (
-          <Loader />
+          <span className="general-loader"></span>
         ) : (
           <>
             {isSaved ? (

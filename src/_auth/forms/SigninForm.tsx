@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Loader from "@/components/Shared/Loader";
+// import Loader from "@/components/Shared/Loader";
 import { useToast } from "@/components/ui/use-toast";
 
 import { SigninValidation } from "@/lib/validation";
@@ -35,7 +35,7 @@ const SigninForm = () => {
     if (!session) {
       toast({
         title: "Login failed. Incorrect username or password",
-        
+
       });
 
       return;
@@ -100,7 +100,7 @@ const SigninForm = () => {
           <Button type="submit" className="shad-button_primary">
             {isPending || isUserLoading ? (
               <div className="flex-center gap-2">
-                <Loader /> Loading...
+                <span className="general-loader"></span> Loading...
               </div>
             ) : (
               "Log in"
