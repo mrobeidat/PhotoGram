@@ -77,7 +77,7 @@ const Profile = () => {
                     <img
                       src={"/assets/icons/top-creator.png"}
                       alt="badge"
-                      width={21}
+                      width={17}
                       className="ml-2 object-contain"
                     />
                     <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
