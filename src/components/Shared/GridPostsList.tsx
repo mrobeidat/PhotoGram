@@ -66,7 +66,8 @@ const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
                      alt="badge"
                      width={14}
                      src={"/assets/icons/verified-1.svg"}
-                     className="ml-2 object-contain"
+                     className="ml-2 object-contain pointer-events-none select-none"
+                     draggable="false"
                    />
                    <div className="tooltip-verified absolute transition-opacity duration-300 ">
                      Website Creator

@@ -18,9 +18,12 @@ const RelatedPostsList = ({
 
 
     const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-    
+
     return (
         <ul className="grid-container">
+            {posts.length === 0 &&
+                <p className="text-light-3">No related posts available</p>
+            }
             {posts.map((post) => (
                 <li key={post.$id} className="relative min-w-80 h-80">
                     <Link to={`/posts/${post.$id}`} className="grid-post_link">
@@ -46,7 +49,8 @@ const RelatedPostsList = ({
                                             alt="badge"
                                             width={14}
                                             src={"/assets/icons/verified-1.svg"}
-                                            className="ml-0 object-contain"
+                                            className="ml-0 object-contain pointer-events-none select-none"
+                                            draggable="false"
                                         />
                                         <div className="tooltip-verified absolute transition-opacity duration-300 top-0 left-1/2 transform -translate-x-1/2 z-9999">
                                             Website Creator

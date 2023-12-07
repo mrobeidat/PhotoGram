@@ -18,6 +18,8 @@ const Topbar = () => {
       <div className="flex-between py-4 px-5">
         <Link to='/' className="flex gap-3 items-center">
           <img
+            className="pointer-events-none select-none"
+            draggable="false"
             src="/assets/images/photogram.png"
             alt="logo"
             width={110}
@@ -36,7 +38,7 @@ const Topbar = () => {
               src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
               alt="profile"
               className="w-8 h-8 rounded-full"
-              style={{objectFit:"cover"}}
+              style={{ objectFit: "cover" }}
 
             />
           </Link>

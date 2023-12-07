@@ -76,6 +76,8 @@ const SignupForm = () => {
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
         <img
+          draggable="false"
+          className="pointer-events-none select-none"
           width={320}
           src="/assets/images/photogram.png" alt="logo" />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">

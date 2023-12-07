@@ -54,7 +54,8 @@ const PostCard = ({ post }: PostCardProps) => {
                     alt="badge"
                     width={15}
                     src={"/assets/icons/verified-1.svg"}
-                    className="ml-2 object-contain"
+                    className="ml-2 object-contain pointer-events-none select-none"
+                    draggable="false"
                   />
                   <div className="tooltip-verified absolute transition-opacity duration-300 ">
                     Website Creator
@@ -70,12 +71,13 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
         </div>
         {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
-          <div className="pin-icon-container">
+          <div className="pin-icon">
             <img
               src="assets/icons/post-pin.png"
               alt="pin"
               width={35}
               height={20}
+              className="resize-none pointer-events-none select-none"
             />
             <span className="tooltip">📌 Pinned Post</span>
           </div>
@@ -87,7 +89,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-          <p style={{ fontSize: "15px", fontWeight:"100"}}>{post.caption}</p>
+          <p style={{ fontSize: "15px", fontWeight: "100" }}>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">

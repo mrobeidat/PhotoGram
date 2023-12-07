@@ -16,6 +16,30 @@
   }
 }
 
+.shake:hover {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+}
+
 @media (width < 750px) {
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -396,6 +420,23 @@
 
     75% {
       box-shadow: -5px 0 5px rgba(52, 152, 219, 0.5);
+    }
+  }
+
+  .pin-icon:hover {
+    animation: hvr-hang-sink 2s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes hvr-hang-sink {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(8px);
     }
   }
 

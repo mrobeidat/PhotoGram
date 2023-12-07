@@ -36,7 +36,8 @@ const LeftSidebar = () => {
             src="/assets/images/photogram.png"
             alt="logo"
             width={170}
-          // height={30}
+            className="pointer-events-none select-none"
+            draggable="false"
           />
         </Link>
         <Link to={`/profile/${user.id}`}
@@ -58,7 +59,8 @@ const LeftSidebar = () => {
                     alt="badge"
                     width={15}
                     src={"/assets/icons/verified-1.svg"}
-                    className="ml-2 object-contain"
+                    className="ml-2 object-contain pointer-events-none select-none"
+                    draggable="false"
                   />
                   <div className="tooltip-verified absolute transition-opacity duration-300 ">
                     Website Creator
@@ -71,7 +73,8 @@ const LeftSidebar = () => {
                     alt="badge"
                     width={16}
                     src={"/assets/icons/top-creator.png"}
-                    className="ml-2 object-contain"
+                    className="ml-2 object-contain pointer-events-none select-none"
+                    draggable="false"
                   />
                   <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                     Top Creator

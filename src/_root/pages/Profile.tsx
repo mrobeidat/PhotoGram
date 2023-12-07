@@ -75,6 +75,7 @@ const Profile = () => {
                 {hasThreeOrMorePosts && currentUser.$id !== YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
+                      draggable="false"
                       src={"/assets/icons/top-creator.png"}
                       alt="badge"
                       width={17}
@@ -89,10 +90,11 @@ const Profile = () => {
                 {currentUser.$id === YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
+                      draggable="false"
                       alt="badge"
                       width={16}
                       src={"/assets/icons/verified-1.svg"}
-                      className="ml-2 object-contain"
+                      className="ml-2 object-contain pointer-events-none select-none"
                     />
                     <div className="tooltip-verified absolute transition-opacity duration-300 ">
                       Website Creator
@@ -172,10 +174,17 @@ const Profile = () => {
       )}
 
       <Routes>
-        <Route
-          index
-          element={<RelatedPosts posts={currentUser.posts.reverse()} showUser={false} />}
-        />
+        {currentUser.posts.length === 0 ? (
+          <Route
+            index
+            element={<img draggable="false" className="w-80 h-50 mt-32 pointer-events-none select-none" width={700} src="/assets/icons/NoPostsYet.png" />}
+          />
+        ) : (
+          <Route
+            index
+            element={<RelatedPosts posts={currentUser.posts.reverse()} showUser={false} />}
+          />
+        )}
         {currentUser.$id === user.id && (
           <Route path="/liked-posts" element={<LikedPosts />} />
         )}
