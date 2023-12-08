@@ -5,10 +5,22 @@ import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
 
 const Saved = () => {
   // Fetch the current user's data using a custom React Query hook
-  const { data: currentUser } = useGetCurrentUser();
+    const { data: currentUser } = useGetCurrentUser();
 
-  // Map saved posts and reverse the order
-  const savePosts = currentUser?.save
+  // Use a Set to store unique post IDs
+  const uniquePostIds = new Set();
+
+  const savePosts = (currentUser?.save || [])
+    .filter((savePost: Models.Document) => {
+      // Check if post ID is already in the Set, return false if it is
+      if (uniquePostIds.has(savePost.post.id)) {
+        return false;
+      }
+      
+      // If not, add the post ID to the Set and return true
+      uniquePostIds.add(savePost.post.id);
+      return true;
+    })
     .map((savePost: Models.Document) => ({
       ...savePost.post,
       creator: {
@@ -16,6 +28,7 @@ const Saved = () => {
       },
     }))
     .reverse();
+
 
   return (
     <div className="saved-container">
