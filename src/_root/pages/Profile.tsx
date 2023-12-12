@@ -12,6 +12,8 @@ import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
 import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
 import RelatedPosts from "@/components/Shared/RelatedPosts";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface StabBlockProps {
   value: string | number;
@@ -43,6 +45,35 @@ const Profile = () => {
 
   // Fetch user data by ID using a custom hook
   const { data: currentUser } = useGetUserById(id || "");
+
+
+  // State for profile view count
+  const [viewCount, setViewCount] = useState<number>(0);
+
+  useEffect(() => {
+    // Retrieve the view count from localStorage
+    const storedViewCount = localStorage.getItem(`profileViewCount_${id}`);
+
+    if (storedViewCount) {
+      setViewCount(parseInt(storedViewCount, 10));
+    } else {
+      // Initialize view count if not stored
+      setViewCount(0);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    // Increment view count when component mounts or when 'viewCount' changes
+    if (user.id !== id) {
+      setViewCount((prevViewCount) => {
+        const newViewCount = prevViewCount + 1;
+        // Update localStorage with the new view count
+        localStorage.setItem(`profileViewCount_${id}`, String(newViewCount));
+        return newViewCount;
+      });
+    }
+  }, [id, user.id]);
+
 
   // Display loader while fetching user data
   if (!currentUser)
@@ -111,6 +142,7 @@ const Profile = () => {
               <StatBlock value={currentUser.posts.length} label="Posts" />
               <StatBlock value={randomFollowers} label="Followers" />
               <StatBlock value={randomFollowing} label="Following" />
+              {/* <StatBlock value={viewCount} label="Profile Views" /> */}
             </div>
 
             <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
@@ -135,11 +167,11 @@ const Profile = () => {
                 </p>
               </Link>
             </div>
-            {/* <div className={`${user.id === id && "hidden"}`}>
-              <Button type="button" className="shad-button_primary px-8">
-                View Profile
+            <div className={`${user.id === id && "hidden"}`}>
+              <Button type="button" className="border border-white rounded-full backdrop-blur-xl px-8 cursor-default">
+                Profile Views: {viewCount}
               </Button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
