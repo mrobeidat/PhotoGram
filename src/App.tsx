@@ -8,10 +8,13 @@ import { Route, Routes } from 'react-router-dom'
 import { Toaster } from "@/components/ui/toaster"
 import AllUsers from './_root/pages/AllUsers'
 import { CreatePost, EditPost, Explore, PostDetails, Profile, Saved, UpdateProfile } from './_root/pages'
+import { Analytics } from '@vercel/analytics/react';
+
 
 const App = () => {
     return (
         <main className='flex h-screen'>
+            <Analytics />
             <Routes>
                 {/* public routes*/}
                 <Route element={<AuthLayout />}>
