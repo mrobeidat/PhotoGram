@@ -13,7 +13,7 @@ import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
 import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
 import RelatedPosts from "@/components/Shared/RelatedPosts";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
 interface StabBlockProps {
   value: string | number;
@@ -137,7 +137,6 @@ const Profile = () => {
                 @{currentUser.username}
               </p>
             </div>
-
             <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
               <StatBlock value={currentUser.posts.length} label="Posts" />
               <StatBlock value={randomFollowers} label="Followers" />
@@ -150,29 +149,33 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="flex justify-center gap-4">
+        </div>
+        <div className="flex justify-center gap-4">
+          <div className={`${user.id !== currentUser.$id && "hidden"}`}>
+            <Link
+              to={`/update-profile/${currentUser.$id}`}
+              className={`h-12 bg-gray-900 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.$id && "hidden"
+                }`}>
+              <img
+                src={"/assets/icons/edit.svg"}
+                alt="edit"
+                width={20}
+                height={20}
+              />
+              <p className="flex whitespace-nowrap small-medium">
+                Edit Profile
+              </p>
+            </Link>
             <div className={`${user.id !== currentUser.$id && "hidden"}`}>
-              <Link
-                to={`/update-profile/${currentUser.$id}`}
-                className={`h-12 bg-gray-900 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.$id && "hidden"
-                  }`}>
-                <img
-                  src={"/assets/icons/edit.svg"}
-                  alt="edit"
-                  width={20}
-                  height={20}
-                />
-                <p className="flex whitespace-nowrap small-medium">
-                  Edit Profile
-                </p>
-              </Link>
-            </div>
-            <div className={`${user.id === id && "hidden"}`}>
-              <Button type="button" className="border border-white rounded-full backdrop-blur-xl px-8 cursor-default">
-                Profile Views: {viewCount}
-              </Button>
+
+              <div className="border border-white rounded-lg backdrop-blur-xl p-2 mt-4 flex gap-2 cursor-default">
+                <PeopleAltIcon />
+                <h3>Profile Views: {viewCount}</h3>
+              </div>
             </div>
           </div>
+
+
         </div>
       </div>
       <hr className="border w-4/5 border-dark-4/80" />

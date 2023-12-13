@@ -1,4 +1,4 @@
-import GridPostList from "@/components/Shared/GridPostsList";
+import LikedPostsList from "@/components/Shared/LikedPosts";
 import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
 
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
@@ -23,7 +23,7 @@ const LikedPosts = () => {
         <p className="text-light-4">No liked posts</p>
       )}
 
-      <GridPostList posts={currentUser.liked} showStats={false} />
+      <LikedPostsList posts={currentUser.liked} showStats={false} />
     </>
   );
 };
