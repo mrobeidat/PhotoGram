@@ -30,29 +30,40 @@ const SigninForm = () => {
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
-    const session = await signInAccount(user);
-
-    if (!session) {
+    try {
+      const session = await signInAccount(user);
+  
+      if (!session) {
+        toast({
+          title: "Login failed. Incorrect username or password",
+          style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
+        });
+  
+        return;
+      }
+  
+      const isLoggedIn = await checkAuthUser();
+  
+      if (isLoggedIn) {
+        form.reset();
+  
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again." });
+  
+        return;
+      }
+    } catch (error) {
+      // Handle other errors
+      console.error("Login error:", error);
+  
       toast({
-        title: "Login failed. Incorrect username or password",
+        title: "Login failed. Something went wrong. Please try again later.",
         style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
       });
-
-      return;
-    }
-
-    const isLoggedIn = await checkAuthUser();
-
-    if (isLoggedIn) {
-      form.reset();
-
-      navigate("/");
-    } else {
-      toast({ title: "Login failed. Please try again.", });
-
-      return;
     }
   };
+  
 
   return (
     <Form {...form}>
