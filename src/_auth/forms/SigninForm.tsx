@@ -35,7 +35,7 @@ const SigninForm = () => {
     if (!session) {
       toast({
         title: "Login failed. Incorrect username or password",
-
+        style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
       });
 
       return;
