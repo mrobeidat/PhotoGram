@@ -94,7 +94,7 @@ const PostDetails = () => {
                         <img
                           alt="badge"
                           width={14}
-                          src={"/assets/icons/verified-1.svg"}
+                          src={"/assets/icons/verified-badge.svg"}
                           className="ml-2 object-contain pointer-events-none select-none"
                           draggable="false"
                         />

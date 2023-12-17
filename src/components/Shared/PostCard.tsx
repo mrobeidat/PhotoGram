@@ -52,8 +52,8 @@ const PostCard = ({ post }: PostCardProps) => {
                 <div className="group relative pin-icon-container">
                   <img
                     alt="badge"
-                    width={15}
-                    src={"/assets/icons/verified-1.svg"}
+                    width={16}
+                    src={"/assets/icons/verified-badge.svg"}
                     className="ml-2 object-contain pointer-events-none select-none"
                     draggable="false"
                   />
