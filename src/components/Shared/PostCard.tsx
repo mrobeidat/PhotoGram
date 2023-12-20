@@ -61,7 +61,8 @@ const PostCard = ({ post }: PostCardProps) => {
                     alt="badge"
                     width={17}
                     src={"/assets/icons/top-creator.png"}
-                    className="ml-2 object-contain"
+                    className="ml-2 object-contain pointer-events-none select-none"
+                    draggable='false'
                   />
                   <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                     Top Creator
