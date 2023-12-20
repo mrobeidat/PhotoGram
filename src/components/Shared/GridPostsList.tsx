@@ -64,7 +64,7 @@ const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
                    <div className="group relative pin-icon-container">
                    <img
                      alt="badge"
-                     width={14}
+                     width={17}
                      src={"/assets/icons/verified-badge.svg"}
                      className="ml-2 object-contain pointer-events-none select-none"
                      draggable="false"
