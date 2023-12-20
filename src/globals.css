@@ -369,7 +369,30 @@
     opacity: 1;
     z-index: 9999;
   }
+  .tooltip {
+    visibility: hidden;
+    width: 100px;
+    backdrop-filter: blur(70px);
+    background: linear-gradient(to right, #004e92, #000428);
+    -webkit-backdrop-filter: blur(70px);
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 110%;
+    left: 50%;
+    margin-left: -80px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: x-small;
+  }
 
+  .pin-icon-container:hover .tooltip {
+    visibility: visible;
+    opacity: 2;
+  }
   .cursor-text a {
     color: #00BFFF;
   }

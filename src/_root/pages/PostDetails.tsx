@@ -116,15 +116,16 @@ const PostDetails = () => {
                 </div>
               </Link>
 
-              <div className="flex-center gap-4">
+              <div className="flex-center gap-2">
                 <Link
                   to={`/update-post/${post?.$id}`}
                   className={`${user.id !== post?.creator.$id && "hidden"}`}>
                   <img
                     src={"/assets/icons/edit.svg"}
                     alt="edit"
-                    width={24}
+                    width={22}
                     height={24}
+                    className="select-none pointer-events-none"
                   />
                 </Link>
 
@@ -138,6 +139,7 @@ const PostDetails = () => {
                     alt="delete"
                     width={24}
                     height={24}
+                    className="select-none pointer-events-none"
                   />
                 </Button>
               </div>
@@ -146,7 +148,7 @@ const PostDetails = () => {
             <hr className="border w-full border-dark-4/80" />
 
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
-              <p className="cursor-text">{detectAndRenderLinks(post?.caption)}</p>
+              <p className="cursor-text" style={{ fontSize: "15px", fontWeight: "100" }}>{detectAndRenderLinks(post?.caption)}</p>
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li
