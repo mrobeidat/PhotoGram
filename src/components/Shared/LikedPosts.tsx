@@ -47,7 +47,7 @@ const LikedPostsList = ({
                                                 alt="badge"
                                                 width={15}
                                                 src={"/assets/icons/top-creator.png"}
-                                                className="ml-2 object-contain"
+                                                className="ml-2 object-contain pointer-events-none select-none"
                                             />
                                             <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                                                 Top Creator

@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'FacebookFont';
+  src: url('./fonts/your-facebook-font.woff2') format('woff2'),
+    url('./fonts/your-facebook-font.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @layer base {
   * {
     @apply box-border list-none p-0 m-0 scroll-smooth;
@@ -13,6 +21,7 @@
     background: rgb(63, 94, 251);
     background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%);
     @apply text-white min-h-screen font-inter;
+    font-family: 'FacebookFont', sans-serif;
   }
 }
 
@@ -308,31 +317,6 @@
     display: inline-block;
   }
 
-  .tooltip {
-    visibility: hidden;
-    width: 100px;
-    backdrop-filter: blur(70px);
-    background: linear-gradient(to right, #004e92, #000428);
-    -webkit-backdrop-filter: blur(70px);
-    color: #fff;
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-    position: absolute;
-    z-index: 1;
-    bottom: 110%;
-    left: 50%;
-    margin-left: -80px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: x-small;
-  }
-
-  .pin-icon-container:hover .tooltip {
-    visibility: visible;
-    opacity: 2;
-  }
-
   .tooltip-verified {
     visibility: hidden;
     width: 100px;
@@ -386,14 +370,16 @@
     z-index: 9999;
   }
 
-  .desaturate {
-    filter: brightness(0%) saturate(0%);
+  .cursor-text a {
+    color: #00BFFF;
   }
-  
-  .grayscale-100 {
-    filter: grayscale(100%);
+
+  .cursor-text a:hover {
+    color: #13a8d9;
+    cursor: pointer;
+    text-decoration: underline;
   }
-  
+
   .post-card_img {
     @apply h-64 xs:h-[400px] lg:h-[450px] w-full rounded-[24px] object-cover mb-5;
   }

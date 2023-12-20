@@ -9,6 +9,26 @@ type PostCardProps = {
   post: Models.Document
 }
 
+// To detect links in post cards
+export const detectAndRenderLinks = (text: string) => {
+  const linkRegex = /(https?:\/\/[^\s]+)/g;
+
+  const parts = text.split(linkRegex);
+
+  return parts.map((part, index) => {
+    if (part.match(linkRegex)) {
+      return (
+        <a className="cursor-text" key={index} href={part} target="_blank" rel="noopener noreferrer">
+          {part}
+        </a>
+      );
+    } else {
+      return <span key={index}>{part}</span>;
+    }
+  });
+};
+
+
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext()
   if (!post.creator) return;
@@ -89,7 +109,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-          <p style={{ fontSize: "15px", fontWeight: "100" }}>{post.caption}</p>
+          <p className="cursor-text" style={{ fontSize: "14px", fontWeight: "100" }}>{detectAndRenderLinks(post.caption)}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">
