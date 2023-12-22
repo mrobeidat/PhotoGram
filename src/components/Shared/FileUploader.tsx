@@ -18,7 +18,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
       const convertedFiles: File[] = [];
 
       for (const file of acceptedFiles) {
-        if (file.type === "image/heic" || file.type === "image/heif") {
+        if (file.type === "image/heic" || file.type === "image/heif" || file.type === "image/HEIF") {
           // Convert HEIC to PNG using heic2any
           const convertedFileBlob = await heic2any({ blob: file });
           const convertedFile = new File([convertedFileBlob as Blob], file.name.replace(/\.[^/.]+$/, ".png"));
