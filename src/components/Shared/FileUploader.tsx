@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
-import heic2any from "heic2any"; // Import heic2any library
+import heic2any from "heic2any";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,11 +18,13 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
       const convertedFiles: File[] = [];
 
       for (const file of acceptedFiles) {
-        if (file.type === "image/heic") {
+        if (file.type === "image/heic" || file.type === "image/heif") {
           // Convert HEIC to PNG using heic2any
           const convertedFileBlob = await heic2any({ blob: file });
           const convertedFile = new File([convertedFileBlob as Blob], file.name.replace(/\.[^/.]+$/, ".png"));
           convertedFiles.push(convertedFile);
+          console.log(convertedFiles);
+          
         } else {
           convertedFiles.push(file);
         }
