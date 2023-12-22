@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 
 import { Button } from "@/components/ui/button";
+import heic2any from 'heic2any';
 
 type FileUploaderProps = {
     fieldChange: (files: File[]) => void;
@@ -13,16 +14,28 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
     const [fileUrl, setFileUrl] = useState<string>(mediaUrl);
 
     const onDrop = useCallback(
-        (acceptedFiles: FileWithPath[]) => {
-            setFile(acceptedFiles);
-            setFileUrl(URL.createObjectURL(acceptedFiles[0]));
-            fieldChange(acceptedFiles);
+        async (acceptedFiles: FileWithPath[]) => {
+            const convertedFiles = await Promise.all(
+                acceptedFiles.map(async (file) => {
+                    // Check if the file is HEIF
+                    if (file.type === 'image/heif') {
+                        // Convert HEIF to PNG
+                        const convertedBlob = await heic2any({ blob: file, toType: 'image/png' });
+                        return new File([convertedBlob as BlobPart], `${file.name}.png`, { type: 'image/png' });
+                    }
+                    return file;
+                })
+            );
+
+            setFile(convertedFiles);
+            setFileUrl(URL.createObjectURL(convertedFiles[0]));
+            fieldChange(convertedFiles);
         },
         [file]
     );
     const { getRootProps, getInputProps } = useDropzone({
         onDrop,
-        accept: { 'image/*': ['.heic', '.HEIF', '.png', '.jpg', '.jpeg', '.JPEG'] }
+        accept: { 'image/*': ['.heic', '.heif', '.png', '.jpg', '.jpeg'] }
     })
     return (
         <div className="flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer"{...getRootProps()}>
