@@ -269,8 +269,8 @@
     @apply flex-center flex-col p-7 h-80 lg:h-[612px];
   }
   .ql-snow .ql-picker-options {
-    background: rgb(63, 94, 251);
-    background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)
+    background: rgb(63, 94, 251) !important;
+    background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%) !important
   }
 
   /* Grid Post List */
