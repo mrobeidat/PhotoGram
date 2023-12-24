@@ -29,7 +29,7 @@ export const SigninValidation = z.object({
   email: z.string().email(),
   password: z
     .string()
-    // .min(8, { message: "Password must be at least 8 characters." }),
+  // .min(8, { message: "Password must be at least 8 characters." }),
 });
 
 export const PostValidation = z.object({
@@ -37,7 +37,9 @@ export const PostValidation = z.object({
     .string()
     .min(5, { message: "Caption must be at least 5 characters." })
     .max(2200, { message: "Caption can't exceed 2,200 characters" }),
-  file: z.custom<File[]>(),
+  file: z.array(z.instanceof(File)).refine(files => files.length > 0, {
+    message: "Please upload an image file",
+  }),
   location: z
     .string()
     .min(1, { message: "Location field is required" })
