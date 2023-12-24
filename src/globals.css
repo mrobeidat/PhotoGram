@@ -369,6 +369,7 @@
     opacity: 1;
     z-index: 9999;
   }
+
   .tooltip {
     visibility: hidden;
     width: 100px;
@@ -393,6 +394,7 @@
     visibility: visible;
     opacity: 2;
   }
+
   .cursor-text a {
     color: #00BFFF;
   }
@@ -516,7 +518,7 @@
 
   .shad-textarea {
     background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgba(27, 24, 113, 0.339) 93.2%);
-    @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    @apply h-auto bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
   /* Button */

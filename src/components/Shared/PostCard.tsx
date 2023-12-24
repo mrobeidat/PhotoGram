@@ -4,6 +4,7 @@ import { Models } from "appwrite"
 import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 // import DOMPurify from 'dompurify';
+import { sanitizeHTML } from "@/_root/pages/PostDetails"
 
 type PostCardProps = {
   post: Models.Document
@@ -33,11 +34,10 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext()
   if (!post.creator) return;
 
-  // Function to sanitize HTML content
-  // const sanitizeHTML = (htmlString: string) => ({
-  //   __html: DOMPurify.sanitize(htmlString),
-  // });
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const sanitizedCaption = sanitizeHTML(post.caption).__html;
+
+
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -110,7 +110,11 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
-          <p className="cursor-text" style={{ fontSize: "14px", fontWeight: "100" }}>{detectAndRenderLinks(post.caption)}</p>
+          {/* Render caption as readonly */}
+          <p
+            dangerouslySetInnerHTML={{ __html: sanitizedCaption }}
+            style={{ fontSize: "14px", fontWeight: "100" }}
+          />
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">

@@ -9,10 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "../ui/textarea"
+// import { Textarea } from "../ui/textarea"
 import FileUploader from "../Shared/FileUploader"
 import Loader from "../Shared/Loader"
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
+
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 type PostFormProps = {
     post?: Models.Document;
@@ -93,6 +96,19 @@ const PostForm = ({ post, action }: PostFormProps) => {
             });
         }
     };
+
+    const COLORS = [
+        "#000000", "#e60000", "#ff9900", "#ffff00", "#008A00", "#0066cc", "#9933ff",
+        "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff",
+        "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff",
+        "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2",
+        "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466",
+        "#1F75FE", "#00BFFF"
+    ];
+
+    const toolbarOptions = [['bold', 'italic', 'underline'],
+    [{ 'color': COLORS }, { 'background': COLORS }]];
+
     return (
         <Form {...form}>
             <form
@@ -104,7 +120,16 @@ const PostForm = ({ post, action }: PostFormProps) => {
                         <FormItem>
                             <FormLabel className="shad-form_label">Caption</FormLabel>
                             <FormControl>
-                                <Textarea className="shad-textarea custom-scrollbar" placeholder="" {...field} />
+                                <ReactQuill
+                                    className="shad-textarea"
+                                    value={field.value}
+                                    onChange={(value) => field.onChange(value)}
+                                    placeholder="Write your caption here..."
+                                    theme="snow"
+                                    modules={{
+                                        toolbar: toolbarOptions
+                                    }}
+                                />
                             </FormControl>
                             <FormMessage className="shad-form_message" />
                         </FormItem>

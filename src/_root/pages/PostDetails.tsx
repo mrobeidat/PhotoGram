@@ -7,12 +7,26 @@ import {
   useDeletePost,
   useGetUserPosts
 } from "@/lib/react-query/queriesAndMutations";
-import { detectAndRenderLinks } from '../../components/Shared/PostCard';
+// import { detectAndRenderLinks } from '../../components/Shared/PostCard';
 import { formatDate } from "@/lib/utils"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
 import Loader from "@/components/Shared/Loader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
+import DOMPurify from 'dompurify';
+
+interface SanitizeHTMLResult {
+  __html: string;
+}
+
+export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
+  const sanitizedString = DOMPurify.sanitize(htmlString);
+
+  return {
+    __html: sanitizedString,
+  };
+};
+
 const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -22,6 +36,9 @@ const PostDetails = () => {
   const { mutate: deletePost } = useDeletePost();
   const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
 
+  
+  const sanitizedCaption = sanitizeHTML(post?.caption).__html;
+
   const handleDeletePost = async () => {
     deletePost({ postId: id, imageId: post?.imageId });
     navigate(-1);
@@ -29,7 +46,6 @@ const PostDetails = () => {
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
-
 
   return (
     <div className="post_details-container">
@@ -148,7 +164,11 @@ const PostDetails = () => {
             <hr className="border w-full border-dark-4/80" />
 
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
-              <p className="cursor-text" style={{ fontSize: "15px", fontWeight: "100" }}>{detectAndRenderLinks(post?.caption)}</p>
+              {/* Render caption as readonly */}
+              <p
+                dangerouslySetInnerHTML={{ __html: sanitizedCaption }}
+                style={{ fontSize: "14px", fontWeight: "100" }}
+              />
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li
