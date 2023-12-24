@@ -37,9 +37,7 @@ export const PostValidation = z.object({
     .string()
     .min(5, { message: "Caption must be at least 5 characters." })
     .max(2200, { message: "Caption can't exceed 2,200 characters" }),
-  file: z.array(z.instanceof(File)).refine(files => files.length > 0, {
-    message: "Please upload an image file",
-  }),
+    file: z.custom<File[]>(),
   location: z
     .string()
     .min(1, { message: "Location field is required" })

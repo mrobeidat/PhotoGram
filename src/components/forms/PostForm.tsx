@@ -118,7 +118,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     name="caption"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="shad-form_label">Caption</FormLabel>
+                            <FormLabel className="shad-form_label">Caption <span className="text-red text-lg">*</span></FormLabel>
                             <FormControl>
                                 <ReactQuill
                                     className="shad-textarea"
@@ -140,7 +140,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     name="file"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="shad-form_label">Add Photos</FormLabel>
+                            <FormLabel className="shad-form_label">Add Photos <span className="text-red text-lg">*</span></FormLabel>
                             <FormControl>
                                 <FileUploader
                                     fieldChange={field.onChange}
@@ -156,7 +156,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     name="location"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="shad-form_label">Add Location</FormLabel>
+                            <FormLabel className="shad-form_label">Add Location <span className="text-red text-lg">*</span></FormLabel>
                             <FormControl>
                                 <Input type="text" className="shad-input" {...field} />
                             </FormControl>
@@ -170,7 +170,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className="shad-form_label">
-                                Add Tags (separated by comma " , ")
+                                Add Tags (separated by comma " , ") <span className="text-red text-lg">*</span>
                             </FormLabel>
                             <FormControl>
                                 <Input
