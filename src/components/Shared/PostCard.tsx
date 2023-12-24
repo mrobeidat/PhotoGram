@@ -125,7 +125,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
 
         <img
-          src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
+          src={post.imageUrl}
           alt="post image"
           className="post-card_img"
         />

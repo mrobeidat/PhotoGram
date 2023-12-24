@@ -43,7 +43,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
     const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
         useUpdatePost();
 
-
     const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
         try {
             // ACTION = UPDATE
@@ -75,14 +74,24 @@ const PostForm = ({ post, action }: PostFormProps) => {
                 ...value,
                 userId: user.id,
             });
-
+            // check if the image field is not empty
+            if (!value.file.length) {
+                toast({
+                    title: "Please select an image file",
+                    style: {
+                        background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)',
+                    },
+                });
+                return;
+            }
             if (newPost) {
                 toast({
                     title: "Post created successfully!",
                     style: { background: "rgb(3, 73, 26)" }
                 });
                 navigate("/");
-            } else {
+            }
+            else {
                 toast({
                     title: "Create post failed. Please try again.",
                     style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
@@ -106,9 +115,12 @@ const PostForm = ({ post, action }: PostFormProps) => {
         "#1F75FE", "#00BFFF"
     ];
 
-    const toolbarOptions = [['bold', 'italic', 'underline'],
-    [{ 'color': COLORS }, { 'background': COLORS }]];
+    const toolbarOptions = [['bold', 'italic', 'underline'], ['link'],
+    [{ 'color': COLORS }, { 'background': COLORS }], [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ];
 
+    // To check if there are any changes on the form so the update button will be enabled otherwise it will be disabled using "isDirty" property.
+    const { formState } = form;
     return (
         <Form {...form}>
             <form
@@ -194,7 +206,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     <Button
                         type="submit"
                         className="shad-button_primary whitespace-nowrap"
-                        disabled={isLoadingCreate || isLoadingUpdate}>
+                        disabled={isLoadingCreate || isLoadingUpdate || !formState.isDirty}>
                         {(isLoadingCreate || isLoadingUpdate) && <Loader />}
                         {action} Post
                     </Button>

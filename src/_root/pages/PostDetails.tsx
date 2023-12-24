@@ -36,7 +36,7 @@ const PostDetails = () => {
   const { mutate: deletePost } = useDeletePost();
   const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
 
-  
+
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
 
   const handleDeletePost = async () => {
@@ -71,7 +71,7 @@ const PostDetails = () => {
           <img
             src={post?.imageUrl}
             alt="creator"
-            className="post_details-img"
+            className="post_details-img min-h-full"
           />
 
           <div className="post_details-info">
