@@ -71,7 +71,7 @@ const PostDetails = () => {
       ) : (
         <div className="post_details-card">
           <PhotoProvider
-            speed={() => 270}
+            speed={() => 450}
             easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
             bannerVisible={false} maskOpacity={0.8}
           >
