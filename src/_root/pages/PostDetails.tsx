@@ -71,7 +71,7 @@ const PostDetails = () => {
           <img
             src={post?.imageUrl}
             alt="creator"
-            className="post_details-img h-auto"
+            className="post_details-img h-auto xl:min-h-full"
           />
 
           <div className="post_details-info">
