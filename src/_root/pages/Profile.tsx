@@ -14,6 +14,8 @@ import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
 import RelatedPosts from "@/components/Shared/RelatedPosts";
 import { useEffect, useState } from "react";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import 'react-photo-view/dist/react-photo-view.css';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 interface StabBlockProps {
   value: string | number;
@@ -91,14 +93,26 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-inner_container">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
-          <img
-            src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
-            alt="profile"
-            className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover"
-          />
+          <PhotoProvider
+            speed={() => 300}
+            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
+            bannerVisible={false} maskOpacity={0.8}
+          >
+            <PhotoView src={currentUser.imageUrl}>
+              <img
+                src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                alt="profile"
+                className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover cursor-pointer"
+                style={{
+                  filter: "drop-shadow(0 0 0.1rem)",
+                  boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)"
+                }}
+              />
+            </PhotoView>
+          </PhotoProvider>
           <div className="flex flex-col flex-1 justify-between md:mt-2">
             <div className="flex flex-col w-full">
-              <div className="xl:justify-start flex items-center justify-center w-full"> {/* Center the content */}
+              <div className="xl:justify-start flex items-center justify-center w-full">
                 <h3 className="text-center xl:text-left h3-bold md:h2-semibold">
                   {currentUser.name}
                 </h3>

@@ -14,6 +14,8 @@ import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
 import Loader from "@/components/Shared/Loader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
 import DOMPurify from 'dompurify';
+import 'react-photo-view/dist/react-photo-view.css';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -68,12 +70,19 @@ const PostDetails = () => {
         <Loader />
       ) : (
         <div className="post_details-card">
-          <img
-            src={post?.imageUrl}
-            alt="creator"
-            className="post_details-img h-auto xl:min-h-full"
-          />
-
+          <PhotoProvider
+            speed={() => 270}
+            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
+            bannerVisible={false} maskOpacity={0.8}
+          >
+            <PhotoView src={post?.imageUrl}>
+              <img
+                src={post?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                alt="creator"
+                className="post_details-img h-auto xl:min-h-full object-cover"
+              />
+            </PhotoView>
+          </PhotoProvider>
           <div className="post_details-info">
             <div className="flex-between w-full">
               <Link

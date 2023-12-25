@@ -529,3 +529,11 @@
   background: rgb(63, 94, 251) !important;
   background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%) !important
 }
+/* 
+.PhotoView__Photo {
+  border-radius: 50%
+} */
+
+.PhotoView__PhotoWrap {
+  backdrop-filter: blur(8px);
+}
