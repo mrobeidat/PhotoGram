@@ -176,7 +176,7 @@ const PostCard = ({ post }: PostCardProps) => {
             <img src={post.imageUrl} alt="Image" className="post-card_img" />
           ) : (
             <div style={containerStyle}>
-              <video controls controlsList="nodownload" autoPlay muted className="post-card_img" style={videoStyle}>
+              <video autoPlay muted className="post-card_img" style={videoStyle}>
                 <source src={imageUrl} type="video/mp4" />
               </video>
             </div>
