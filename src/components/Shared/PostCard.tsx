@@ -163,7 +163,7 @@ const PostCard = ({ post }: PostCardProps) => {
           {contentType.startsWith('image/') ? (
             <img src={post.imageUrl} alt="Image" className="post-card_img" />
           ) : (
-            <video autoPlay muted controls className="post-card_img">
+            <video autoPlay muted className="post-card_img">
               <source src={imageUrl} type="video/mp4" />
             </video>
           )}
