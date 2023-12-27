@@ -68,6 +68,18 @@ const PostCard = ({ post }: PostCardProps) => {
     fetchImage();
   }, [imageUrl]);
 
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+    // overflow: 'hidden',
+    borderRadius: '25px', // Adjust the radius as needed
+  };
+
+  const videoStyle: React.CSSProperties = {
+    width: '100%',
+    borderRadius: '10px', // Adjust the radius as needed
+    boxShadow: "rgb(38, 57, 77) 0px 20px 30px -10px",
+    };
+
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
@@ -163,9 +175,11 @@ const PostCard = ({ post }: PostCardProps) => {
           {contentType.startsWith('image/') ? (
             <img src={post.imageUrl} alt="Image" className="post-card_img" />
           ) : (
-            <video autoPlay muted className="post-card_img">
-              <source src={imageUrl} type="video/mp4" />
-            </video>
+            <div style={containerStyle}>
+              <video controls controlsList="nodownload" autoPlay muted className="post-card_img" style={videoStyle}>
+                <source src={imageUrl} type="video/mp4" />
+              </video>
+            </div>
           )}
         </>
       </Link>

@@ -108,7 +108,7 @@ const PostDetails = () => {
                 <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
               </PhotoView>
             ) : (
-              <video autoPlay className="post_details-img h-auto xl:min-h-full object-cover">
+              <video loop controls controlsList="nodownload noremoteplayback" autoPlay className="post_details-img h-auto xl:min-h-full object-cover ">
                 <source src={imageUrl} type="video/mp4" />
               </video>
             )}

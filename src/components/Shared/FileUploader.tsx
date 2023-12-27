@@ -99,7 +99,8 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
         <div className="file_uploader-box ">
           <img src="/assets/icons/file-upload.svg" width={96} height={77} alt="file upload" />
           <h3 className="base-medium text-light-2 mb-2 mt-6">Drag media here</h3>
-          <p className="text-light-4 small-regular mb-6">Images: SVG, PNG, JPG | Videos: MP4, WebM, MOV, AVI, MKV, HEVC</p>
+          <p className="text-light-3 small-regular ">Images: SVG, PNG, JPG </p>
+          <p className="text-light-3 small-regular mb-6">Videos: MP4, WebM, MKV, HEVC</p>
           <Button type="button" className="shad-button_dark_4">
             Select from computer
           </Button>
