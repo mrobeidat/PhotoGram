@@ -16,7 +16,7 @@ import RelatedPosts from "@/components/Shared/RelatedPosts";
 import DOMPurify from 'dompurify';
 import 'react-photo-view/dist/react-photo-view.css';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
-
+import { useEffect, useState } from "react";
 interface SanitizeHTMLResult {
   __html: string;
 }
@@ -49,6 +49,34 @@ const PostDetails = () => {
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
+
+  const [contentType, setContentType] = useState('');
+
+
+  const imageUrl = post?.imageUrl.replace('/preview', '/view');
+  console.log("image = ", imageUrl);
+
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(imageUrl);
+
+        if (response.ok) {
+          const contentTypeHeader = response.headers.get('Content-Type');
+          setContentType(contentTypeHeader || '');
+          console.log("headers = " + contentTypeHeader);
+        } else {
+          console.error('Failed to fetch image');
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [imageUrl]);
+
   return (
     <div className="post_details-container">
       <div className="hidden md:flex max-w-5xl w-full">
@@ -75,13 +103,15 @@ const PostDetails = () => {
             easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
             bannerVisible={false} maskOpacity={0.8}
           >
-            <PhotoView src={post?.imageUrl}>
-              <img
-                src={post?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                alt="creator"
-                className="post_details-img h-auto xl:min-h-full object-cover"
-              />
-            </PhotoView>
+            {contentType.startsWith('image/') ? (
+              <PhotoView src={post?.imageUrl}>
+                <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
+              </PhotoView>
+            ) : (
+              <video controls autoPlay className="post_details-img h-auto xl:min-h-full object-cover">
+                <source src={imageUrl} type="video/mp4" />
+              </video>
+            )}
           </PhotoProvider>
           <div className="post_details-info">
             <div className="flex-between w-full">

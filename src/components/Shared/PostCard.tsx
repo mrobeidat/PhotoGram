@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 // import DOMPurify from 'dompurify';
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
+import { useEffect, useState } from "react"
 
 type PostCardProps = {
   post: Models.Document
@@ -30,7 +31,9 @@ export const detectAndRenderLinks = (text: string) => {
 };
 
 
+
 const PostCard = ({ post }: PostCardProps) => {
+  const [contentType, setContentType] = useState('');
   const { user } = useUserContext()
   if (!post.creator) return;
 
@@ -39,6 +42,32 @@ const PostCard = ({ post }: PostCardProps) => {
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
+
+  // For displaying the video player
+  const imageUrl = post?.imageUrl.replace('/preview', '/view');
+  console.log("image = ", imageUrl);
+
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(imageUrl);
+
+        if (response.ok) {
+          const contentTypeHeader = response.headers.get('Content-Type');
+          setContentType(contentTypeHeader || '');
+          console.log("headers = " + contentTypeHeader);
+        } else {
+          console.error('Failed to fetch image');
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, [imageUrl]);
+
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
@@ -124,11 +153,21 @@ const PostCard = ({ post }: PostCardProps) => {
           </ul>
         </div>
 
-        <img
+        {/* <img
           src={post.imageUrl}
           alt="post image"
           className="post-card_img"
-        />
+        /> */}
+
+        <>
+          {contentType.startsWith('image/') ? (
+            <img src={post.imageUrl} alt="Image" className="post-card_img" />
+          ) : (
+            <video autoPlay muted controls className="post-card_img">
+              <source src={imageUrl} type="video/mp4" />
+            </video>
+          )}
+        </>
       </Link>
       <PostStats post={post} userId={user.id} />
     </div>

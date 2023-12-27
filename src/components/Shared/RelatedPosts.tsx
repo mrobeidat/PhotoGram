@@ -28,7 +28,7 @@ const RelatedPostsList = ({
                 <li key={post.$id} className="relative min-w-80 h-80">
                     <Link to={`/posts/${post.$id}`} className="grid-post_link">
                         <img
-                            src={post.imageUrl || 'assets/icons/post-placeholder.svg'}
+                            src={post.imageUrl || 'assets/icons/video-placeholder.png'}
                             alt="post"
                             className="h-full w-full object-cover"
                         />

@@ -10,8 +10,9 @@ const CreatePost = () => {
             alt='add'
             width={36}
             height={36}
+            className='select-none pointer-events-none'
           />
-          <h2 className='h3-bold md:h2-bold text-left w-full'>
+          <h2 className='h3-bold md:h2-bold text-left w-full select-none pointer-events-none'>
             Create Post
           </h2>
         </div>
