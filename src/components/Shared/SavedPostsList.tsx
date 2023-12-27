@@ -18,12 +18,12 @@ const GridPostList = ({
     const { user } = useUserContext();
 
     // replace default appwrite video thumbnail with a custom one
-    let VideoThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL;
-    let UpdatedThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL_CHANGED
-    let changedThumbnail = VideoThumbnail.replace(
-        VideoThumbnail,
-        UpdatedThumbnail
-    );
+    const VideoThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL
+    const UpdatedThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL_UPDATED
+
+    const getDefaultThumbnail = (imageUrl: string) => {
+        return imageUrl === VideoThumbnail ? UpdatedThumbnail : VideoThumbnail;
+    };
 
     return (
         <ul className="grid-container">
@@ -31,7 +31,8 @@ const GridPostList = ({
                 <li key={post.$id} className="relative min-w-80 h-80">
                     <Link to={`/posts/${post.$id}`} className="grid-post_link">
                         {VideoThumbnail && post.imageUrl === VideoThumbnail ? (
-                            <img src={changedThumbnail}
+                            <img
+                                src={getDefaultThumbnail(post.imageUrl)}
                                 className="h-full w-full object-cover"
                             />
                         ) : (
@@ -41,7 +42,6 @@ const GridPostList = ({
                                 className="h-full w-80 object-cover"
                             />
                         )}
-
                     </Link>
 
                     <div className="grid-post_user">

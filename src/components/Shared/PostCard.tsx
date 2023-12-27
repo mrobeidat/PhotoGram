@@ -3,7 +3,6 @@ import { formatDate } from "@/lib/utils"
 import { Models } from "appwrite"
 import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
-// import DOMPurify from 'dompurify';
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
 
@@ -11,29 +10,9 @@ type PostCardProps = {
   post: Models.Document
 }
 
-// To detect links in post cards
-export const detectAndRenderLinks = (text: string) => {
-  const linkRegex = /(https?:\/\/[^\s]+)/g;
-
-  const parts = text.split(linkRegex);
-
-  return parts.map((part, index) => {
-    if (part.match(linkRegex)) {
-      return (
-        <a className="cursor-text" key={index} href={part} target="_blank" rel="noopener noreferrer">
-          {part}
-        </a>
-      );
-    } else {
-      return <span key={index}>{part}</span>;
-    }
-  });
-};
-
-
-
 const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const { user } = useUserContext()
   if (!post.creator) return;
 
@@ -43,11 +22,11 @@ const PostCard = ({ post }: PostCardProps) => {
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
+
   // For displaying the video player
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
-  console.log("image = ", imageUrl);
 
-
+  // Check for the content type depending on the response
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -64,21 +43,38 @@ const PostCard = ({ post }: PostCardProps) => {
         console.error('Error fetching image:', error);
       }
     };
-
     fetchImage();
   }, [imageUrl]);
 
-  const containerStyle: React.CSSProperties = {
-    position: 'relative',
-    // overflow: 'hidden',
-    borderRadius: '25px', // Adjust the radius as needed
-  };
+  // Play the video on scroll only 
+  useEffect(() => {
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
 
-  const videoStyle: React.CSSProperties = {
-    width: '100%',
-    borderRadius: '10px', // Adjust the radius as needed
-    boxShadow: "rgba(17, 67, 98, 0.841) 0px 20px 30px -10px",
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting) {
+        setIsVideoPlaying(true);
+        videoElement.play();
+      } else {
+        setIsVideoPlaying(false);
+        videoElement.pause();
+      }
     };
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+    observer.observe(videoElement);
+
+    return () => {
+      observer.disconnect();
+    };
+
+  }, [post.$id]);
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -164,19 +160,22 @@ const PostCard = ({ post }: PostCardProps) => {
             ))}
           </ul>
         </div>
-
-        {/* <img
-          src={post.imageUrl}
-          alt="post image"
-          className="post-card_img"
-        /> */}
-
         <>
           {contentType.startsWith('image/') ? (
             <img src={post.imageUrl} alt="Image" className="post-card_img" />
           ) : (
-            <div style={containerStyle}>
-              <video autoPlay loop muted className="post-card_img" style={videoStyle}>
+            <div style={{ position: 'relative', borderRadius: '25px' }}>
+              <video
+                id={`video-${post.$id}`}
+                autoPlay={isVideoPlaying}
+                loop
+                className="post-card_img"
+                style={{
+                  width: '100%',
+                  borderRadius: '10px',
+                  boxShadow: "rgba(17, 67, 98, 0.841) 0px 20px 30px -10px",
+                }}
+              >
                 <source src={imageUrl} type="video/mp4" />
               </video>
             </div>

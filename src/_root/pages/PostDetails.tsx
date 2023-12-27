@@ -7,7 +7,6 @@ import {
   useDeletePost,
   useGetUserPosts
 } from "@/lib/react-query/queriesAndMutations";
-// import { detectAndRenderLinks } from '../../components/Shared/PostCard';
 import { formatDate } from "@/lib/utils"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
@@ -38,7 +37,6 @@ const PostDetails = () => {
   const { mutate: deletePost } = useDeletePost();
   const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
 
-
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
 
   const handleDeletePost = async () => {
@@ -49,13 +47,8 @@ const PostDetails = () => {
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
-
   const [contentType, setContentType] = useState('');
-
-
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
-  console.log("image = ", imageUrl);
-
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -76,6 +69,14 @@ const PostDetails = () => {
 
     fetchImage();
   }, [imageUrl]);
+
+  const [isMuted, setIsMuted] = useState(true);
+
+  const handleTap = () => {
+    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    videoElement.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
 
   return (
     <div className="post_details-container">
@@ -108,10 +109,35 @@ const PostDetails = () => {
                 <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
               </PhotoView>
             ) : (
-              <video autoPlay style={{ borderRadius: "30px" }} loop controls controlsList="nodownload noremoteplayback" className="post_details-img h-auto xl:min-h-full object-cover ">
-                <source src={imageUrl} type="video/mp4" />
-              </video>
+              <div className="post_details-img object-cover !p-0" style={{ position: 'relative' , borderRadius:"10px"}}>
+                <video
+                  className="post_details-img !w-auto xl:min-h-full !p-5 "
+                  id="video"
+                  onClick={handleTap}
+                  autoPlay
+                  loop
+                  controlsList="nodownload noremoteplayback"
+                >
+                  <source src={imageUrl} type="video/mp4" />
+                </video>
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '30px',
+                    right: '30px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={handleTap}
+                >
+                  {isMuted ? (
+                    <img height={20} width={20} src="/assets/icons/mute.png" alt="Mute" />
+                  ) : (
+                    <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                  )}
+                </div>
+              </div>
             )}
+
           </PhotoProvider>
           <div className="post_details-info">
             <div className="flex-between w-full">

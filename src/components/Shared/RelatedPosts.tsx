@@ -17,14 +17,14 @@ const RelatedPostsList = ({
     const { user } = useUserContext();
 
     const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-    
+
     // replace default appwrite video thumbnail with a custom one
-    let VideoThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL;
-    let UpdatedThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL_CHANGED
-    let changedThumbnail = VideoThumbnail.replace(
-        VideoThumbnail,
-        UpdatedThumbnail
-    );
+    const VideoThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL
+    const UpdatedThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL_UPDATED
+    const getDefaultThumbnail = (imageUrl: string) => {
+        return imageUrl === VideoThumbnail ? UpdatedThumbnail : VideoThumbnail;
+    };
+
     return (
         <ul className="grid-container">
             {posts.length === 0 &&
@@ -33,11 +33,12 @@ const RelatedPostsList = ({
             {posts.map((post) => (
                 <li key={post.$id} className="relative min-w-80 h-80">
                     <Link to={`/posts/${post.$id}`} className="grid-post_link">
-                        {VideoThumbnail && post.imageUrl === VideoThumbnail ? (
-                            <img src={changedThumbnail}
+                        {post.imageUrl === VideoThumbnail ? (
+                            <img
+                                src={getDefaultThumbnail(post.imageUrl)}
+                                alt="post"
                                 className="h-full w-full object-cover"
                             />
-
                         ) : (
                             <img
                                 src={post.imageUrl || VideoThumbnail}
@@ -46,9 +47,6 @@ const RelatedPostsList = ({
                             />
                         )}
                     </Link>
-
-
-
                     <div className="grid-post_user">
                         {showUser && (
                             <div className="flex items-center justify-start gap-2 flex-1">
