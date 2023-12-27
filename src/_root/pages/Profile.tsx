@@ -88,6 +88,7 @@ const Profile = () => {
   // Determine if the user has three or more posts
   const hasThreeOrMorePosts = currentUser.posts.length >= 3;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  
 
   return (
     <div className="profile-container">

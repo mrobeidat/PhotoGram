@@ -77,7 +77,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const videoStyle: React.CSSProperties = {
     width: '100%',
     borderRadius: '10px', // Adjust the radius as needed
-    boxShadow: "rgb(38, 57, 77) 0px 20px 30px -10px",
+    boxShadow: "rgba(17, 67, 98, 0.841) 0px 20px 30px -10px",
     };
 
   return (
@@ -176,7 +176,7 @@ const PostCard = ({ post }: PostCardProps) => {
             <img src={post.imageUrl} alt="Image" className="post-card_img" />
           ) : (
             <div style={containerStyle}>
-              <video loop autoPlay muted className="post-card_img" style={videoStyle}>
+              <video autoPlay loop muted className="post-card_img" style={videoStyle}>
                 <source src={imageUrl} type="video/mp4" />
               </video>
             </div>

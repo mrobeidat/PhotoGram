@@ -108,7 +108,7 @@ const PostDetails = () => {
                 <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
               </PhotoView>
             ) : (
-              <video loop controls controlsList="nodownload noremoteplayback" autoPlay className="post_details-img h-auto xl:min-h-full object-cover ">
+              <video autoPlay style={{ borderRadius: "40px" }} loop controls controlsList="nodownload noremoteplayback" className="post_details-img h-auto xl:min-h-full object-cover ">
                 <source src={imageUrl} type="video/mp4" />
               </video>
             )}
@@ -159,7 +159,7 @@ const PostDetails = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex-center gap-2 text-light-3">
+                  <div className="flex-center gap-2 mr-3 text-light-3">
                     <p className="subtle-semibold lg:small-regular ">
                       {formatDate(post?.$createdAt)}
                     </p>
