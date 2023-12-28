@@ -7,6 +7,7 @@ import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import Loader from "./Loader"
+import { PhotoProvider, PhotoView } from "react-photo-view"
 
 type PostCardProps = {
   post: Models.Document
@@ -176,8 +177,15 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
       </Link>
 
+      <PhotoProvider
+            speed={() => 450}
+            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
+            bannerVisible={false} maskOpacity={0.8}
+          >
       {contentType.startsWith('image/') ? (
+        <PhotoView src={post?.imageUrl}>
         <img src={post.imageUrl} alt="Image" className="post-card_img" />
+        </PhotoView>
       ) : (
         <div style={{ position: 'relative', borderRadius: '25px' }}>
           {isPostLoading && !imageUrl ? (
@@ -223,6 +231,7 @@ const PostCard = ({ post }: PostCardProps) => {
           )}
         </div>
       )}
+      </PhotoProvider>
       <PostStats post={post} userId={user.id} />
     </div>
   );
