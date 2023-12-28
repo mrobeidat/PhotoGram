@@ -5,6 +5,8 @@ import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
+import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
+import Loader from "./Loader"
 
 type PostCardProps = {
   post: Models.Document
@@ -13,7 +15,11 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const { isLoading: isPostLoading } = useGetRecentPosts();
+  const [isMuted, setIsMuted] = useState(false);
   const { user } = useUserContext()
+
+
   if (!post.creator) return;
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
@@ -48,33 +54,42 @@ const PostCard = ({ post }: PostCardProps) => {
 
   // Play the video on scroll only 
   useEffect(() => {
-    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement | null;
 
-    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting) {
-        setIsVideoPlaying(true);
-        videoElement.play();
-      } else {
-        setIsVideoPlaying(false);
-        videoElement.pause();
-      }
-    };
+    if (videoElement) {
+      const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          setIsVideoPlaying(true);
+          videoElement.play();
+        } else {
+          setIsVideoPlaying(false);
+          videoElement.pause();
+        }
+      };
 
-    const options = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5,
-    };
+      const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5,
+      };
 
-    const observer = new IntersectionObserver(handleIntersection, options);
-    observer.observe(videoElement);
+      const observer = new IntersectionObserver(handleIntersection, options);
+      observer.observe(videoElement);
 
-    return () => {
-      observer.disconnect();
-    };
-
+      return () => {
+        observer.disconnect();
+      };
+    } else {
+      console.error(`Video element with ID 'video-${post.$id}' not found.`);
+    }
   }, [post.$id]);
+
+  const handleTap = () => {
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
+    videoElement.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -128,6 +143,7 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
         </div>
+
         {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
           <div className="pin-icon">
             <img
@@ -145,43 +161,66 @@ const PostCard = ({ post }: PostCardProps) => {
           </Link>
         )}
       </div>
+
       <Link to={`/posts/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
           {/* Render caption as readonly */}
-          <p
-            dangerouslySetInnerHTML={{ __html: sanitizedCaption }}
-            style={{ fontSize: "14px", fontWeight: "100" }}
-          />
+          <p dangerouslySetInnerHTML={{ __html: sanitizedCaption }} style={{ fontSize: "14px", fontWeight: "100" }} />
           <ul className="flex gap-1 mt-2">
-            {post.tags.map((tag: string, index: string) => (
+            {post.tags.map((tag: string, index: number) => (
               <li key={`${tag}${index}`} className="text-light-3 small-regular">
                 #{tag}
               </li>
             ))}
           </ul>
         </div>
-        <>
-          {contentType.startsWith('image/') ? (
-            <img src={post.imageUrl} alt="Image" className="post-card_img" />
-          ) : (
-            <div style={{ position: 'relative', borderRadius: '25px' }}>
-              <video
-                id={`video-${post.$id}`}
-                autoPlay={isVideoPlaying}
-                loop
-                className="post-card_img"
-                style={{
-                  width: '100%',
-                  borderRadius: '10px',
-                  boxShadow: "rgba(17, 67, 98, 0.841) 0px 20px 30px -10px",
-                }}
-              >
-                <source src={imageUrl} type="video/mp4" />
-              </video>
-            </div>
-          )}
-        </>
       </Link>
+
+      {contentType.startsWith('image/') ? (
+        <img src={post.imageUrl} alt="Image" className="post-card_img" />
+      ) : (
+        <div style={{ position: 'relative', borderRadius: '25px' }}>
+          {isPostLoading && !imageUrl ? (
+            <Loader />
+          ) : (
+            <>
+              {imageUrl && (
+                <div className="post_details-img object-cover !w-full !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+                  <video
+                    id={`video-${post.$id}`}
+                    autoPlay={isVideoPlaying}
+                    loop
+                    onClick={handleTap}
+                    className="post-card_img"
+                    style={{
+                      width: '100%',
+                      borderRadius: '10px',
+                      boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
+                    }}
+                  >
+                    <source src={imageUrl} type="video/mp4" />
+                  </video>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '35px',
+                      right: '10px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={handleTap}
+                  >
+                    {isMuted ? (
+                      <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                    ) : (
+                      <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
       <PostStats post={post} userId={user.id} />
     </div>
   );

@@ -111,7 +111,7 @@ const PostDetails = () => {
             ) : (
               <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                 <video
-                  className="post_details-img !w-auto xl:min-h-full !p-5 "
+                  className="post_details-img !w-full !p-5 "
                   id="video"
                   onClick={handleTap}
                   autoPlay
