@@ -87,7 +87,7 @@ const PostCard = ({ post }: PostCardProps) => {
   }, [post.$id]);
 
   const handleTap = () => {
-    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
     const ShowingOn = isAndroid || isWindows || isMacOs
 
     videoElement.muted = ShowingOn ? !isMuted : false
