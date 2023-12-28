@@ -180,59 +180,61 @@ const PostCard = ({ post }: PostCardProps) => {
       </Link>
 
       <PhotoProvider
-            speed={() => 450}
-            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
-            bannerVisible={false} maskOpacity={0.8}
-          >
-      {contentType.startsWith('image/') ? (
-        <PhotoView src={post?.imageUrl}>
-        <img src={post.imageUrl} alt="Image" className="post-card_img" />
-        </PhotoView>
-      ) : (
-        <div style={{ position: 'relative', borderRadius: '25px' }}>
-          {isPostLoading && !imageUrl ? (
-            <Loader />
-          ) : (
-            <>
-              {imageUrl && (
-                <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                  <video
-                    id={`video-${post.$id}`}
-                    autoPlay={isVideoPlaying}
-                    loop
-                    controls={false}
-                    onClick={handleTap}
-                    className="post-card_img"
-                    style={{
-                      width: '100%',
-                      borderRadius: '10px',
-                      // pointerEvents: 'none', 
-                      boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                    }}
-                  >
-                    <source src={imageUrl} type="video/mp4" />
-                  </video>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '5px',
-                      right: '10px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={handleTap}
-                  >
-                    {isMuted ? (
-                      <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
-                    ) : (
-                      <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
-                    )}
+        speed={() => 450}
+        easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
+        bannerVisible={false} maskOpacity={0.8}
+      >
+        {contentType.startsWith('image/') ? (
+          <PhotoView src={post?.imageUrl}>
+            <img src={post.imageUrl} alt="Image" className="post-card_img" />
+          </PhotoView>
+        ) : (
+          <div style={{ position: 'relative', borderRadius: '25px' }}>
+            {isPostLoading && !imageUrl ? (
+              <Loader />
+            ) : (
+              <>
+                {imageUrl && (
+                  <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+                    <video
+                      id={`video-${post.$id}`}
+                      autoPlay={isVideoPlaying}
+                      loop
+                      controls={false}
+                      onClick={handleTap}
+                      className="post-card_img"
+                      style={{
+                        width: '100%',
+                        borderRadius: '10px',
+                        // pointerEvents: 'none', 
+                        boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
+                      }}
+                    >
+                      <source src={imageUrl} type="video/mp4" />
+                    </video>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '10px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={handleTap}
+                    >
+                      {isAndroid || isWindows || isMacOs ? (
+                        isMuted ? (
+                          <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                        ) : (
+                          <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                        )
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                )}
+              </>
+            )}
+          </div>
+        )}
       </PhotoProvider>
       <PostStats post={post} userId={user.id} />
     </div>
