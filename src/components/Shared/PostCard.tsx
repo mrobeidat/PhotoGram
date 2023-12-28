@@ -196,7 +196,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     style={{
                       width: '100%',
                       borderRadius: '10px',
-                      pointerEvents: 'none', 
+                      // pointerEvents: 'none', 
                       boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
                     }}
                   >
