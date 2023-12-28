@@ -185,7 +185,7 @@ const PostCard = ({ post }: PostCardProps) => {
           ) : (
             <>
               {imageUrl && (
-                <div className="post_details-img object-cover !w-full !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+                <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                   <video
                     id={`video-${post.$id}`}
                     autoPlay={isVideoPlaying}
@@ -203,7 +203,7 @@ const PostCard = ({ post }: PostCardProps) => {
                   <div
                     style={{
                       position: 'absolute',
-                      bottom: '35px',
+                      bottom: '5px',
                       right: '10px',
                       cursor: 'pointer',
                     }}
