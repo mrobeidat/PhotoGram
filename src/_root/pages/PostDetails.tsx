@@ -16,6 +16,8 @@ import DOMPurify from 'dompurify';
 import 'react-photo-view/dist/react-photo-view.css';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { useEffect, useState } from "react";
+import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+
 interface SanitizeHTMLResult {
   __html: string;
 }
@@ -74,8 +76,10 @@ const PostDetails = () => {
 
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
-    videoElement.muted = !isMuted;
-    setIsMuted(!isMuted);
+    const isMobile = isAndroid || isWindows || isMacOs
+
+    videoElement.muted = isMobile ? !isMuted : false
+    setIsMuted(isMobile ? !isMuted : false)
   };
 
   return (
@@ -129,8 +133,8 @@ const PostDetails = () => {
                   }}
                   onClick={handleTap}
                 >
-                  {isMuted ? (
-                    <img height={20} width={20} src="/assets/icons/mute.png" alt="Mute" />
+                  {isMuted && (isAndroid || isWindows || isMacOs) ? (
+                    <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
                   ) : (
                     <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
                   )}
