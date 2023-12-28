@@ -106,7 +106,7 @@ const PostDetails = () => {
           >
             {contentType.startsWith('image/') ? (
               <PhotoView src={post?.imageUrl}>
-                <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
+                <img src={post.imageUrl} alt="Image" className="post_details-img lg:h-full h-auto xl:min-h-full object-cover" />
               </PhotoView>
             ) : (
               <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
