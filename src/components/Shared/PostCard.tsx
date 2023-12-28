@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
+import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
 
 type PostCardProps = {
   post: Models.Document
@@ -19,7 +20,6 @@ const PostCard = ({ post }: PostCardProps) => {
   const { isLoading: isPostLoading } = useGetRecentPosts();
   const [isMuted, setIsMuted] = useState(false);
   const { user } = useUserContext()
-
 
   if (!post.creator) return;
 
@@ -87,9 +87,11 @@ const PostCard = ({ post }: PostCardProps) => {
   }, [post.$id]);
 
   const handleTap = () => {
-    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
-    videoElement.muted = !isMuted;
-    setIsMuted(!isMuted);
+    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    const ShowingOn = isAndroid || isWindows || isMacOs
+
+    videoElement.muted = ShowingOn ? !isMuted : false
+    setIsMuted(ShowingOn ? !isMuted : false)
   };
 
   return (
