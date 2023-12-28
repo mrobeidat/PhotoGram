@@ -1,22 +1,23 @@
-// import Loader from "@/components/Shared/Loader"
-import PostStats from "@/components/Shared/PostStats";
-import { Button } from "@/components/ui/button";
-import { useUserContext } from "@/context/AuthContext"
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useUserContext } from '@/context/AuthContext';
 import {
   useGetPostById,
   useDeletePost,
-  useGetUserPosts
-} from "@/lib/react-query/queriesAndMutations";
-import { formatDate } from "@/lib/utils"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
-import Loader from "@/components/Shared/Loader";
-import RelatedPosts from "@/components/Shared/RelatedPosts";
+  useGetUserPosts,
+} from '@/lib/react-query/queriesAndMutations';
+import { formatDate } from '@/lib/utils';
 import DOMPurify from 'dompurify';
 import 'react-photo-view/dist/react-photo-view.css';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { useEffect, useState } from "react";
 import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+import Plyr from 'plyr';
+import 'plyr/dist/plyr.css';
+import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader';
+import Loader from '@/components/Shared/Loader';
+import RelatedPosts from '@/components/Shared/RelatedPosts';
+import { Button } from '@/components/ui/button';
+import PostStats from '@/components/Shared/PostStats';
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -34,10 +35,14 @@ const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUserContext();
-  const { data: post, isPending } = useGetPostById(id || "");
-  const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
+  const { data: post, isPending } = useGetPostById(id || '');
+  const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(
+    post?.creator.$id
+  );
   const { mutate: deletePost } = useDeletePost();
-  const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
+  const relatedPosts = userPosts?.documents.filter(
+    (userPost) => userPost.$id !== id
+  );
 
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
 
@@ -47,7 +52,7 @@ const PostDetails = () => {
   };
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
 
   const [contentType, setContentType] = useState('');
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
@@ -60,7 +65,7 @@ const PostDetails = () => {
         if (response.ok) {
           const contentTypeHeader = response.headers.get('Content-Type');
           setContentType(contentTypeHeader || '');
-          console.log("headers = " + contentTypeHeader);
+          console.log('headers = ' + contentTypeHeader);
         } else {
           console.error('Failed to fetch image');
         }
@@ -75,12 +80,25 @@ const PostDetails = () => {
   const [isMuted, setIsMuted] = useState(false);
 
   const handleTap = () => {
-    const videoElement = document.getElementById("video") as HTMLVideoElement;
-    const isMobile = isAndroid || isWindows || isMacOs
+    const videoElement = document.getElementById('video') as HTMLVideoElement;
+    const isSupportedPlatform = isAndroid || isWindows || isMacOs;
 
-    videoElement.muted = isMobile ? !isMuted : false
-    setIsMuted(isMobile ? !isMuted : false)
+    videoElement.muted = isSupportedPlatform ? !isMuted : false;
+    setIsMuted(isSupportedPlatform ? !isMuted : false);
   };
+
+  useEffect(() => {
+    const videoElement = new Plyr('#video', {
+      controls: ['play', 'progress', 'mute', 'volume', 'fullscreen'],
+    });
+
+    return () => {
+      if (videoElement) {
+        videoElement.destroy();
+      }
+    };
+  }, []);
+
 
   return (
     <div className="post_details-container">
@@ -103,40 +121,51 @@ const PostDetails = () => {
         <Loader />
       ) : (
         <div className="post_details-card">
-          <PhotoProvider
-            speed={() => 450}
-            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
-            bannerVisible={false} maskOpacity={0.8}
-          >
-            {contentType.startsWith('image/') ? (
-              <PhotoView src={post?.imageUrl}>
-                <img src={post.imageUrl} alt="Image" className="post_details-img lg:h-full h-auto xl:min-h-full object-cover" />
-              </PhotoView>
-            ) : (
+        <PhotoProvider
+          speed={() => 450}
+          easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
+          bannerVisible={false} maskOpacity={0.8}
+        >
+          {contentType.startsWith('image/') ? (
+            <PhotoView src={post?.imageUrl}>
+              <img src={post.imageUrl} alt="Image" className="post_details-img lg:h-full h-auto xl:min-h-full object-cover" />
+            </PhotoView>
+          ) : (
               <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                <video
-                  className="post_details-img !w-full !p-5 "
-                  id="video"
-                  onClick={handleTap}
-                  autoPlay
-                  loop
-                  controlsList="nodownload noremoteplayback"
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                </video>
+              <video
+                className="post_details-img !w-full !p-5 border-none outline-none "
+                id="video"
+                onClick={handleTap}
+                autoPlay
+                loop
+                controlsList="nodownload noremoteplayback"
+              >
+                <source src={imageUrl} type="video/mp4" />
+              </video>
                 <div
                   style={{
                     position: 'absolute',
                     bottom: '30px',
                     right: '30px',
                     cursor: 'pointer',
+                    display: isAndroid || isMacOs || isWindows ? 'block' : 'none',
                   }}
                   onClick={handleTap}
                 >
-                  {isMuted && (isAndroid || isWindows || isMacOs) ? (
-                    <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                  {isMuted && (isAndroid || isMacOs || isWindows) ? (
+                    <img
+                      height={21}
+                      width={21}
+                      src="/assets/icons/mute.png"
+                      alt="Mute"
+                    />
                   ) : (
-                    <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                    <img
+                      height={22}
+                      width={22}
+                      src="/assets/icons/volume.png"
+                      alt="Unmute"
+                    />
                   )}
                 </div>
               </div>
