@@ -38,7 +38,6 @@ const PostDetails = () => {
   const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
   const { mutate: deletePost } = useDeletePost();
   const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
-
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
 
   const handleDeletePost = async () => {
@@ -73,7 +72,6 @@ const PostDetails = () => {
   }, [imageUrl]);
 
   const [isMuted, setIsMuted] = useState(false);
-
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
     const isMobile = isAndroid || isWindows || isMacOs
