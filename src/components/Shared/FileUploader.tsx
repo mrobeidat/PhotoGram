@@ -103,7 +103,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
           <p className="text-light-3 small-regular">Videos: MP4, WebM, MKV, HEVC</p>
           <span className="text-red text-sm  mb-6">(Maximum Duration: 30 seconds)</span>
           <Button type="button" className="shad-button_dark_4">
-            Select from computer
+            Select file 
           </Button>
         </div>
       )}
