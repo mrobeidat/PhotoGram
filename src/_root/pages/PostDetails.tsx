@@ -74,10 +74,10 @@ const PostDetails = () => {
   const [isMuted, setIsMuted] = useState(false);
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
-    const isMobile = isAndroid || isWindows || isMacOs
+    const ShowingOn = isAndroid || isWindows || isMacOs
 
-    videoElement.muted = isMobile ? !isMuted : false
-    setIsMuted(isMobile ? !isMuted : false)
+    videoElement.muted = ShowingOn ? !isMuted : false
+    setIsMuted(ShowingOn ? !isMuted : false)
   };
 
   return (
@@ -131,11 +131,14 @@ const PostDetails = () => {
                   }}
                   onClick={handleTap}
                 >
-                  {isMuted && (isAndroid || isWindows || isMacOs) ? (
-                    <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
-                  ) : (
-                    <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
-                  )}
+                  {isAndroid || isWindows || isMacOs ? (
+                    isMuted ? (
+                      <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                    ) : (
+                      <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                    )
+                  ) : null}
+
                 </div>
               </div>
             )}
