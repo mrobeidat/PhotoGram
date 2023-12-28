@@ -38,21 +38,17 @@ const GridPostList = ({
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   // replace default appwrite video thumbnail with a custom one
-  const VideoThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL
-  const UpdatedThumbnail = import.meta.env.VITE_APPWRITE_VIDEO_THUMBNAIL_UPDATED
+  const VideoThumbnail = "https://cloud.appwrite.io/v1/storage/buckets/654b5f03e5c16593a1c9/files/658d1017b00d237c1ce8/preview?width=2000&height=2000&gravity=top&quality=100&project=65462bfc24ded86416d2"
 
-  const getDefaultThumbnail = (imageUrl: string) => {
-    return imageUrl === VideoThumbnail ? UpdatedThumbnail : VideoThumbnail;
-  };
 
   return (
     <ul className="grid-container">
       {filteredPosts.map((post) => (
         <li key={post.$id} className="relative min-w-80 h-80">
           <Link to={`/posts/${post.$id}`} className="grid-post_link">
-            {VideoThumbnail && post.imageUrl === VideoThumbnail ? (
+            {post.imageUrl === VideoThumbnail ? (
               <img
-                src={getDefaultThumbnail(post.imageUrl)}
+                src="/assets/icons/v_thumb.jpg"
                 className="h-full w-full object-cover"
               />
             ) : (

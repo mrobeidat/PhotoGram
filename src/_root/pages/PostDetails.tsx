@@ -70,7 +70,7 @@ const PostDetails = () => {
     fetchImage();
   }, [imageUrl]);
 
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
@@ -109,7 +109,7 @@ const PostDetails = () => {
                 <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover" />
               </PhotoView>
             ) : (
-              <div className="post_details-img object-cover !p-0" style={{ position: 'relative' , borderRadius:"10px"}}>
+              <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                 <video
                   className="post_details-img !w-auto xl:min-h-full !p-5 "
                   id="video"
