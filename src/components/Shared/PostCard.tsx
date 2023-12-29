@@ -186,7 +186,7 @@ const PostCard = ({ post }: PostCardProps) => {
       >
         {contentType.startsWith('image/') ? (
           <PhotoView src={post?.imageUrl}>
-            <img src={post.imageUrl} alt="Image" className="post-card_img" />
+            <img src={post.imageUrl} alt="Image" className="post-card_img hover:cursor-pointer" />
           </PhotoView>
         ) : (
           <div style={{ position: 'relative', borderRadius: '25px' }}>
