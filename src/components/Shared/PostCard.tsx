@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
-import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
+// import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
 import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
@@ -17,7 +17,8 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const { isLoading: isPostLoading } = useGetRecentPosts();
+  // const { isLoading: isPostLoading } = useGetRecentPosts();
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const { user } = useUserContext()
 
@@ -48,6 +49,8 @@ const PostCard = ({ post }: PostCardProps) => {
         }
       } catch (error) {
         console.error('Error fetching image:', error);
+      } finally {
+        setIsVideoLoading(false);
       }
     };
     fetchImage();
@@ -190,14 +193,16 @@ const PostCard = ({ post }: PostCardProps) => {
           </PhotoView>
         ) : (
           <div style={{ position: 'relative', borderRadius: '25px' }}>
-            {isPostLoading && !imageUrl ? (
-              <Loader />
+            {isVideoLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader />
+              </div>
             ) : (
               <>
                 {imageUrl && (
                   <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                     <video
-                      id={`video-${post.$id}`}
+                      id={`video-${post?.$id}`}
                       autoPlay={isVideoPlaying}
                       loop
                       controls={false}
@@ -206,7 +211,6 @@ const PostCard = ({ post }: PostCardProps) => {
                       style={{
                         width: '100%',
                         borderRadius: '10px',
-                        // pointerEvents: 'none', 
                         boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
                       }}
                     >
@@ -236,6 +240,7 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
         )}
       </PhotoProvider>
+
       <PostStats post={post} userId={user.id} />
     </div>
   );

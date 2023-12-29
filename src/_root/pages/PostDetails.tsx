@@ -50,8 +50,12 @@ const PostDetails = () => {
 
   const [contentType, setContentType] = useState('');
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
 
+  
   useEffect(() => {
+    console.log("isVideoLoading:", isVideoLoading);
+
     const fetchImage = async () => {
       try {
         const response = await fetch(imageUrl);
@@ -65,6 +69,8 @@ const PostDetails = () => {
         }
       } catch (error) {
         console.error('Error fetching image:', error);
+      } finally {
+        setIsVideoLoading(false);
       }
     };
 
@@ -112,16 +118,21 @@ const PostDetails = () => {
               </PhotoView>
             ) : (
               <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                <video
-                  className="post_details-img !w-full !p-5 "
-                  id="video"
-                  onClick={handleTap}
-                  autoPlay
-                  loop
-                  controlsList="nodownload noremoteplayback"
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                </video>
+                {isVideoLoading ? <div className="flex justify-center items-center h-full">
+                  <Loader />
+                </div> : (
+                  <video
+                    className={`post_details-img !w-full !p-5 ${isVideoLoading ? 'hidden' : ''}`}
+                    id="video"
+                    onClick={handleTap}
+                    autoPlay
+                    loop
+                    controlsList="nodownload noremoteplayback"
+                  >
+                    <source src={imageUrl} type="video/mp4" />
+                  </video>
+                )
+                }
                 <div
                   style={{
                     position: 'absolute',
