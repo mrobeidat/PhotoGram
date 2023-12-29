@@ -16,7 +16,7 @@ import DOMPurify from 'dompurify';
 import 'react-photo-view/dist/react-photo-view.css';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { useEffect, useState } from "react";
-import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -126,6 +126,7 @@ const PostDetails = () => {
                     id="video"
                     onClick={handleTap}
                     autoPlay
+                    controls={isIOS ? true : false}
                     loop
                     controlsList="nodownload noremoteplayback"
                   >
