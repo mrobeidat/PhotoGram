@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 // import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
 import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
-import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
 
 type PostCardProps = {
   post: Models.Document
@@ -207,6 +207,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       id={`video-${post?.$id}`}
                       autoPlay={isVideoPlaying}
                       loop
+                      controls={isIOS ? true : false}
                       onClick={handleTap}
                       className="post-card_img"
                       style={{
