@@ -122,7 +122,7 @@ const PostDetails = () => {
                   <Loader />
                 </div> : (
                   <video
-                    className={`post_details-img !w-full !p-5 ${isVideoLoading ? 'hidden' : ''}`}
+                    className={`post_details-img !w-full !p-5`}
                     id="video"
                     onClick={handleTap}
                     autoPlay
