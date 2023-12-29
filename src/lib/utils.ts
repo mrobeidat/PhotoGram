@@ -45,6 +45,11 @@ export function formatDate(dateString: string = ""): string {
     }
 }
 
+export const getFormattedImageUrl = (imageUrl: string | undefined): string | undefined => {
+    return imageUrl ? imageUrl.replace('/preview', '/view') : undefined;
+};
+
+
 export const checkIsLiked = (likeList: string[], userId: string) => {
     return likeList.includes(userId);
 };

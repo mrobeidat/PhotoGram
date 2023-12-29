@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-// import { Textarea } from "../ui/textarea"
 import FileUploader from "../Shared/FileUploader"
 import Loader from "../Shared/Loader"
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutations";
@@ -52,6 +51,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
                     postId: post.$id,
                     imageId: post.imageId,
                     imageUrl: post.imageUrl,
+                    updated: true
                 });
 
                 if (updatedPost) {

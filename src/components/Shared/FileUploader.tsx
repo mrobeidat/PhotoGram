@@ -77,7 +77,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
   });
 
   return (
-    <div className="flex flex-center flex-col bg-dark-3 rounded-xl cursor-pointer" {...getRootProps()}>
+    <div className="flex flex-center flex-col shad-textarea rounded-xl cursor-pointer" {...getRootProps()}>
       <input accept="image/*, video/*" {...getInputProps()} className="cursor-pointer" />
       {fileUrl && file.length > 0 ? (
         <>
@@ -103,7 +103,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
           <p className="text-light-3 small-regular">Videos: MP4, WebM, MKV, HEVC</p>
           <span className="text-red text-sm  mb-6">(Maximum Duration: 30 seconds)</span>
           <Button type="button" className="shad-button_dark_4">
-            Select file 
+            Select file
           </Button>
         </div>
       )}

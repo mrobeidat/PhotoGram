@@ -230,6 +230,7 @@ export async function updatePost(post: IUpdatePost) {
                 imageId: image.imageId,
                 location: post.location,
                 tags: tags,
+                updated:true
             }
         );
 
@@ -257,7 +258,7 @@ export async function getRecentPosts() {
       const posts = await databases.listDocuments(
         appwriteConfig.databaseId,
         appwriteConfig.postCollectionId,
-        [Query.orderDesc("$createdAt"), Query.limit(20)]
+        [Query.orderDesc("$createdAt"), Query.limit(1000)]
       );
   
       if (!posts) throw Error;
@@ -472,7 +473,7 @@ export async function getUsers(limit?: number) {
     const queries: any[] = [Query.orderDesc("$createdAt")];
 
     if (limit) {
-        queries.push(Query.limit(100));
+        queries.push(Query.limit(1000));
     }
 
     try {

@@ -52,7 +52,7 @@ const PostDetails = () => {
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
   const [isVideoLoading, setIsVideoLoading] = useState(true);
 
-  
+
   useEffect(() => {
     console.log("isVideoLoading:", isVideoLoading);
 
@@ -209,6 +209,10 @@ const PostDetails = () => {
                     <p className="subtle-semibold lg:small-regular">
                       {post?.location}
                     </p>
+                    <p className="subtle-semibold lg:small-regular">
+                      {post.updated == true ? "• (Edited)" : ""}
+                    </p>
+
                   </div>
                 </div>
               </Link>

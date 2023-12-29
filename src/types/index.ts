@@ -40,6 +40,7 @@ export type IUpdatePost = {
   file: File[];
   location?: string;
   tags?: string;
+  updated?: boolean
 };
 
 export type IUser = {
