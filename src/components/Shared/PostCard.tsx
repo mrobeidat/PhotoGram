@@ -205,7 +205,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       {isAndroid || isWindows || isMacOs ? (
                         <video
                           id={`video-${post?.$id}`}
-                          autoPlay={isVideoPlaying}
+                          autoPlay
                           loop
                           controls={false}
                           onClick={handleTap}
@@ -221,7 +221,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       ) : (
                         <video
                           id={`video-${post?.$id}`}
-                          autoPlay={isVideoPlaying}
+                          autoPlay
                           loop
                           controls={true}
                           onClick={handleTap}
