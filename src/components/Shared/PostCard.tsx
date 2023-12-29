@@ -204,7 +204,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     {isIOS ? (
                       <video
                         id={`video-${post?.$id}`}
-                        autoPlay={isVideoPlaying}
+                        autoPlay
                         loop
                         controls
                         className="post-card_img"
