@@ -201,41 +201,21 @@ const PostCard = ({ post }: PostCardProps) => {
               <>
                 {imageUrl && (
                   <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                    <>
-                      {isAndroid || isWindows || isMacOs ? (
-                        <video
-                          id={`video-${post?.$id}`}
-                          autoPlay
-                          loop
-                          controls={false}
-                          onClick={handleTap}
-                          className="post-card_img"
-                          style={{
-                            width: '100%',
-                            borderRadius: '10px',
-                            boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                          }}
-                        >
-                          <source src={imageUrl} type="video/mp4" />
-                        </video>
-                      ) : (
-                        <video
-                          id={`video-${post?.$id}`}
-                          autoPlay
-                          loop
-                          controls={true}
-                          onClick={handleTap}
-                          className="post-card_img"
-                          style={{
-                            width: '100%',
-                            borderRadius: '10px',
-                            boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                          }}
-                        >
-                          <source src={imageUrl} type="video/mp4" />
-                        </video>
-                      )}
-                    </>
+                    <video
+                      id={`video-${post?.$id}`}
+                      autoPlay={isVideoPlaying}
+                      loop
+                      controls={false}
+                      onClick={handleTap}
+                      className="post-card_img"
+                      style={{
+                        width: '100%',
+                        borderRadius: '10px',
+                        boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
+                      }}
+                    >
+                      <source src={imageUrl} type="video/mp4" />
+                    </video>
                     <div
                       style={{
                         position: 'absolute',
