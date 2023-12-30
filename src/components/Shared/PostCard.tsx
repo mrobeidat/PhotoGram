@@ -4,12 +4,12 @@ import { Models } from "appwrite"
 import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 // import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
-import Loader from "./Loader"
+// import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
-import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
-
+// import { isAndroid, isMacOs } from 'react-device-detect';
+// import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
 type PostCardProps = {
   post: Models.Document
 }
@@ -18,8 +18,8 @@ const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   // const { isLoading: isPostLoading } = useGetRecentPosts();
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  // const [isVideoLoading, setIsVideoLoading] = useState(true);
+  // const [isMuted, setIsMuted] = useState(false);
   const { user } = useUserContext()
 
   if (!post.creator) return;
@@ -50,7 +50,7 @@ const PostCard = ({ post }: PostCardProps) => {
       } catch (error) {
         console.error('Error fetching image:', error);
       } finally {
-        setIsVideoLoading(false);
+        // setIsVideoLoading(false);
       }
     };
     fetchImage();
@@ -90,9 +90,9 @@ const PostCard = ({ post }: PostCardProps) => {
   }, [post.$id]);
 
   console.log(isVideoPlaying);
-  
+
   const [showControls, setShowControls] = useState(true);
-  
+
   const handleTap = () => {
     // const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
     // const ShowingOn = isAndroid || isWindows || isMacOs
@@ -103,7 +103,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
   };
 
- 
+
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <div className="flex-between">
@@ -251,13 +251,13 @@ const PostCard = ({ post }: PostCardProps) => {
                   }}
                   onClick={handleTap}
                 >
-                  {isAndroid || isMacOs ? (
+                  {/* {isAndroid || isMacOs ? (
                     isMuted ? (
                       <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
                     ) : (
                       <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
                     )
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
             )}
