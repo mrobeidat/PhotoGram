@@ -51,11 +51,15 @@ const PostCard = ({ post }: PostCardProps) => {
               const handleIntersection = (entries: IntersectionObserverEntry[]) => {
                 const [entry] = entries;
                 if (entry.isIntersecting) {
-                  setIsVideoPlaying(true);
-                  videoElement.play();
+                  if (isVideoPlaying) {
+                    setIsVideoPlaying(true);
+                    videoElement.play();
+                  }
                 } else {
-                  setIsVideoPlaying(false);
-                  videoElement.pause();
+                  if (!isVideoPlaying) {
+                    setIsVideoPlaying(false);
+                    videoElement.pause();
+                  }
                 }
               };
   
@@ -86,7 +90,8 @@ const PostCard = ({ post }: PostCardProps) => {
     };
   
     fetchDataAndPlayVideo();
-  }, [imageUrl, post.$id]);
+  }, [imageUrl, post.$id, isVideoPlaying]);
+  
   
 
   // const handleTap = () => {
