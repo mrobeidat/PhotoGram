@@ -96,6 +96,7 @@ const PostCard = ({ post }: PostCardProps) => {
     videoElement.muted = ShowingOn ? !isMuted : false
     setIsMuted(ShowingOn ? !isMuted : false)
   };
+  console.log(isVideoPlaying);
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -207,7 +208,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       id={`video-${post?.$id}`}
                       autoPlay={isVideoPlaying}
                       loop
-                      controls={isIOS ? true : false}
+                      controls={isWindows}
                       onClick={handleTap}
                       className="post-card_img"
                       style={{
@@ -227,7 +228,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       }}
                       onClick={handleTap}
                     >
-                      {isAndroid || isWindows || isMacOs ? (
+                      {isAndroid || isMacOs ? (
                         isMuted ? (
                           <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
                         ) : (
