@@ -205,7 +205,7 @@ const PostCard = ({ post }: PostCardProps) => {
                   <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                     <video
                       id={`video-${post?.$id}`}
-                      autoPlay={isVideoPlaying && isWindows && isMacOs && isAndroid ? true : false}
+                      autoPlay={isVideoPlaying}
                       loop
                       controls={isWindows ? true : false}
                       onClick={handleTap}
