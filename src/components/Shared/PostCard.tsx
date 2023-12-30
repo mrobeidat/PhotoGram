@@ -5,11 +5,10 @@ import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
-// import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutations";
-// import Loader from "./Loader"
+import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
-// import { isAndroid, isMacOs } from 'react-device-detect';
-// import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
+import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+
 type PostCardProps = {
   post: Models.Document
 }
@@ -18,8 +17,8 @@ const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   // const { isLoading: isPostLoading } = useGetRecentPosts();
-  // const [isVideoLoading, setIsVideoLoading] = useState(true);
-  // const [isMuted, setIsMuted] = useState(false);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const { user } = useUserContext()
 
   if (!post.creator) return;
@@ -50,7 +49,7 @@ const PostCard = ({ post }: PostCardProps) => {
       } catch (error) {
         console.error('Error fetching image:', error);
       } finally {
-        // setIsVideoLoading(false);
+        setIsVideoLoading(false);
       }
     };
     fetchImage();
@@ -89,20 +88,14 @@ const PostCard = ({ post }: PostCardProps) => {
     }
   }, [post.$id]);
 
-  console.log(isVideoPlaying);
-
-  const [showControls, setShowControls] = useState(true);
-
   const handleTap = () => {
-    // const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
-    // const ShowingOn = isAndroid || isWindows || isMacOs
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
+    const ShowingOn = isAndroid || isWindows || isMacOs
 
-    // videoElement.muted = ShowingOn ? !isMuted : false
-    // setIsMuted(ShowingOn ? !isMuted : false)
-    setShowControls(!showControls);
-
+    videoElement.muted = ShowingOn ? !isMuted : false
+    setIsMuted(ShowingOn ? !isMuted : false)
   };
-
+  console.log(isVideoPlaying);
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -201,72 +194,57 @@ const PostCard = ({ post }: PostCardProps) => {
             <img src={post.imageUrl} alt="Image" className="post-card_img hover:cursor-pointer" />
           </PhotoView>
         ) : (
-          <>
-            {imageUrl && (
-              <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                {/* <video
-                  id={`video-${post?.$id}`}
-                  autoPlay={isIOS ? false : isVideoPlaying}
-                  loop
-                  controls={isWindows ? true : false}
-                  onClick={handleTap}
-                  className="post-card_img"
-                  controlsList="nodownload nopictureinpicture "
-                  style={{
-                    width: '100%',
-                    borderRadius: '10px',
-                    boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                  }}
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                </video> */}
-                <div
-                  onClick={handleTap}
-                  style={{ position: 'relative', width: '100%', borderRadius: '10px', boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px' }}
-                >
-                  <video
-                    autoPlay
-                    loop
-                    controls={false}
-                    onClick={(e) => e.preventDefault()} // Prevent default behavior on video click
-                    className="post-card_img"
-                    controlsList="nodownload nopictureinpicture"
-                    style={{ width: '100%', borderRadius: '10px' }}
-                  >
-                    <source src={imageUrl} type="video/mp4" />
-                  </video>
-                  {showControls && (
-                    // Render your custom controls here
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-                      {/* Your custom controls */}
-                    </div>
-                  )}
-                </div>
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '5px',
-                    right: '10px',
-                    cursor: 'pointer',
-                  }}
-                  onClick={handleTap}
-                >
-                  {/* {isAndroid || isMacOs ? (
-                    isMuted ? (
-                      <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
-                    ) : (
-                      <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
-                    )
-                  ) : null} */}
-                </div>
+          <div style={{ position: 'relative', borderRadius: '25px' }}>
+            {isVideoLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader />
               </div>
+            ) : (
+              <>
+                {imageUrl && (
+                  <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+                    <video
+                      id={`video-${post?.$id}`}
+                      autoPlay={isVideoPlaying == true ? true : false}
+                      loop
+                      controls={isWindows ? true : false}
+                      onClick={handleTap}
+                      className="post-card_img"
+                      style={{
+                        width: '100%',
+                        borderRadius: '10px',
+                        boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
+                      }}
+                    >
+                      <source src={imageUrl} type="video/mp4" />
+                    </video>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '10px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={handleTap}
+                    >
+                      {isAndroid || isMacOs ? (
+                        isMuted ? (
+                          <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                        ) : (
+                          <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                        )
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
-          </>
+          </div>
         )}
       </PhotoProvider>
 
       <PostStats post={post} userId={user.id} />
-    </div >
+    </div>
   );
 
 }
