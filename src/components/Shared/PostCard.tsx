@@ -14,7 +14,7 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const { user } = useUserContext();
 
   if (!post.creator) return null;
