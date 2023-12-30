@@ -5,7 +5,6 @@ import { Link } from "react-router-dom"
 import PostStats from "./PostStats"
 import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
-import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
 // import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
 
@@ -16,62 +15,52 @@ type PostCardProps = {
 const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  // const { isLoading: isPostLoading } = useGetRecentPosts();
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-  // const [isMuted, setIsMuted] = useState(true);
-  const { user } = useUserContext()
+  const { user } = useUserContext();
 
-  if (!post.creator) return;
+  if (!post.creator) return null;
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
-
-
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
-
-
-  // For displaying the video player
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
 
   useEffect(() => {
     const fetchDataAndPlayVideo = async () => {
       try {
         const response = await fetch(imageUrl);
-  
+
         if (response.ok) {
           const contentTypeHeader = response.headers.get('Content-Type');
           setContentType(contentTypeHeader || '');
-          console.log("headers = " + contentTypeHeader);
-  
-          // Check if the content type is video and proceed with playing
+
           if (contentTypeHeader && contentTypeHeader.startsWith('video')) {
             const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement | null;
-  
+
             if (videoElement) {
               const handleIntersection = (entries: IntersectionObserverEntry[]) => {
                 const [entry] = entries;
                 if (entry.isIntersecting) {
-                  if (isVideoPlaying) {
+                  if (!isVideoPlaying) {
                     setIsVideoPlaying(true);
                     videoElement.play();
                   }
                 } else {
-                  if (!isVideoPlaying) {
+                  if (isVideoPlaying) {
                     setIsVideoPlaying(false);
                     videoElement.pause();
                   }
                 }
               };
-  
+
               const options = {
                 root: null,
                 rootMargin: '0px',
                 threshold: 0.5,
               };
-  
+
               const observer = new IntersectionObserver(handleIntersection, options);
               observer.observe(videoElement);
-  
+
               return () => {
                 observer.disconnect();
               };
@@ -84,14 +73,11 @@ const PostCard = ({ post }: PostCardProps) => {
         }
       } catch (error) {
         console.error('Error fetching image:', error);
-      } finally {
-        setIsVideoLoading(false);
       }
     };
-  
+
     fetchDataAndPlayVideo();
   }, [imageUrl, post.$id, isVideoPlaying]);
-  
   
 
   // const handleTap = () => {
@@ -101,7 +87,7 @@ const PostCard = ({ post }: PostCardProps) => {
   //   videoElement.muted = ShowingOn ? !isMuted : false
   //   setIsMuted(ShowingOn ? !isMuted : false)
   // };
-  // console.log(isVideoPlaying);
+  console.log(isVideoPlaying);
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -201,38 +187,30 @@ const PostCard = ({ post }: PostCardProps) => {
           </PhotoView>
         ) : (
           <div style={{ position: 'relative', borderRadius: '25px' }}>
-            {isVideoLoading ? (
-              <div className="flex justify-center items-center h-full">
-                <Loader />
-              </div>
-            ) : (
-              <>
-                {imageUrl && (
-                  <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                    <video
-                      id={`video-${post?.$id}`}
-                      autoPlay={isVideoPlaying}
-                      loop
-                      controls={true}
-                      // onClick={handleTap}
-                      className="post-card_img"
-                      style={{
-                        width: '100%',
-                        borderRadius: '10px',
-                        boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                      }}
-                    >
-                      <source src={imageUrl} type="video/mp4" />
-                    </video>
-                    <div
-                      style={{
-                        position: 'absolute',
-                        bottom: '5px',
-                        right: '10px',
-                        cursor: 'pointer',
-                      }}
-                      // onClick={handleTap}
-                    >
+            {imageUrl && (
+              <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+                <video
+                  id={`video-${post?.$id}`}
+                  autoPlay={isVideoPlaying}
+                  loop
+                  controls={true}
+                  className="post-card_img"
+                  style={{
+                    width: '100%',
+                    borderRadius: '10px',
+                    boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
+                  }}
+                >
+                  <source src={imageUrl} type="video/mp4" />
+                </video>
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '5px',
+                    right: '10px',
+                    cursor: 'pointer',
+                  }}
+                >
                       {/* {
                         isMuted ? (
                           <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
@@ -243,8 +221,6 @@ const PostCard = ({ post }: PostCardProps) => {
                     </div>
                   </div>
                 )}
-              </>
-            )}
           </div>
         )}
       </PhotoProvider>
