@@ -7,7 +7,7 @@ import { sanitizeHTML } from "@/_root/pages/PostDetails"
 import { useEffect, useState } from "react"
 import Loader from "./Loader"
 import { PhotoProvider, PhotoView } from "react-photo-view"
-import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
+// import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
 
 type PostCardProps = {
   post: Models.Document
@@ -18,7 +18,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   // const { isLoading: isPostLoading } = useGetRecentPosts();
   const [isVideoLoading, setIsVideoLoading] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  // const [isMuted, setIsMuted] = useState(true);
   const { user } = useUserContext()
 
   if (!post.creator) return;
@@ -33,16 +33,48 @@ const PostCard = ({ post }: PostCardProps) => {
   // For displaying the video player
   const imageUrl = post?.imageUrl.replace('/preview', '/view');
 
-  // Check for the content type depending on the response
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchDataAndPlayVideo = async () => {
       try {
         const response = await fetch(imageUrl);
-
+  
         if (response.ok) {
           const contentTypeHeader = response.headers.get('Content-Type');
           setContentType(contentTypeHeader || '');
           console.log("headers = " + contentTypeHeader);
+  
+          // Check if the content type is video and proceed with playing
+          if (contentTypeHeader && contentTypeHeader.startsWith('video')) {
+            const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement | null;
+  
+            if (videoElement) {
+              const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+                const [entry] = entries;
+                if (entry.isIntersecting) {
+                  setIsVideoPlaying(true);
+                  videoElement.play();
+                } else {
+                  setIsVideoPlaying(false);
+                  videoElement.pause();
+                }
+              };
+  
+              const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5,
+              };
+  
+              const observer = new IntersectionObserver(handleIntersection, options);
+              observer.observe(videoElement);
+  
+              return () => {
+                observer.disconnect();
+              };
+            } else {
+              console.error(`Video element with ID 'video-${post.$id}' not found.`);
+            }
+          }
         } else {
           console.error('Failed to fetch image');
         }
@@ -52,50 +84,19 @@ const PostCard = ({ post }: PostCardProps) => {
         setIsVideoLoading(false);
       }
     };
-    fetchImage();
-  }, [imageUrl]);
+  
+    fetchDataAndPlayVideo();
+  }, [imageUrl, post.$id]);
+  
 
-  // Play the video on scroll only 
-  useEffect(() => {
-    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement | null;
+  // const handleTap = () => {
+  //   const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
+  //   const ShowingOn = isAndroid || isWindows || isMacOs
 
-    if (videoElement) {
-      const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          setIsVideoPlaying(true);
-          videoElement.play();
-        } else {
-          setIsVideoPlaying(false);
-          videoElement.pause();
-        }
-      };
-
-      const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5,
-      };
-
-      const observer = new IntersectionObserver(handleIntersection, options);
-      observer.observe(videoElement);
-
-      return () => {
-        observer.disconnect();
-      };
-    } else {
-      console.error(`Video element with ID 'video-${post.$id}' not found.`);
-    }
-  }, [post.$id]);
-
-  const handleTap = () => {
-    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
-    const ShowingOn = isAndroid || isWindows || isMacOs
-
-    videoElement.muted = ShowingOn ? !isMuted : false
-    setIsMuted(ShowingOn ? !isMuted : false)
-  };
-  console.log(isVideoPlaying);
+  //   videoElement.muted = ShowingOn ? !isMuted : false
+  //   setIsMuted(ShowingOn ? !isMuted : false)
+  // };
+  // console.log(isVideoPlaying);
 
   return (
     <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
@@ -203,29 +204,12 @@ const PostCard = ({ post }: PostCardProps) => {
               <>
                 {imageUrl && (
                   <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                    {isIOS ? (
-                      <video
-                        // id={`video-${post?.$id}`}
-                        autoPlay
-                        loop
-                        controls
-                        // onClick={handleTap}
-                        className="post-card_img"
-                        style={{
-                          width: '100%',
-                          borderRadius: '10px',
-                          boxShadow: 'rgba(17, 67, 98, 0.841) 0px 20px 30px -10px',
-                        }}
-                      >
-                        <source src={imageUrl} type="video/mp4" />
-                      </video>
-                    ):(
-                      <video
+                    <video
                       id={`video-${post?.$id}`}
                       autoPlay={isVideoPlaying}
                       loop
-                      controls={isWindows ? true : false}
-                      onClick={handleTap}
+                      controls={true}
+                      // onClick={handleTap}
                       className="post-card_img"
                       style={{
                         width: '100%',
@@ -235,7 +219,6 @@ const PostCard = ({ post }: PostCardProps) => {
                     >
                       <source src={imageUrl} type="video/mp4" />
                     </video>
-                    )}
                     <div
                       style={{
                         position: 'absolute',
@@ -243,15 +226,15 @@ const PostCard = ({ post }: PostCardProps) => {
                         right: '10px',
                         cursor: 'pointer',
                       }}
-                      onClick={handleTap}
+                      // onClick={handleTap}
                     >
-                      {isAndroid || isMacOs ? (
+                      {/* {
                         isMuted ? (
                           <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
                         ) : (
                           <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
                         )
-                      ) : null}
+                      } */}
                     </div>
                   </div>
                 )}
