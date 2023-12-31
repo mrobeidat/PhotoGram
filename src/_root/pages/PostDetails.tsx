@@ -210,10 +210,10 @@ const PostDetails = () => {
                     <p className="subtle-semibold lg:small-regular">
                       {post?.location}
                     </p>
+                    <span>{post.updated ? "•" : ""}</span>
                     <p className="subtle-semibold lg:small-regular">
-                      {post.updated == true ? "• (Edited)" : ""}
+                      {post.updated == true ? "(Edited)" : ""}
                     </p>
-
                   </div>
                 </div>
               </Link>

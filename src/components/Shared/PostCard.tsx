@@ -138,8 +138,8 @@ const PostCard = ({ post }: PostCardProps) => {
               <p className="subtle-semibold lg:small-regular">{formatDate(post.$createdAt)}</p>
               •
               <p className="subtle-semibold lg:small-regular">{post.location}</p>
-
-              <p className="subtle-semibold lg:small-regular">{post.updated == true ? "• (Edited)" : ""}</p>
+              <span>{post.updated ? "•" : ""}</span>
+              <p className="subtle-semibold lg:small-regular">{post.updated == true ? "(Edited)" : ""}</p>
             </div>
           </div>
         </div>
