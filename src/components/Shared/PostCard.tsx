@@ -16,6 +16,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const [contentType, setContentType] = useState('');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const { user } = useUserContext();
+  const [isMuted, setIsMuted] = useState(false);
 
   if (!post.creator) return null;
 
@@ -80,13 +81,13 @@ const PostCard = ({ post }: PostCardProps) => {
   }, [imageUrl, post.$id, isVideoPlaying]);
 
 
-  // const handleTap = () => {
-  //   const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
-  //   const ShowingOn = isAndroid || isWindows || isMacOs
+  const handleTap = () => {
+    const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
+    // Toggle the mute state
+    videoElement.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
 
-  //   videoElement.muted = ShowingOn ? !isMuted : false
-  //   setIsMuted(ShowingOn ? !isMuted : false)
-  // };
   console.log(isVideoPlaying);
 
   return (
@@ -188,12 +189,13 @@ const PostCard = ({ post }: PostCardProps) => {
         ) : (
           <div style={{ position: 'relative', borderRadius: '25px' }}>
             {imageUrl && (
-              <div className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
+              <div onClick={handleTap}
+                className="post_details-img object-cover !w-full !h-auto !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
                 <video
                   id={`video-${post?.$id}`}
                   autoPlay={isVideoPlaying}
                   loop
-                  controls={true}
+                  // controls={true}
                   className="post-card_img"
                   style={{
                     width: '100%',
@@ -211,13 +213,12 @@ const PostCard = ({ post }: PostCardProps) => {
                     cursor: 'pointer',
                   }}
                 >
-                  {/* {
-                        isMuted ? (
-                          <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
-                        ) : (
-                          <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
-                        )
-                      } */}
+                  {isMuted ? (
+                    <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                  ) : (
+                    <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                  )
+                  }
                 </div>
               </div>
             )}
