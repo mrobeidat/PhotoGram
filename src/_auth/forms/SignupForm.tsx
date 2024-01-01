@@ -146,8 +146,7 @@ const { formState } = form;
             )}
           />
 
-          <Button type="submit" className="shad-button_primary">
-disabled={!formState.isDirty}
+          <Button type="submit" className="shad-button_primary" disabled={!formState.isDirty}>
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
                 <span className="general-loader"></span> Loading...
