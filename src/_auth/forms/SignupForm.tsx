@@ -71,7 +71,7 @@ const SignupForm = () => {
       console.log({ error });
     }
   };
-
+const { formState } = form;
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
@@ -147,6 +147,7 @@ const SignupForm = () => {
           />
 
           <Button type="submit" className="shad-button_primary">
+disabled={!formState.isDirty}
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
                 <span className="general-loader"></span> Loading...
