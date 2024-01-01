@@ -27,7 +27,7 @@ const SignupForm = () => {
       password: "",
     },
   });
-
+  const { formState } = form;
   // Queries
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccount();
   const { mutateAsync: signInAccount, isPending: isSigningInUser } = useSignInAccount();
@@ -63,7 +63,17 @@ const SignupForm = () => {
 
         navigate("/");
       } else {
-        toast({ title: "Login failed. Please try again.", });
+        toast({
+          title: "Email Already Exists. Please try again with a different email address.",
+          style: {
+            backgroundColor: '#FEE2E2',
+            borderColor: '#FECACA',
+            color: '#C53030',
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            position: 'relative',
+          }
+        });
 
         return;
       }
@@ -71,7 +81,6 @@ const SignupForm = () => {
       console.log({ error });
     }
   };
-const { formState } = form;
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">

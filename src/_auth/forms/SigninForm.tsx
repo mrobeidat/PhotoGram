@@ -28,42 +28,43 @@ const SigninForm = () => {
       password: "",
     },
   });
+  const { formState } = form;
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
     try {
       const session = await signInAccount(user);
-  
+
       if (!session) {
         toast({
           title: "Login failed. Incorrect username or password",
           style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
         });
-  
+
         return;
       }
-  
+
       const isLoggedIn = await checkAuthUser();
-  
+
       if (isLoggedIn) {
         form.reset();
-  
+
         navigate("/");
       } else {
         toast({ title: "Login failed. Please try again." });
-  
+
         return;
       }
     } catch (error) {
       // Handle other errors
       console.error("Login error:", error);
-  
+
       toast({
         title: "Login failed. Something went wrong. Please try again later.",
         style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
       });
     }
   };
-  
+
 
   return (
     <Form {...form}>
@@ -110,7 +111,7 @@ const SigninForm = () => {
             )}
           />
 
-          <Button type="submit" className="shad-button_primary">
+          <Button type="submit" className="shad-button_primary" disabled={!formState.isDirty}>
             {isPending || isUserLoading ? (
               <div className="flex-center gap-2">
                 <span className="general-loader"></span> Loading...
