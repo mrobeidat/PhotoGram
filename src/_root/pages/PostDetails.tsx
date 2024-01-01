@@ -202,7 +202,7 @@ const PostDetails = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex-center gap-2 mr-3 text-light-3">
+                  <div className="flex-center gap-1 mr-3 text-light-3">
                     <p className="subtle-semibold lg:small-regular ">
                       {formatDate(post?.$createdAt)}
                     </p>
