@@ -10,12 +10,12 @@ import {
 import { LikedPosts } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
-import ProfileLoader from '../../components/Shared/Loaders/ProfileLoader'
+import ProfileLoader from "../../components/Shared/Loaders/ProfileLoader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
 import { useEffect, useState } from "react";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import 'react-photo-view/dist/react-photo-view.css';
-import { PhotoProvider, PhotoView } from 'react-photo-view';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import "react-photo-view/dist/react-photo-view.css";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 
 interface StabBlockProps {
   value: string | number;
@@ -48,7 +48,6 @@ const Profile = () => {
   // Fetch user data by ID using a custom hook
   const { data: currentUser } = useGetUserById(id || "");
 
-
   // State for profile view count
   const [viewCount, setViewCount] = useState<number>(0);
 
@@ -76,7 +75,6 @@ const Profile = () => {
     }
   }, [id, user.id]);
 
-
   // Display loader while fetching user data
   if (!currentUser)
     return (
@@ -88,7 +86,6 @@ const Profile = () => {
   // Determine if the user has three or more posts
   const hasThreeOrMorePosts = currentUser.posts.length >= 3;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  
 
   return (
     <div className="profile-container">
@@ -96,17 +93,25 @@ const Profile = () => {
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <PhotoProvider
             speed={() => 450}
-            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
-            bannerVisible={false} maskOpacity={0.8}
+            easing={(type) =>
+              type === 2
+                ? "cubic-bezier(0.36, 0, 0.66, -0.56)"
+                : "cubic-bezier(0.34, 1.56, 0.64, 1)"
+            }
+            bannerVisible={false}
+            maskOpacity={0.8}
           >
             <PhotoView src={currentUser.imageUrl}>
               <img
-                src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                src={
+                  currentUser.imageUrl ||
+                  "/assets/icons/profile-placeholder.svg"
+                }
                 alt="profile"
                 className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover cursor-pointer"
                 style={{
                   filter: "drop-shadow(0 0 0.1rem)",
-                  boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)"
+                  boxShadow: "0 0.5rem 1rem rgba(0, 0, 0, 0.15)",
                 }}
               />
             </PhotoView>
@@ -125,7 +130,7 @@ const Profile = () => {
                       src={"/assets/icons/top-creator.png"}
                       alt="badge"
                       width={17}
-                      className="ml-2 object-contain"
+                      className="ml-2 object-contain select-none pointer-events-none"
                     />
                     <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                       Top Creator
@@ -163,14 +168,15 @@ const Profile = () => {
               {currentUser.bio}
             </p>
           </div>
-
         </div>
         <div className="flex justify-center gap-4">
           <div className={`${user.id !== currentUser.$id && "hidden"}`}>
             <Link
               to={`/update-profile/${currentUser.$id}`}
-              className={`h-12 bg-gray-900 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.$id && "hidden"
-                }`}>
+              className={`h-12 bg-gray-900 px-5 text-light-1 flex-center gap-2 rounded-lg ${
+                user.id !== currentUser.$id && "hidden"
+              }`}
+            >
               <img
                 src={"/assets/icons/edit.svg"}
                 alt="edit"
@@ -182,15 +188,12 @@ const Profile = () => {
               </p>
             </Link>
             <div className={`${user.id !== currentUser.$id && "hidden"}`}>
-
               <div className="border border-white rounded-lg backdrop-blur-xl p-2 mt-4 flex gap-2 cursor-default">
                 <PeopleAltIcon />
                 <h3>Profile Views: {viewCount}</h3>
               </div>
             </div>
           </div>
-
-
         </div>
       </div>
       <hr className="border w-4/5 border-dark-4/80" />
@@ -198,8 +201,10 @@ const Profile = () => {
         <div className="flex max-w-5xl w-full">
           <Link
             to={`/profile/${id}`}
-            className={`profile-tab rounded-l-lg ${pathname === `/profile/${id}` && "!bg-dark-3"
-              }`}>
+            className={`profile-tab rounded-l-lg ${
+              pathname === `/profile/${id}` && "!bg-dark-3"
+            }`}
+          >
             <img
               src={"/assets/icons/posts.svg"}
               alt="posts"
@@ -210,8 +215,10 @@ const Profile = () => {
           </Link>
           <Link
             to={`/profile/${id}/liked-posts`}
-            className={`profile-tab rounded-r-lg ${pathname === `/profile/${id}/liked-posts` && "!bg-dark-3"
-              }`}>
+            className={`profile-tab rounded-r-lg ${
+              pathname === `/profile/${id}/liked-posts` && "!bg-dark-3"
+            }`}
+          >
             <img
               src={"/assets/icons/like.svg"}
               alt="like"
@@ -227,12 +234,24 @@ const Profile = () => {
         {currentUser.posts.length === 0 ? (
           <Route
             index
-            element={<img draggable="false" className="w-80 h-50 mt-32 pointer-events-none select-none" width={700} src="/assets/icons/NoPostsYet.png" />}
+            element={
+              <img
+                draggable="false"
+                className="w-80 h-50 mt-32 pointer-events-none select-none"
+                width={700}
+                src="/assets/icons/NoPostsYet.png"
+              />
+            }
           />
         ) : (
           <Route
             index
-            element={<RelatedPosts posts={currentUser.posts.reverse()} showUser={false} />}
+            element={
+              <RelatedPosts
+                posts={currentUser.posts.reverse()}
+                showUser={false}
+              />
+            }
           />
         )}
         {currentUser.$id === user.id && (
