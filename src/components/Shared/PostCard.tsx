@@ -97,7 +97,7 @@ const PostCard = ({ post }: PostCardProps) => {
   // };
 
   console.log(isVideoPlaying);
-  const [isFullContent, setIsFullContent] = useState(false); // Declare here
+  const [isFullContent, setIsFullContent] = useState(false);
   const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false);
 
   const handleSeeMoreClick = () => {
@@ -221,24 +221,24 @@ const PostCard = ({ post }: PostCardProps) => {
           dangerouslySetInnerHTML={{
             __html: isFullContent
               ? sanitizedCaption
-              : sanitizedCaption.substring(0, 600) +
-                (sanitizedCaption.length > 600 ? "..." : ""),
+              : sanitizedCaption.substring(0, 550) +
+                (sanitizedCaption.length > 600 && !isFullContent ? "..." : ""),
           }}
           style={{ fontSize: "14px", fontWeight: "100" }}
         />
-        {sanitizedCaption.length > 600 && (
+        {sanitizedCaption.length > 500 && (
           <div className="transition-opacity">
             {!isFullContent ? (
               <button
                 onClick={handleSeeMoreClick}
-                className="text-blue-500 mt-1 underline focus:outline-none transition-transform transform active:scale-95"
+                className="text-neutral-500 hover:underline focus:outline-none transition-transform transform active:scale-95"
               >
-                See More
+                See More...
               </button>
             ) : (
               <button
                 onClick={handleSeeLessClick}
-                className="text-blue-500 hover:underline focus:outline-none transition-transform transform active:scale-95"
+                className="text-neutral-500 hover:underline focus:outline-none transition-transform transform active:scale-95"
               >
                 See Less
               </button>
