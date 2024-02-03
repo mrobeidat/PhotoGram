@@ -231,14 +231,14 @@ const PostCard = ({ post }: PostCardProps) => {
             {!isFullContent ? (
               <button
                 onClick={handleSeeMoreClick}
-                className="text-neutral-500 hover:underline focus:outline-none transition-transform transform active:scale-95"
+                className="text-neutral-500 underline focus:outline-none transition-transform transform active:scale-95"
               >
                 See More...
               </button>
             ) : (
               <button
                 onClick={handleSeeLessClick}
-                className="text-neutral-500 hover:underline focus:outline-none transition-transform transform active:scale-95"
+                className="text-neutral-500 underline focus:outline-none transition-transform transform active:scale-95"
               >
                 See Less
               </button>
