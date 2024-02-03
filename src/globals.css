@@ -344,10 +344,7 @@ video::-webkit-media-controls-start-playback-button {
   .tooltip-verified {
     visibility: hidden;
     width: 100px;
-    /* backdrop-filter: blur(70px); */
     background: linear-gradient(to right, #004e9287, #0004286f);
-    /* -webkit-backdrop-filter: blur(70px); */
-    /* -webkit-font-smoothing: subpixel-antialiased; */
     color: #fff;
     text-align: center;
     padding: 5px;
@@ -365,9 +362,7 @@ video::-webkit-media-controls-start-playback-button {
   .tooltip-verified-creator {
     visibility: hidden;
     width: 80px;
-    /* backdrop-filter: blur(70px); */
     background: linear-gradient(45deg, #ff8a00, rgba(150, 109, 12, 0.679));
-    /* -webkit-backdrop-filter: blur(70px); */
     color: #fff;
     text-align: center;
     padding: 2px;
@@ -382,7 +377,7 @@ video::-webkit-media-controls-start-playback-button {
     font-size: x-small;
   }
 
-  .pin-icon-container:hover .tooltip-verified-creator {
+   .tooltip-verified-creator {
     visibility: visible;
     opacity: 1;
     z-index: 9999;
@@ -395,7 +390,7 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   .tooltip {
-    visibility: hidden;
+    visibility: visible;
     width: 100px;
     backdrop-filter: blur(70px);
     background: linear-gradient(to right, #004e92, #000428);
@@ -414,8 +409,8 @@ video::-webkit-media-controls-start-playback-button {
     font-size: x-small;
   }
 
-  .pin-icon-container:hover .tooltip {
-    visibility: visible;
+   .tooltip {
+    visibility: visible !important;
     opacity: 2;
   }
 
@@ -456,7 +451,7 @@ video::-webkit-media-controls-start-playback-button {
     }
   }
 
-  .pin-icon:hover {
+  .pin-icon {
     animation: hvr-hang-sink 2s;
     animation-iteration-count: infinite;
   }
