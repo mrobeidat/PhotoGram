@@ -232,14 +232,14 @@ const PostCard = ({ post }: PostCardProps) => {
               {!isFullContent ? (
                 <a
                   onClick={handleSeeMoreClick}
-                  className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                  className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
                 >
                   ...see more
                 </a>
               ) : (
                 <a
                   onClick={handleSeeLessClick}
-                  className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                  className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
                 >
                   ...see less
                 </a>
