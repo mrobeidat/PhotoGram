@@ -222,8 +222,8 @@ const PostCard = ({ post }: PostCardProps) => {
             dangerouslySetInnerHTML={{
               __html: isFullContent
                 ? sanitizedCaption
-                : sanitizedCaption.substring(0, 550) + "...",
-            }}
+                : sanitizedCaption.substring(0, 550) + (sanitizedCaption.length > 550 ? "..." : ""),
+              }}
             style={{ fontSize: "14px", fontWeight: "100" }}
           />
           {sanitizedCaption.length > 500 && (
