@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'FacebookFont';
-  src: url('./fonts/your-facebook-font.woff2') format('woff2'),
-    url('./fonts/your-facebook-font.woff') format('woff');
+  font-family: "FacebookFont";
+  src: url("./fonts/your-facebook-font.woff2") format("woff2"),
+    url("./fonts/your-facebook-font.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -19,9 +19,13 @@
 
   body {
     background: rgb(63, 94, 251);
-    background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%);
+    background: radial-gradient(
+      circle,
+      rgb(29, 43, 110) 0%,
+      rgba(0, 0, 0, 1) 100%
+    );
     @apply text-white min-h-screen font-inter;
-    font-family: 'FacebookFont', sans-serif;
+    font-family: "FacebookFont", sans-serif;
   }
 }
 
@@ -54,7 +58,6 @@ video::-webkit-media-controls-start-playback-button {
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -74,7 +77,6 @@ video::-webkit-media-controls-start-playback-button {
 }
 
 @media (width < 750px) {
-
   .custom-scrollbar::-webkit-scrollbar {
     display: none;
     width: 3px;
@@ -88,11 +90,9 @@ video::-webkit-media-controls-start-playback-button {
     text-align: center;
     padding: 1px;
   }
-
 }
 
 @layer utilities {
-
   /* TYPOGRAPHY */
   .h1-bold {
     @apply text-[36px] font-bold leading-[140%] tracking-tighter;
@@ -315,7 +315,6 @@ video::-webkit-media-controls-start-playback-button {
   .leftsidebar-link {
     background-image: none;
     @apply rounded-lg base-medium;
-
   }
 
   .leftsidebar-link:hover {
@@ -377,7 +376,7 @@ video::-webkit-media-controls-start-playback-button {
     font-size: x-small;
   }
 
-   .tooltip-verified-creator {
+  .pin-icon-container:hover .tooltip-verified-creator {
     visibility: visible;
     opacity: 1;
     z-index: 9999;
@@ -409,7 +408,7 @@ video::-webkit-media-controls-start-playback-button {
     font-size: x-small;
   }
 
-   .tooltip {
+  .tooltip {
     visibility: visible !important;
     opacity: 2;
   }
@@ -432,7 +431,6 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   @keyframes moveBorder {
-
     0%,
     100% {
       box-shadow: 0 0 5px rgba(89, 159, 205, 0.5);
@@ -457,7 +455,6 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   @keyframes hvr-hang-sink {
-
     0%,
     100% {
       transform: translateY(0);
@@ -467,7 +464,6 @@ video::-webkit-media-controls-start-playback-button {
       transform: translateY(8px);
     }
   }
-
 
   /* Topbar */
   .topbar {
@@ -487,7 +483,6 @@ video::-webkit-media-controls-start-playback-button {
 }
 
 @layer components {
-
   /* SHADCN COMPONENTS */
   /* Form */
 
@@ -496,7 +491,7 @@ video::-webkit-media-controls-start-playback-button {
     height: 20px;
     border-radius: 50%;
     display: inline-block;
-    border-top: 3px solid #FFF;
+    border-top: 3px solid #fff;
     border-right: 3px solid transparent;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
@@ -521,12 +516,20 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   .shad-input {
-    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgba(27, 24, 113, 0.339) 93.2%);
+    background-image: linear-gradient(
+      111.4deg,
+      rgba(7, 7, 9, 1) 6.5%,
+      rgba(27, 24, 113, 0.339) 93.2%
+    );
     @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
   .shad-textarea {
-    background-image: linear-gradient(111.4deg, rgba(7, 7, 9, 1) 6.5%, rgba(27, 24, 113, 0.339) 93.2%);
+    background-image: linear-gradient(
+      111.4deg,
+      rgba(7, 7, 9, 1) 6.5%,
+      rgba(27, 24, 113, 0.339) 93.2%
+    );
     @apply h-auto bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
@@ -546,7 +549,11 @@ video::-webkit-media-controls-start-playback-button {
 
 .ql-snow .ql-picker-options {
   background: rgb(63, 94, 251) !important;
-  background: radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%) !important
+  background: radial-gradient(
+    circle,
+    rgb(29, 43, 110) 0%,
+    rgba(0, 0, 0, 1) 100%
+  ) !important;
 }
 /* 
 .PhotoView__Photo {
@@ -555,5 +562,5 @@ video::-webkit-media-controls-start-playback-button {
 
 .PhotoView__PhotoWrap {
   backdrop-filter: blur(8px);
-  color:rgba(17, 67, 98, 0.841) 0px 20px 30px -10px
+  color: rgba(17, 67, 98, 0.841) 0px 20px 30px -10px;
 }
