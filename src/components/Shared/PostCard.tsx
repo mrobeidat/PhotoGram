@@ -222,31 +222,31 @@ const PostCard = ({ post }: PostCardProps) => {
             dangerouslySetInnerHTML={{
               __html: isFullContent
                 ? sanitizedCaption
-                : sanitizedCaption.substring(0, 550) + (sanitizedCaption.length > 550 ? "..." : ""),
-              }}
+                : sanitizedCaption.substring(0, 550) +
+                  (sanitizedCaption.length > 550 ? "..." : ""),
+            }}
             style={{ fontSize: "14px", fontWeight: "100" }}
           />
           {sanitizedCaption.length > 500 && (
-          <div>
-            {!isFullContent ? (
-              <a
-                onClick={handleSeeMoreClick}
-                className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
-              >
-                ...see more
-              </a>
-            ) : (
-              <a
-                onClick={handleSeeLessClick}
-                className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
-              >
-                ...see less
-              </a>
-            )}
-          </div>
-        )}
+            <div>
+              {!isFullContent ? (
+                <a
+                  onClick={handleSeeMoreClick}
+                  className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                >
+                  ...see more
+                </a>
+              ) : (
+                <a
+                  onClick={handleSeeLessClick}
+                  className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                >
+                  ...see less
+                </a>
+              )}
+            </div>
+          )}
         </a>
-        
 
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (
@@ -268,13 +268,15 @@ const PostCard = ({ post }: PostCardProps) => {
         maskOpacity={0.8}
       >
         {contentType.startsWith("image/") ? (
-          <PhotoView src={post?.imageUrl}>
-            <img
-              src={post.imageUrl}
-              alt="Image"
-              className="post-card_img hover:cursor-pointer"
-            />
-          </PhotoView>
+          <Link to={`/posts/${post.$id}`}>
+            <PhotoView src={post?.imageUrl}>
+              <img
+                src={post.imageUrl}
+                alt="Image"
+                className="post-card_img hover:cursor-pointer"
+              />
+            </PhotoView>
+          </Link>
         ) : (
           <div style={{ position: "relative", borderRadius: "25px" }}>
             {imageUrl && (
