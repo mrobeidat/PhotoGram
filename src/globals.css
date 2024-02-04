@@ -564,3 +564,8 @@ video::-webkit-media-controls-start-playback-button {
   backdrop-filter: blur(8px);
   color: rgba(17, 67, 98, 0.841) 0px 20px 30px -10px;
 }
+
+.smooth-transition {
+  transition: max-height 0.8s;
+  max-height: 1500px;
+}

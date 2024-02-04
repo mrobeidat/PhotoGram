@@ -216,39 +216,37 @@ const PostCard = ({ post }: PostCardProps) => {
           <p
             className={`${
               isFullContent ? "max-h-full" : "max-h-36"
-            } overflow-hidden transition-max-height ${
+            } transition-max-height ${
               isSeeMoreClicked ? "smooth-transition" : ""
             }`}
             dangerouslySetInnerHTML={{
               __html: isFullContent
                 ? sanitizedCaption
-                : sanitizedCaption.substring(0, 550) +
-                  (sanitizedCaption.length > 600 && !isFullContent
-                    ? "..."
-                    : ""),
+                : sanitizedCaption.substring(0, 550),
             }}
             style={{ fontSize: "14px", fontWeight: "100" }}
           />
-        </a>
-        {sanitizedCaption.length > 500 && (
-          <div className="transition-opacity">
+          {sanitizedCaption.length > 500 && (
+          <div>
             {!isFullContent ? (
               <a
                 onClick={handleSeeMoreClick}
-                className="text-neutral-500 underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
               >
-                See more..
+                ...see more
               </a>
             ) : (
               <a
                 onClick={handleSeeLessClick}
-                className="text-neutral-500 underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                className="text-neutral-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
               >
-                See Less
+                ...see less
               </a>
             )}
           </div>
         )}
+        </a>
+        
 
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (
