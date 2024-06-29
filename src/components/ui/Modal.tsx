@@ -34,13 +34,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+      className="fixed inset-0 z- flex items-center justify-center bg-black bg-opacity-60"
       onClick={handleOutsideClick}
     >
       <div
         ref={modalRef}
         className="bg-black/50 max-w-92 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6"
-        tabIndex={-1}
+        tabIndex={1}
         onKeyDown={handleEscapePress}
       >
         <div className="p-4">
