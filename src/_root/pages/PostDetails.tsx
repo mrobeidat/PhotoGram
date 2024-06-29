@@ -288,7 +288,7 @@ const PostDetails = () => {
                     comments?.documents.map((comment: IComment) => (
                       <div
                         key={comment.$id}
-                        className="comment bg-dark/20 -z-2 backdrop-blur-lg p-2 rounded-lg flex justify-between items-start animate-slideIn"
+                        className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
                       >
                         <div className="flex items-start gap-2">
                           <img
