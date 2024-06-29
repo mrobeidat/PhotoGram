@@ -17,7 +17,7 @@ import RelatedPosts from "@/components/Shared/RelatedPosts";
 import DOMPurify from "dompurify";
 import "react-photo-view/dist/react-photo-view.css";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
@@ -49,6 +49,7 @@ const PostDetails = () => {
   const { mutate: deleteComment } = useDeleteComment();
   const relatedPosts = userPosts?.documents.filter((userPost) => userPost.$id !== id);
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleDeletePost = async () => {
     deletePost({ postId: id, imageId: post?.imageId });
@@ -280,7 +281,7 @@ const PostDetails = () => {
               </ul>
             </div>
 
-            <Modal isOpen={showComments} onClose={toggleComments}>
+            <Modal containerRef={containerRef} isOpen={showComments} onClose={toggleComments}>
               <h3 className="body-bold md:h3-bold mb-8">Comments</h3>
               <div className="max-h-60 overflow-y-auto space-y-2 scrollbar-thin">
                 {areCommentsLoading ? (
@@ -293,13 +294,17 @@ const PostDetails = () => {
                         className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
                       >
                         <div className="flex items-start gap-2">
-                          <img
-                            src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                            alt="user"
-                            className="w-6 h-6 rounded-full"
-                          />
+                          <Link to={`/profile/${comment.userId}`}>
+                            <img
+                              src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                              alt="user"
+                              className="w-6 h-6 rounded-full object-cover"
+                            />
+                          </Link>
                           <div>
-                            <p className="text-light-1 text-sm font-semibold">{comment.user?.name ?? 'Unknown User'}</p>
+                            <Link to={`/profile/${comment.userId}`} className="text-light-1 text-sm font-semibold hover:underline">
+                              {comment.user?.name ?? 'Unknown User'}
+                            </Link>
                             <p className="text-light-1 text-sm">{comment.text}</p>
                           </div>
                         </div>
@@ -321,8 +326,9 @@ const PostDetails = () => {
               </div>
               <div className="flex gap-3 items-center">
                 <textarea
-                  onKeyUp={(e) => {
+                  onKeyDown={(e) => {
                     if (e.key === "Enter") {
+                      e.preventDefault();
                       handleCreateComment();
                     }
                   }}

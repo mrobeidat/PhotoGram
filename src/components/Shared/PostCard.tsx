@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import PostStats from "@/components/Shared/PostStats";
@@ -16,6 +16,7 @@ import {
 import { formatDate } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 type PostCardProps = {
   post: Models.Document;
@@ -41,6 +42,8 @@ const PostCard = ({ post }: PostCardProps) => {
   const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(post.$id);
   const { mutate: createComment } = useCreateComment();
   const { mutate: deleteComment } = useDeleteComment();
+  const containerRef = useRef<HTMLDivElement>(null);
+
 
   if (!post.creator) return null;
 
@@ -158,8 +161,8 @@ const PostCard = ({ post }: PostCardProps) => {
   return (
     <div
       className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID
-          ? "post-card-pinned"
-          : "post-card"
+        ? "post-card-pinned"
+        : "post-card"
         }`}
     >
       <Link to={`/posts/${post.$id}`}>
@@ -348,12 +351,6 @@ const PostCard = ({ post }: PostCardProps) => {
                     cursor: "pointer",
                   }}
                 >
-                  {/* {isMuted ? (
-                    <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
-                  ) : (
-                    <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
-                  )
-                  } */}
                 </div>
               </div>
             )}
@@ -364,66 +361,72 @@ const PostCard = ({ post }: PostCardProps) => {
       <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
 
       {showComments && (
-       <Modal isOpen={showComments} onClose={toggleComments}>
-       <h3 className="body-bold md:h3-bold mb-8">Comments</h3>
-       <div className="max-h-60 overflow-y-auto space-y-2 scrollbar-thin">
-         {areCommentsLoading ? (
-           <CommentsLoader />
-         ) : (
-           (comments?.documents?.length ?? 0) > 0 ? (
-             comments?.documents.map((comment: IComment) => (
-               <div
-                 key={comment.$id}
-                 className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
-               >
-                 <div className="flex items-start gap-2">
-                   <img
-                     src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                     alt="user"
-                     className="w-6 h-6 rounded-full"
-                   />
-                   <div>
-                     <p className="text-light-1 text-sm font-semibold">{comment.user?.name ?? 'Unknown User'}</p>
-                     <p className="text-light-1 text-sm">{comment.text}</p>
-                   </div>
-                 </div>
-                 {user.id === comment.userId && (
-                   <Button
-                     onClick={() => handleDeleteComment(comment.$id)}
-                     variant="ghost"
-                     className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
-                   >
-                     <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
-                   </Button>
-                 )}
-               </div>
-             ))
-           ) : (
-             <p className="text-light-3 text-center p-5">No comments yet. Be the first to comment!</p>
-           )
-         )}
-       </div>
-       <textarea
-         onKeyUp={(e) => {
-           if (e.key === "Enter") {
-             handleCreateComment();
-           }
-         }}
-         value={commentText}
-         onChange={(e) => setCommentText(e.target.value)}
-         placeholder="Add a comment..."
-         className="w-full p-2 mb-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent resize-none shadow-sm transition duration-300"
-       />
-     
-       <Button
-         onClick={handleCreateComment}
-         className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-         disabled={!commentText.trim()}
-       >
-         Post Comment
-       </Button>
-     </Modal>
-     
+        <Modal containerRef={containerRef} isOpen={showComments} onClose={toggleComments}>
+          <h3 className="body-bold md:h3-bold mb-8">Comments</h3>
+          <div className="max-h-60 overflow-y-auto space-y-2 scrollbar-thin">
+            {areCommentsLoading ? (
+              <CommentsLoader />
+            ) : (
+              (comments?.documents?.length ?? 0) > 0 ? (
+                comments?.documents.map((comment: IComment) => (
+                  <div
+                    key={comment.$id}
+                    className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
+                  >
+                    <div className="flex items-start gap-2">
+                      <Link to={`/profile/${comment.userId}`}>
+                        <img
+                          src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                          alt="user"
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      </Link>
+                      <div>
+                        <Link to={`/profile/${comment.userId}`} className="text-light-1 text-sm font-semibold hover:underline">
+                          {comment.user?.name ?? 'Unknown User'}
+                        </Link>
+                        <p className="text-light-1 text-sm">{comment.text}</p>
+                      </div>
+                    </div>
+                    {user.id === comment.userId && (
+                      <Button
+                        onClick={() => handleDeleteComment(comment.$id)}
+                        variant="ghost"
+                        className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
+                      >
+                        <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
+                      </Button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-light-3 text-center p-5">No comments yet. Be the first to comment!</p>
+              )
+            )}
+          </div>
+          <div className="flex gap-3 items-center">
+            <textarea
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleCreateComment();
+                }
+              }}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Add a comment..."
+              className="flex-1 p-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
+              style={{ height: '40px', overflow: 'hidden' }}
+            />
+            <Button
+              onClick={handleCreateComment}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              disabled={!commentText.trim()}
+            >
+              <ArrowForwardIcon />
+            </Button>
+          </div>
+        </Modal>
       )}
     </div>
   );

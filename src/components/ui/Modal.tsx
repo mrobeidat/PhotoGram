@@ -6,9 +6,10 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  containerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, containerRef }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -16,7 +17,21 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
     if (modalElement) {
       modalElement.focus();
     }
-  }, [isOpen]);
+
+    const containerElement = containerRef.current;
+
+    if (isOpen && containerElement) {
+      containerElement.classList.add('overflow-hidden');
+    } else if (containerElement) {
+      containerElement.classList.remove('overflow-hidden');
+    }
+
+    return () => {
+      if (containerElement) {
+        containerElement.classList.remove('overflow-hidden');
+      }
+    };
+  }, [isOpen, containerRef]);
 
   const handleOutsideClick = (e: React.MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -51,7 +66,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         </div>
       </div>
     </div>,
-    document.body
+    containerRef.current || document.body
   );
 };
 
