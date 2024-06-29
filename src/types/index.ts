@@ -58,3 +58,15 @@ export type INewUser = {
   username: string;
   password: string;
 };
+
+export type IComment = {
+  $id: string;
+  $collectionId: string;
+  $databaseId: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  userId: string;
+  text: string;
+  user?: IUser;
+};

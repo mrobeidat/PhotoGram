@@ -19,11 +19,9 @@
 
   body {
     background: rgb(63, 94, 251);
-    background: radial-gradient(
-      circle,
-      rgb(29, 43, 110) 0%,
-      rgba(0, 0, 0, 1) 100%
-    );
+    background: radial-gradient(circle,
+        rgb(29, 43, 110) 0%,
+        rgba(0, 0, 0, 1) 100%);
     @apply text-white min-h-screen font-inter;
     font-family: "FacebookFont", sans-serif;
   }
@@ -50,36 +48,12 @@
   border: 3px solid rgba(17, 24, 39, 0.5);
 }
 
-
-/* video::-webkit-media-controls-panel {
-
-  display: none!important;
-
-  -webkit-appearance: none;
-
-}
-
-video::--webkit-media-controls-play-button {
-
-  display: none!important;
-
-  -webkit-appearance: none;
-
-}
-
-video::-webkit-media-controls-start-playback-button {
-
-  display: none!important;
-
-  -webkit-appearance: none;
-
-} */
-
 .shake:hover {
   animation: shake 0.5s ease-in-out;
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -115,6 +89,7 @@ video::-webkit-media-controls-start-playback-button {
 }
 
 @layer utilities {
+
   /* TYPOGRAPHY */
   .h1-bold {
     @apply text-[36px] font-bold leading-[140%] tracking-tighter;
@@ -453,6 +428,7 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   @keyframes moveBorder {
+
     0%,
     100% {
       box-shadow: 0 0 5px rgba(89, 159, 205, 0.5);
@@ -477,6 +453,7 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   @keyframes hvr-hang-sink {
+
     0%,
     100% {
       transform: translateY(0);
@@ -538,20 +515,16 @@ video::-webkit-media-controls-start-playback-button {
   }
 
   .shad-input {
-    background-image: linear-gradient(
-      111.4deg,
-      rgba(7, 7, 9, 1) 6.5%,
-      rgba(27, 24, 113, 0.339) 93.2%
-    );
+    background-image: linear-gradient(111.4deg,
+        rgba(7, 7, 9, 1) 6.5%,
+        rgba(27, 24, 113, 0.339) 93.2%);
     @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
   .shad-textarea {
-    background-image: linear-gradient(
-      111.4deg,
-      rgba(7, 7, 9, 1) 6.5%,
-      rgba(27, 24, 113, 0.339) 93.2%
-    );
+    background-image: linear-gradient(111.4deg,
+        rgba(7, 7, 9, 1) 6.5%,
+        rgba(27, 24, 113, 0.339) 93.2%);
     @apply h-auto bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
@@ -571,12 +544,11 @@ video::-webkit-media-controls-start-playback-button {
 
 .ql-snow .ql-picker-options {
   background: rgb(63, 94, 251) !important;
-  background: radial-gradient(
-    circle,
-    rgb(29, 43, 110) 0%,
-    rgba(0, 0, 0, 1) 100%
-  ) !important;
+  background: radial-gradient(circle,
+      rgb(29, 43, 110) 0%,
+      rgba(0, 0, 0, 1) 100%) !important;
 }
+
 /* 
 .PhotoView__Photo {
   border-radius: 50%

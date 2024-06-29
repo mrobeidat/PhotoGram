@@ -20,8 +20,10 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import { useEffect, useState } from "react";
 import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
-import { useToast } from "@/components/ui/use-toast"; // Import useToast for showing notifications
-import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
+import { useToast } from "@/components/ui/use-toast";
+import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
+import Modal from "../../components/ui/Modal";
+import { IComment } from "@/types";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -38,7 +40,7 @@ const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUserContext();
-  const { toast } = useToast(); // Initialize the toast hook
+  const { toast } = useToast();
   const { data: post, isPending } = useGetPostById(id || "");
   const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
   const { mutate: deletePost } = useDeletePost();
@@ -89,11 +91,19 @@ const PostDetails = () => {
   };
 
   const [commentText, setCommentText] = useState("");
-  const [showComments, setShowComments] = useState(false); // Add state to control comments visibility
-  const [commentsTransition, setCommentsTransition] = useState(false); // State for text transition
+  const [showComments, setShowComments] = useState(false);
+  const [animateModal, setAnimateModal] = useState(false);
 
   const { mutate: createComment } = useCreateComment();
   const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
+
+  useEffect(() => {
+    if (showComments) {
+      setAnimateModal(true);
+    } else {
+      setAnimateModal(false);
+    }
+  }, [showComments]);
 
   const handleCreateComment = () => {
     const commentData = {
@@ -104,7 +114,6 @@ const PostDetails = () => {
 
     const result = CommentValidation.safeParse(commentData);
     if (!result.success) {
-      // Handle validation errors
       console.log(result.error.errors);
       return;
     }
@@ -128,11 +137,7 @@ const PostDetails = () => {
   };
 
   const toggleComments = () => {
-    setCommentsTransition(true); // Start the transition
-    setTimeout(() => {
-      setShowComments(!showComments);
-      setCommentsTransition(false); // End the transition after the duration
-    }, 200); // Transition duration
+    setShowComments(!showComments);
   };
 
   return (
@@ -282,68 +287,10 @@ const PostDetails = () => {
               </ul>
             </div>
 
-            <div className="comments-section mt-8">
-              <h3 className="body-bold md:h3-bold w-full mb-4">
-                <button
-                  onClick={toggleComments}
-                  className={`text-blue-500 hover:underline transition-opacity duration-300 ${commentsTransition ? "opacity-0" : "opacity-100"}`}
-                >
-                  {showComments ? "Hide Comments" : "View Comments"}
-                </button>
-              </h3>
-              <div
-                className={`comments-content transition-all duration-300 overflow-hidden p-1 ${showComments ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}`}
-              >
-                <div className="max-h-40 overflow-y-auto space-y-3 scrollbar-thin">
-                  {areCommentsLoading ? (
-                    <CommentsLoader />
-                  ) : (
-                    comments?.documents.map((comment) => (
-                      <div
-                        key={comment.$id}
-                        className="comment bg-dark/20 backdrop-blur-lg	p-4 rounded-xl flex justify-between items-start animate-slideIn"
-                      >
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                            alt="user"
-                            className="w-8 h-8 rounded-full"
-                          />
-                          <div>
-                            <p className="text-light-1 font-semibold">{comment.user?.name ?? 'Unknown User'}</p>
-                            <p className="text-light-1">{comment.text}</p>
-                          </div>
-                        </div>
-                        {user.id === comment.user?.$id && (
-                          <Button
-                            onClick={() => handleDeleteComment(comment.$id)}
-                            variant="ghost"
-                            className="shad-button_ghost"
-                          >
-                            <img src={"/assets/icons/delete.svg"} alt="delete" width={20} height={20} className="select-none pointer-events-none" />
-                          </Button>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="w-full p-3 mb-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none shadow-md"
-                />
-                <Button
-                  onClick={handleCreateComment}
-                  className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-                  disabled={!commentText.trim()}
-                >
-                  Post Comment
-                </Button>
-              </div>
-            </div>
-            <div className="w-full">
-              <PostStats post={post} userId={user.id} />
+       
+
+            <div className="w-full mt-4 flex">
+            <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
             </div>
           </div>
         </div>

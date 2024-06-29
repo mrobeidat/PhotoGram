@@ -1,4 +1,4 @@
-import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
+import { IComment, INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import {
   SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts, createComment, getCommentsByPost, deleteComment
@@ -225,21 +225,22 @@ export const useCreateComment = () => {
   });
 };
 
-
 export const useGetCommentsByPost = (postId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, postId],
-    queryFn: async () => {
-      const comments = await getCommentsByPost(postId)
-      const commentsWithUser = await Promise.all(comments.documents.map(async (comment) => {
-        const user = await getUserById(comment.userId)
-        return { ...comment, user }
-      }))
-      return { ...comments, documents: commentsWithUser }
+    queryFn: async (): Promise<{ documents: IComment[] }> => {
+      const comments = await getCommentsByPost(postId);
+      const commentsWithUser = await Promise.all(
+        comments.documents.map(async (comment) => {
+          const user = await getUserById(comment.userId);
+          return { ...comment, user } as IComment;
+        })
+      );
+      return { ...comments, documents: commentsWithUser };
     },
     enabled: !!postId,
-  })
-}
+  });
+};
 
 export const useDeleteComment = () => {
   const queryClient = useQueryClient();

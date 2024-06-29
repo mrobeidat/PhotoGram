@@ -1,22 +1,46 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
+import PostStats from "@/components/Shared/PostStats";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import Modal from "../../components/ui/Modal";
+import { IComment } from "@/types";
+import { Button } from "@/components/ui/button";
+import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  useGetCommentsByPost,
+  useCreateComment,
+  useDeleteComment,
+} from "@/lib/react-query/queriesAndMutations";
 import { formatDate } from "@/lib/utils";
 import { Models } from "appwrite";
-import { Link } from "react-router-dom";
-import PostStats from "./PostStats";
-import { sanitizeHTML } from "@/_root/pages/PostDetails";
-import { useEffect, useState } from "react";
-import { PhotoProvider, PhotoView } from "react-photo-view";
-// import { isAndroid, isWindows, isMacOs } from 'react-device-detect';
+import DOMPurify from "dompurify";
 
 type PostCardProps = {
   post: Models.Document;
 };
+interface SanitizeHTMLResult {
+  __html: string;
+}
+
+export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
+  const sanitizedString = DOMPurify.sanitize(htmlString);
+  return {
+    __html: sanitizedString,
+  };
+};
 
 const PostCard = ({ post }: PostCardProps) => {
+  const { user } = useUserContext();
   const [contentType, setContentType] = useState("");
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const { user } = useUserContext();
-  // const [isMuted, setIsMuted] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false);
+  const { toast } = useToast();
+  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(post.$id);
+  const { mutate: createComment } = useCreateComment();
+  const { mutate: deleteComment } = useDeleteComment();
 
   if (!post.creator) return null;
 
@@ -89,14 +113,35 @@ const PostCard = ({ post }: PostCardProps) => {
     fetchDataAndPlayVideo();
   }, [imageUrl, post.$id, isVideoPlaying]);
 
-  // const handleTap = () => {
-  //   const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement;
-  //   // Toggle the mute state
-  //   videoElement.muted = !isMuted;
-  //   setIsMuted(!isMuted);
-  // };
+  const toggleComments = () => {
+    setShowComments(!showComments);
+  };
 
-  console.log(isVideoPlaying);
+  const handleCreateComment = () => {
+    const commentData = {
+      postId: post.$id,
+      userId: user.id,
+      text: commentText,
+    };
+
+    createComment(commentData, {
+      onSuccess: () => {
+        setCommentText("");
+      },
+    });
+  };
+
+  const handleDeleteComment = (commentId: string) => {
+    deleteComment(commentId, {
+      onSuccess: () => {
+        toast({
+          title: "Your comment deleted successfully!",
+          style: { background: "rgb(3, 73, 26)" },
+        });
+      },
+    });
+  };
+
   const [isFullContent, setIsFullContent] = useState(false);
   const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false);
 
@@ -112,11 +157,10 @@ const PostCard = ({ post }: PostCardProps) => {
 
   return (
     <div
-      className={`${
-        post.$id === import.meta.env.VITE_APPWRITE_POST_ID
+      className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID
           ? "post-card-pinned"
           : "post-card"
-      }`}
+        }`}
     >
       <Link to={`/posts/${post.$id}`}>
         <div className="flex-between">
@@ -214,16 +258,14 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="small-medium lg:base-medium py-5">
         <a onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}>
           <p
-            className={`${
-              isFullContent ? "max-h-full" : "max-h-36"
-            } transition-max-height ${
-              isSeeMoreClicked ? "smooth-transition" : ""
-            }`}
+            className={`${isFullContent ? "max-h-full" : "max-h-36"
+              } transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
+              }`}
             dangerouslySetInnerHTML={{
               __html: isFullContent
                 ? sanitizedCaption
                 : sanitizedCaption.substring(0, 550) +
-                  (sanitizedCaption.length > 550 ? "..." : ""),
+                (sanitizedCaption.length > 550 ? "..." : ""),
             }}
             style={{ fontSize: "14px", fontWeight: "100" }}
           />
@@ -319,7 +361,70 @@ const PostCard = ({ post }: PostCardProps) => {
         )}
       </PhotoProvider>
 
-      <PostStats post={post} userId={user.id} />
+      <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
+
+      {showComments && (
+       <Modal isOpen={showComments} onClose={toggleComments}>
+       <h3 className="body-bold md:h3-bold mb-8">Comments</h3>
+       <div className="max-h-60 overflow-y-auto space-y-2 scrollbar-thin">
+         {areCommentsLoading ? (
+           <CommentsLoader />
+         ) : (
+           (comments?.documents?.length ?? 0) > 0 ? (
+             comments?.documents.map((comment: IComment) => (
+               <div
+                 key={comment.$id}
+                 className="comment bg-dark/20 backdrop-blur-lg p-2 rounded-lg flex justify-between items-start animate-slideIn"
+               >
+                 <div className="flex items-start gap-2">
+                   <img
+                     src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                     alt="user"
+                     className="w-6 h-6 rounded-full"
+                   />
+                   <div>
+                     <p className="text-light-1 text-sm font-semibold">{comment.user?.name ?? 'Unknown User'}</p>
+                     <p className="text-light-1 text-sm">{comment.text}</p>
+                   </div>
+                 </div>
+                 {user.id === comment.userId && (
+                   <Button
+                     onClick={() => handleDeleteComment(comment.$id)}
+                     variant="ghost"
+                     className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
+                   >
+                     <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
+                   </Button>
+                 )}
+               </div>
+             ))
+           ) : (
+             <p className="text-light-3 text-center p-5">No comments yet. Be the first to comment!</p>
+           )
+         )}
+       </div>
+       <textarea
+         onKeyUp={(e) => {
+           if (e.key === "Enter") {
+             handleCreateComment();
+           }
+         }}
+         value={commentText}
+         onChange={(e) => setCommentText(e.target.value)}
+         placeholder="Add a comment..."
+         className="w-full p-2 mb-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent resize-none shadow-sm transition duration-300"
+       />
+     
+       <Button
+         onClick={handleCreateComment}
+         className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+         disabled={!commentText.trim()}
+       >
+         Post Comment
+       </Button>
+     </Modal>
+     
+      )}
     </div>
   );
 };
