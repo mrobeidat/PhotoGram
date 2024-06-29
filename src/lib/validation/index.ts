@@ -25,6 +25,13 @@ export const SignupValidation = z.object({
     ),
 });
 
+export const CommentValidation = z.object({
+  text: z
+    .string()
+    .min(1, { message: "Comment must be at least 1 character" })
+    .max(200, { message: "Comment can't exceed 200 characters" }),
+});
+
 export const SigninValidation = z.object({
   email: z.string().email(),
   password: z
@@ -37,7 +44,7 @@ export const PostValidation = z.object({
     .string()
     .min(5, { message: "Caption must be at least 5 characters." })
     .max(2200, { message: "Caption can't exceed 2,200 characters" }),
-    file: z.custom<File[]>(),
+  file: z.custom<File[]>(),
   location: z
     .string()
     .min(1, { message: "Location field is required" })

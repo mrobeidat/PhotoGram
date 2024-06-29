@@ -1,74 +1,78 @@
-// import Loader from "@/components/Shared/Loader"
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import DOMPurify from "dompurify";
+import "react-photo-view/dist/react-photo-view.css";
+import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
+
 import PostStats from "@/components/Shared/PostStats";
 import { Button } from "@/components/ui/button";
-import { useUserContext } from "@/context/AuthContext"
+import { useUserContext } from "@/context/AuthContext";
 import {
   useGetPostById,
   useDeletePost,
-  useGetUserPosts
+  useGetUserPosts,
+  useCreateComment,
+  useGetCommentsByPost,
+  useDeleteComment,
 } from "@/lib/react-query/queriesAndMutations";
-import { formatDate } from "@/lib/utils"
-import { Link, useNavigate, useParams } from "react-router-dom"
-import DetailsLoader from '../../components/Shared/Loaders/DetailsLoader'
+import { formatDate } from "@/lib/utils";
+import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
 import Loader from "@/components/Shared/Loader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
-import DOMPurify from 'dompurify';
-import 'react-photo-view/dist/react-photo-view.css';
-import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { useEffect, useState } from "react";
-import { isAndroid, isWindows, isMacOs, isIOS } from 'react-device-detect';
+import { useToast } from "@/components/ui/use-toast";
+import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
+import { CommentValidation } from "@/lib/validation";
 
 interface SanitizeHTMLResult {
   __html: string;
 }
 
-export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
+const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
   const sanitizedString = DOMPurify.sanitize(htmlString);
-
-  return {
-    __html: sanitizedString,
-  };
+  return { __html: sanitizedString };
 };
 
 const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUserContext();
-  const { data: post, isPending } = useGetPostById(id || "");
+  const { toast } = useToast();
+
+  const { data: post, isPending: isPostLoading } = useGetPostById(id || "");
   const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
   const { mutate: deletePost } = useDeletePost();
-  const relatedPosts = userPosts?.documents.filter(userPost => userPost.$id !== id);
+  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: createComment } = useCreateComment();
+  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
+
+  const relatedPosts = userPosts?.documents.filter((userPost) => userPost.$id !== id);
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
 
-  const handleDeletePost = async () => {
-    deletePost({ postId: id, imageId: post?.imageId });
-    navigate(-1);
-  };
-
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
 
-  const [contentType, setContentType] = useState('');
-  const imageUrl = post?.imageUrl.replace('/preview', '/view');
+  const [contentType, setContentType] = useState("");
+  const imageUrl = post?.imageUrl.replace("/preview", "/view");
   const [isVideoLoading, setIsVideoLoading] = useState(true);
 
+  const [isMuted, setIsMuted] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false);
+  const [commentsTransition, setCommentsTransition] = useState(false);
 
   useEffect(() => {
-    console.log("isVideoLoading:", isVideoLoading);
-
     const fetchImage = async () => {
       try {
         const response = await fetch(imageUrl);
-
         if (response.ok) {
-          const contentTypeHeader = response.headers.get('Content-Type');
-          setContentType(contentTypeHeader || '');
-          console.log("headers = " + contentTypeHeader);
+          const contentTypeHeader = response.headers.get("Content-Type");
+          setContentType(contentTypeHeader || "");
         } else {
-          console.error('Failed to fetch image');
+          console.error("Failed to fetch image");
         }
       } catch (error) {
-        console.error('Error fetching image:', error);
+        console.error("Error fetching image:", error);
       } finally {
         setIsVideoLoading(false);
       }
@@ -77,50 +81,93 @@ const PostDetails = () => {
     fetchImage();
   }, [imageUrl]);
 
-  const [isMuted, setIsMuted] = useState(false);
+  const handleDeletePost = async () => {
+    deletePost({ postId: id, imageId: post?.imageId });
+    navigate(-1);
+  };
+
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
-    const ShowingOn = isAndroid || isWindows || isMacOs
+    const isShowingOn = isAndroid || isWindows || isMacOs;
+    videoElement.muted = isShowingOn ? !isMuted : false;
+    setIsMuted(isShowingOn ? !isMuted : false);
+  };
 
-    videoElement.muted = ShowingOn ? !isMuted : false
-    setIsMuted(ShowingOn ? !isMuted : false)
+  const handleCreateComment = () => {
+    const commentData = {
+      postId: id || "",
+      userId: user.id,
+      text: commentText,
+    };
+
+    const result = CommentValidation.safeParse(commentData);
+    if (!result.success) {
+      console.log(result.error.errors);
+      return;
+    }
+
+    createComment(commentData, {
+      onSuccess: () => {
+        setCommentText("");
+      },
+    });
+  };
+
+  const handleDeleteComment = (commentId: string) => {
+    deleteComment(commentId, {
+      onSuccess: () => {
+        toast({
+          title: "Your comment deleted successfully!",
+          style: { background: "rgb(3, 73, 26)" },
+        });
+      },
+    });
+  };
+
+  const toggleComments = () => {
+    setCommentsTransition(true);
+    setTimeout(() => {
+      setShowComments(!showComments);
+      setCommentsTransition(false);
+    }, 200);
   };
 
   return (
     <div className="post_details-container">
       <div className="hidden md:flex max-w-5xl w-full">
-        <Button
-          onClick={() => navigate(-1)}
-          variant="ghost"
-          className="shad-button_ghost">
-          <img
-            src={"/assets/icons/back.svg"}
-            alt="back"
-            width={24}
-            height={24}
-          />
+        <Button onClick={() => navigate(-1)} variant="ghost" className="shad-button_ghost">
+          <img src={"/assets/icons/back.svg"} alt="back" width={24} height={24} />
           <p className="small-medium lg:base-medium">Back</p>
         </Button>
       </div>
 
-      {isPending || !post ? (
+      {isPostLoading || !post ? (
         <Loader />
       ) : (
         <div className="post_details-card">
           <PhotoProvider
             speed={() => 450}
-            easing={(type) => (type === 2 ? 'cubic-bezier(0.36, 0, 0.66, -0.56)' : 'cubic-bezier(0.34, 1.56, 0.64, 1)')}
-            bannerVisible={false} maskOpacity={0.8}
+            easing={(type) =>
+              type === 2 ? "cubic-bezier(0.36, 0, 0.66, -0.56)" : "cubic-bezier(0.34, 1.56, 0.64, 1)"
+            }
+            bannerVisible={false}
+            maskOpacity={0.8}
           >
-            {contentType.startsWith('image/') ? (
+            {contentType.startsWith("image/") ? (
               <PhotoView src={post?.imageUrl}>
-                <img src={post.imageUrl} alt="Image" className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer" />
+                <img
+                  src={post.imageUrl}
+                  alt="Image"
+                  className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
+                />
               </PhotoView>
             ) : (
-              <div className="post_details-img object-cover !p-0" style={{ position: 'relative', borderRadius: "10px" }}>
-                {isVideoLoading ? <div className="flex justify-center items-center h-full">
-                  <Loader />
-                </div> : (
+              <div className="post_details-img object-cover !p-0" style={{ position: "relative", borderRadius: "10px" }}>
+                {isVideoLoading ? (
+                  <div className="flex justify-center items-center h-full">
+                    <Loader />
+                  </div>
+                ) : (
                   <video
                     className={`post_details-img !w-full !p-5`}
                     id="video"
@@ -132,14 +179,13 @@ const PostDetails = () => {
                   >
                     <source src={imageUrl} type="video/mp4" />
                   </video>
-                )
-                }
+                )}
                 <div
                   style={{
-                    position: 'absolute',
-                    bottom: '30px',
-                    right: '30px',
-                    cursor: 'pointer',
+                    position: "absolute",
+                    bottom: "30px",
+                    right: "30px",
+                    cursor: "pointer",
                   }}
                   onClick={handleTap}
                 >
@@ -150,38 +196,24 @@ const PostDetails = () => {
                       <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
                     )
                   ) : null}
-
                 </div>
               </div>
             )}
-
           </PhotoProvider>
           <div className="post_details-info">
             <div className="flex-between w-full">
-              <Link
-                to={`/profile/${post?.creator.$id}`}
-                className="flex items-center gap-3">
+              <Link to={`/profile/${post?.creator.$id}`} className="flex items-center gap-3">
                 <img
-                  src={
-                    post?.creator.imageUrl ||
-                    "/assets/icons/profile-placeholder.svg"
-                  }
+                  src={post?.creator.imageUrl || "/assets/icons/profile-placeholder.svg"}
                   alt="creator"
-                  className="w-8 h-8 lg:w-12 lg:h-12 rounded-full"
+                  className="w-8 h-8 lg:w-12 lg:h-12 rounded-full object-cover"
                 />
                 <div className="flex gap-1 flex-col">
                   <div className="flex items-center">
-                    <p className="base-medium lg:body-bold text-light-1">
-                      {post?.creator.name}
-                    </p>
+                    <p className="base-medium lg:body-bold text-light-1">{post?.creator.name}</p>
                     {post.creator.$id === TopCreator && (
                       <div className="group relative pin-icon-container">
-                        <img
-                          alt="badge"
-                          width={15}
-                          src={"/assets/icons/top-creator.png"}
-                          className="ml-2 object-contain"
-                        />
+                        <img alt="badge" width={15} src={"/assets/icons/top-creator.png"} className="ml-2 object-contain" />
                         <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                           Top Creator
                         </div>
@@ -203,46 +235,26 @@ const PostDetails = () => {
                     )}
                   </div>
                   <div className="flex-center gap-1 mr-3 text-light-3">
-                    <p className="subtle-semibold lg:small-regular ">
-                      {formatDate(post?.$createdAt)}
-                    </p>
+                    <p className="subtle-semibold lg:small-regular ">{formatDate(post?.$createdAt)}</p>
                     •
-                    <p className="subtle-semibold lg:small-regular">
-                      {post?.location}
-                    </p>
+                    <p className="subtle-semibold lg:small-regular">{post?.location}</p>
                     <span>{post.updated ? "•" : ""}</span>
-                    <p className="subtle-semibold lg:small-regular">
-                      {post.updated == true ? "(Edited)" : ""}
-                    </p>
+                    <p className="subtle-semibold lg:small-regular">{post.updated == true ? "(Edited)" : ""}</p>
                   </div>
                 </div>
               </Link>
 
               <div className="flex-center gap-2">
-                <Link
-                  to={`/update-post/${post?.$id}`}
-                  className={`${user.id !== post?.creator.$id && "hidden"}`}>
-                  <img
-                    src={"/assets/icons/edit.svg"}
-                    alt="edit"
-                    width={22}
-                    height={24}
-                    className="select-none pointer-events-none"
-                  />
+                <Link to={`/update-post/${post?.$id}`} className={`${user.id !== post?.creator.$id && "hidden"}`}>
+                  <img src={"/assets/icons/edit.svg"} alt="edit" width={22} height={24} className="select-none pointer-events-none" />
                 </Link>
 
                 <Button
                   onClick={handleDeletePost}
                   variant="ghost"
-                  className={`ost_details-delete_btn ${user.id !== post?.creator.$id && "hidden"
-                    }`}>
-                  <img
-                    src={"/assets/icons/delete.svg"}
-                    alt="delete"
-                    width={24}
-                    height={24}
-                    className="select-none pointer-events-none"
-                  />
+                  className={`ost_details-delete_btn ${user.id !== post?.creator.$id && "hidden"}`}
+                >
+                  <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} className="select-none pointer-events-none" />
                 </Button>
               </div>
             </div>
@@ -257,15 +269,73 @@ const PostDetails = () => {
               />
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
-                  <li
-                    key={`${tag}${index}`}
-                    className="text-light-3 small-regular">
+                  <li key={`${tag}${index}`} className="text-light-3 small-regular">
                     #{tag}
                   </li>
                 ))}
               </ul>
             </div>
 
+            <div className="comments-section mt-8">
+              <h3 className="body-bold md:h3-bold w-full mb-4">
+                <button
+                  onClick={toggleComments}
+                  className={`text-blue-500 hover:underline transition-opacity duration-300 ${commentsTransition ? "opacity-0" : "opacity-100"}`}
+                >
+                  {showComments ? "Hide Comments" : "View Comments"}
+                </button>
+              </h3>
+              <div
+                className={`comments-content transition-all duration-300 overflow-hidden p-1 ${showComments ? "max-h-screen opacity-100" : "max-h-0 opacity-0"}`}
+              >
+                <div className="max-h-40 overflow-y-auto space-y-3 scrollbar-thin">
+                  {areCommentsLoading ? (
+                    <CommentsLoader />
+                  ) : (
+                    comments?.documents.map((comment) => (
+                      <div
+                        key={comment.$id}
+                        className="comment bg-dark/20 backdrop-blur-lg	p-4 rounded-xl flex justify-between items-start animate-slideIn"
+                      >
+                        <div className="flex items-start gap-3">
+                          <img
+                            src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                            alt="user"
+                            className="w-8 h-8 rounded-full"
+                          />
+                          <div>
+                            <p className="text-light-1 font-semibold">{comment.user?.name ?? 'Unknown User'}</p>
+                            <p className="text-light-1">{comment.text}</p>
+                          </div>
+                        </div>
+                        {user.id === comment.user?.$id && (
+                          <Button
+                            onClick={() => handleDeleteComment(comment.$id)}
+                            variant="ghost"
+                            className="shad-button_ghost"
+                          >
+                            <img src={"/assets/icons/delete.svg"} alt="delete" width={20} height={20} className="select-none pointer-events-none" />
+                          </Button>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <textarea
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="w-full p-3 mb-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none shadow-md"
+                />
+                <Button
+                  onClick={handleCreateComment}
+                  className="bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                  disabled={!commentText.trim()}
+                >
+                  Post Comment
+                </Button>
+              </div>
+            </div>
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
             </div>
@@ -276,9 +346,7 @@ const PostDetails = () => {
       <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
-        <h3 className="body-bold md:h3-bold w-full my-10">
-          More Related Posts
-        </h3>
+        <h3 className="body-bold md:h3-bold w-full my-10">More Related Posts</h3>
         {isUserPostLoading || !relatedPosts ? (
           <div className="details-loader-wrapper sm:flex gap-3">
             <DetailsLoader />
@@ -289,7 +357,6 @@ const PostDetails = () => {
       </div>
     </div>
   );
+};
 
-}
-
-export default PostDetails
+export default PostDetails;

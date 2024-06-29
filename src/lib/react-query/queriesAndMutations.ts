@@ -1,29 +1,29 @@
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts } from '../appwrite/api'
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts, createComment, getCommentsByPost, deleteComment
+} from '../appwrite/api';
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
 // User Account Hooks
 export const useCreateUserAccount = () => {
-
   return useMutation({
     mutationFn: (user: INewUser) => createUserAccount(user),
-  })
-}
-export const useSignInAccount = () => {
+  });
+};
 
+export const useSignInAccount = () => {
   return useMutation({
     mutationFn: (user: { email: string, password: string }) => SignInAccount(user),
-  })
-}
-export const useSignOutAccount = () => {
+  });
+};
 
+export const useSignOutAccount = () => {
   return useMutation({
     mutationFn: SignOutAccount,
-  })
-
-}
+  });
+};
 
 // Post Hooks
 export const useCreatePost = () => {
@@ -37,6 +37,7 @@ export const useCreatePost = () => {
     },
   });
 };
+
 export const useUpdatePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -48,11 +49,11 @@ export const useUpdatePost = () => {
     },
   });
 };
+
 export const useDeletePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, imageId }: { postId?: string; imageId: string }) =>
-      deletePost(postId || "", imageId),
+    mutationFn: ({ postId, imageId }: { postId?: string; imageId: string }) => deletePost(postId || "", imageId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -71,9 +72,9 @@ export const useGetRecentPosts = () => {
     queryFn: getRecentPosts,
   });
 };
+
 export const useLikePost = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: ({ postId, likesArray }: { postId: string; likesArray: string[] }) => likePost(postId, likesArray),
     onSuccess: (data) => {
@@ -91,10 +92,10 @@ export const useLikePost = () => {
       });
     },
   });
-}
+};
+
 export const useSavePost = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: ({ postId, userId }: { postId: string; userId: string }) => savePost(postId, userId),
     onSuccess: () => {
@@ -109,10 +110,10 @@ export const useSavePost = () => {
       });
     },
   });
-}
+};
+
 export const useDeleteSavedPost = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (savedRecordId: string) => deleteSavedPost(savedRecordId),
     onSuccess: () => {
@@ -127,14 +128,14 @@ export const useDeleteSavedPost = () => {
       });
     },
   });
-}
+};
 
 export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],
-    queryFn: getCurrentUser
+    queryFn: getCurrentUser,
   });
-}
+};
 
 // Query Hooks for Users
 export const useGetPostById = (postId: string) => {
@@ -143,23 +144,23 @@ export const useGetPostById = (postId: string) => {
     queryFn: () => getPostById(postId),
     enabled: !!postId,
   });
-}
+};
+
 export const useGetPosts = () => {
   return useInfiniteQuery({
     initialPageParam: "",
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
     queryFn: getInfinitePosts as any,
     getNextPageParam: (lastPage: any) => {
-      // If there's no data, there are no more pages.
       if (lastPage && lastPage.documents.length === 0) {
         return null;
       }
-      // Use the $id of the last document as the cursor.
       const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
     },
   });
 };
+
 export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
@@ -176,6 +177,7 @@ export const useGetUserById = (userId: string) => {
     enabled: !!userId,
   });
 };
+
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -190,12 +192,14 @@ export const useUpdateUser = () => {
     },
   });
 };
+
 export const useGetUsers = (limit?: number) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USERS],
     queryFn: () => getUsers(limit),
   });
 };
+
 export const useGetUserPosts = (userId?: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
@@ -203,3 +207,50 @@ export const useGetUserPosts = (userId?: string) => {
     enabled: !!userId,
   });
 };
+
+// Comment Hooks
+export const useCreateComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (comment: { postId: string; userId: string; text: string }) => createComment({
+      postId: comment.postId,
+      userId: comment.userId,
+      text: comment.text,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST],
+      });
+    },
+  });
+};
+
+
+export const useGetCommentsByPost = (postId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, postId],
+    queryFn: async () => {
+      const comments = await getCommentsByPost(postId)
+      const commentsWithUser = await Promise.all(comments.documents.map(async (comment) => {
+        const user = await getUserById(comment.userId)
+        return { ...comment, user }
+      }))
+      return { ...comments, documents: commentsWithUser }
+    },
+    enabled: !!postId,
+  })
+}
+
+export const useDeleteComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (commentId: string) => deleteComment(commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST],
+      });
+    },
+  });
+};
+
+

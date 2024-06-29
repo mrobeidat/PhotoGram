@@ -2,7 +2,6 @@ import { ID, Query } from 'appwrite'
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
-
 export async function createUserAccount(user: INewUser) {
     try {
         const newAccount = await account.create(
@@ -106,81 +105,81 @@ export async function SignOutAccount() {
 
 export async function createPost(post: INewPost) {
     try {
-      // Upload file to appwrite storage
-      const uploadedFile = await uploadFile(post.file[0]);
-  
-      if (!uploadedFile) throw Error;
-  
-      // Get file url
-      const fileUrl = getFilePreview(uploadedFile.$id);
-      if (!fileUrl) {
-        await deleteFile(uploadedFile.$id);
-        throw Error;
-      }
-  
-      // Convert tags into array
-      const tags = post.tags?.replace(/ /g, "").split(",") || [];
-  
-      // Create post
-      const newPost = await databases.createDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.postCollectionId,
-        ID.unique(),
-        {
-          creator: post.userId,
-          caption: post.caption,
-          imageUrl: fileUrl,
-          imageId: uploadedFile.$id,
-          location: post.location,
-          tags: tags,
+        // Upload file to appwrite storage
+        const uploadedFile = await uploadFile(post.file[0]);
+
+        if (!uploadedFile) throw Error;
+
+        // Get file url
+        const fileUrl = getFilePreview(uploadedFile.$id);
+        if (!fileUrl) {
+            await deleteFile(uploadedFile.$id);
+            throw Error;
         }
-      );
-  
-      if (!newPost) {
-        await deleteFile(uploadedFile.$id);
-        throw Error;
-      }
-  
-      return newPost;
+
+        // Convert tags into array
+        const tags = post.tags?.replace(/ /g, "").split(",") || [];
+
+        // Create post
+        const newPost = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            ID.unique(),
+            {
+                creator: post.userId,
+                caption: post.caption,
+                imageUrl: fileUrl,
+                imageId: uploadedFile.$id,
+                location: post.location,
+                tags: tags,
+            }
+        );
+
+        if (!newPost) {
+            await deleteFile(uploadedFile.$id);
+            throw Error;
+        }
+
+        return newPost;
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
-  
-  // ============================== UPLOAD FILE
-  export async function uploadFile(file: File) {
+}
+
+// ============================== UPLOAD FILE
+export async function uploadFile(file: File) {
     try {
-      const uploadedFile = await storage.createFile(
-        appwriteConfig.storageId,
-        ID.unique(),
-        file
-      );
-  
-      return uploadedFile;
+        const uploadedFile = await storage.createFile(
+            appwriteConfig.storageId,
+            ID.unique(),
+            file
+        );
+
+        return uploadedFile;
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
-  
-  // ============================== GET FILE URL
-  export function getFilePreview(fileId: string) {
+}
+
+// ============================== GET FILE URL
+export function getFilePreview(fileId: string) {
     try {
-      const fileUrl = storage.getFilePreview(
-        appwriteConfig.storageId,
-        fileId,
-        2000,
-        2000,
-        "top",
-        100
-      );
-  
-      if (!fileUrl) throw Error;
-  
-      return fileUrl;
+        const fileUrl = storage.getFilePreview(
+            appwriteConfig.storageId,
+            fileId,
+            2000,
+            2000,
+            "top",
+            100
+        );
+
+        if (!fileUrl) throw Error;
+
+        return fileUrl;
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
+}
 export async function deleteFile(fileId: string) {
     try {
         // Initiating the deletion in the background
@@ -230,7 +229,7 @@ export async function updatePost(post: IUpdatePost) {
                 imageId: image.imageId,
                 location: post.location,
                 tags: tags,
-                updated:true
+                updated: true
             }
         );
 
@@ -255,19 +254,19 @@ export async function updatePost(post: IUpdatePost) {
 // ============================== GET HOME POSTS
 export async function getRecentPosts() {
     try {
-      const posts = await databases.listDocuments(
-        appwriteConfig.databaseId,
-        appwriteConfig.postCollectionId,
-        [Query.orderDesc("$createdAt"), Query.limit(1000)]
-      );
-  
-      if (!posts) throw Error;
-  
-      return posts;
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            [Query.orderDesc("$createdAt"), Query.limit(1000)]
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
     } catch (error) {
-      console.log(error);
+        console.log(error);
     }
-  }
+}
 
 
 export async function likePost(postId: string, likesArray: string[]) {
@@ -506,5 +505,56 @@ export async function getUserPosts(userId?: string) {
         return post;
     } catch (error) {
         console.log(error);
+    }
+}
+
+// ============================== Comments
+export async function createComment(comment: { postId: string; userId: string; text: string }) {
+    try {
+        const newComment = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            ID.unique(),
+            {
+                postId: comment.postId,
+                userId: comment.userId,
+                text: comment.text,
+            }
+        );
+        return newComment;
+    } catch (error) {
+        console.error('Failed to create comment:', error);
+        throw error;
+    }
+}
+
+
+
+export async function getCommentsByPost(postId: string) {
+    try {
+        const comments = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            [Query.equal('postId', postId)]
+        );
+        return comments;
+    } catch (error) {
+        console.error('Failed to retrieve comments:', error);
+        throw error;
+    }
+}
+
+
+export async function deleteComment(commentId: string) {
+    try {
+        const result = await databases.deleteDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            commentId
+        );
+        return result;
+    } catch (error) {
+        console.error('Failed to delete comment:', error);
+        throw error;
     }
 }
