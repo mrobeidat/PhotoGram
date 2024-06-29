@@ -73,7 +73,7 @@ const PostStats = ({ post, userId, commentsCount, onToggleComments }: postStatsP
         )}
         <div className="flex items-center cursor-pointer" onClick={onToggleComments}>
           <ChatBubbleOutlineIcon style={{ fontSize: '20px', color: '#667eea' }} />
-          <p className="small-medium lg:base-medium ml-1">{commentsCount > 0 && commentsCount}</p>
+          <p className="small-medium lg:base-medium ml-2">{commentsCount > 0 && commentsCount}</p>
         </div>
       </div>
 

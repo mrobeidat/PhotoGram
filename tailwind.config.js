@@ -18,6 +18,9 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        'theme-top': '0 -4px 8px -2px rgba(72, 85, 99, 0.8)',
+      },
       colors: {
         'primary-500': '#877EFF',
         'primary-600': '#5D5FEF',
@@ -87,6 +90,7 @@ module.exports = {
   variants: {
     extend: {
       scrollbar: ['rounded'],
+      boxShadow: ['focus'],
     },
   },
   plugins: [require('tailwindcss-animate')],

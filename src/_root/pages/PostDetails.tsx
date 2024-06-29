@@ -24,6 +24,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
 import Modal from "../../components/ui/Modal";
 import { IComment } from "@/types";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -313,31 +315,33 @@ const PostDetails = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-light-3 text-center">No comments yet. Be the first to comment!</p>
+                    <p className="text-light-3 text-center mb-3">No comments yet. Be the first to comment!</p>
                   )
                 )}
               </div>
-              <textarea
-                onKeyUp={(e) => {
-                  if (e.key === "Enter") {
-                    handleCreateComment();
-                  }
-                }}
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Add a comment..."
-                className="w-full p-2 mb-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-transparent resize-none shadow-sm transition duration-300"
-              />
+              <div className="flex gap-3 items-center">
+                <textarea
+                  onKeyUp={(e) => {
+                    if (e.key === "Enter") {
+                      handleCreateComment();
+                    }
+                  }}
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Add a comment..."
+                  className="flex-1 p-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
+                  style={{ height: '40px', overflow: 'hidden' }}
+                />
+                <Button
+                  onClick={handleCreateComment}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  disabled={!commentText.trim()}
+                >
+                  <ArrowForwardIcon />
+                </Button>
+              </div>
 
-              <Button
-                onClick={handleCreateComment}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-                disabled={!commentText.trim()}
-              >
-                Post Comment
-              </Button>
             </Modal>
-
             <div className="w-full mt-4">
               <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
             </div>
