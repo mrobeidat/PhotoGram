@@ -374,7 +374,7 @@ const PostCard = ({ post }: PostCardProps) => {
              comments?.documents.map((comment: IComment) => (
                <div
                  key={comment.$id}
-                 className="comment -z-2 bg-dark/20 backdrop-blur-lg p-2 rounded-lg flex justify-between items-start animate-slideIn"
+                 className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
                >
                  <div className="flex items-start gap-2">
                    <img
