@@ -61,16 +61,14 @@ const PostStats = ({ post, userId, commentsCount, onToggleComments }: postStatsP
   return (
     <div className="flex justify-between items-center z-20">
       <div className="flex gap-2 mr-5">
-        {likes.length > 0 && (
-          <>
-            <i
-              className={`pi ${checkIsLiked(likes, userId) ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
-              style={{ color: '#ff0000', fontSize: '20px' }}
-              onClick={handleLike}
-            ></i>
-            <p className="small-medium lg:base-medium mr-2">{likes.length > 0 && likes.length}</p>
-          </>
-        )}
+        <>
+          <i
+            className={`pi ${checkIsLiked(likes, userId) ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
+            style={{ color: '#ff0000', fontSize: '20px' }}
+            onClick={handleLike}
+          ></i>
+          <p className="small-medium lg:base-medium mr-2">{likes.length > 0 && likes.length}</p>
+        </>
         <div className="flex items-center cursor-pointer" onClick={onToggleComments}>
           <ChatBubbleOutlineIcon style={{ fontSize: '20px', color: '#667eea' }} />
           <p className="small-medium lg:base-medium ml-2">{commentsCount > 0 && commentsCount}</p>
