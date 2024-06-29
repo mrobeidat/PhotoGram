@@ -1,6 +1,6 @@
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
-import PostStats from "@/components/Shared/PostStats";
+// import PostStats from "@/components/Shared/PostStats";
 import { useUserContext } from "@/context/AuthContext";
 
 type LikedPostsListProps = {
@@ -12,9 +12,9 @@ type LikedPostsListProps = {
 const LikedPostsList = ({
     posts,
     showUser = true,
-    showStats = true,
+    // showStats = true,
 }: LikedPostsListProps) => {
-    const { user } = useUserContext();
+    // const { user } = useUserContext();
     const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
     const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
@@ -80,7 +80,7 @@ const LikedPostsList = ({
                                 </div>
                             </div>
                         )}
-                        {showStats && <PostStats post={post} userId={user.id} />}
+                        {/* {showStats && <PostStats post={post} userId={user.id} />} */}
                     </div>
                 </li>
             ))}

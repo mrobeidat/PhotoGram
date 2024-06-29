@@ -1,7 +1,7 @@
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
-import PostStats from "@/components/Shared/PostStats";
-import { useUserContext } from "@/context/AuthContext";
+// import PostStats from "@/components/Shared/PostStats";
+// import { useUserContext } from "@/context/AuthContext";
 
 type RelatedPostsListProps = {
     posts: Models.Document[];
@@ -12,9 +12,9 @@ type RelatedPostsListProps = {
 const RelatedPostsList = ({
     posts,
     showUser = true,
-    showStats = true,
+    // showStats = true,
 }: RelatedPostsListProps) => {
-    const { user } = useUserContext();
+    // const { user } = useUserContext();
 
     const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
     const VideoThumbnail = "https://cloud.appwrite.io/v1/storage/buckets/654b5f03e5c16593a1c9/files/658d1017b00d237c1ce8/preview?width=2000&height=2000&gravity=top&quality=100&project=65462bfc24ded86416d2"
@@ -67,7 +67,7 @@ const RelatedPostsList = ({
                                 )}
                             </div>
                         )}
-                        {showStats && <PostStats post={post} userId={user.id} />}
+                        {/* {showStats && <PostStats post={post} userId={user.id} />} */}
                     </div>
                 </li>
             ))}
