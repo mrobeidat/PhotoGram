@@ -1,10 +1,3 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { PhotoProvider, PhotoView } from "react-photo-view";
-import DOMPurify from "dompurify";
-import "react-photo-view/dist/react-photo-view.css";
-import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
-
 import PostStats from "@/components/Shared/PostStats";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext";
@@ -17,37 +10,46 @@ import {
   useDeleteComment,
 } from "@/lib/react-query/queriesAndMutations";
 import { formatDate } from "@/lib/utils";
-import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import DetailsLoader from "../../components/Shared/Loaders/DetailsLoader";
 import Loader from "@/components/Shared/Loader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
-import { useToast } from "@/components/ui/use-toast";
-import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
+import DOMPurify from "dompurify";
+import "react-photo-view/dist/react-photo-view.css";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import { useEffect, useState } from "react";
+import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
+import { useToast } from "@/components/ui/use-toast"; // Import useToast for showing notifications
+import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
 
 interface SanitizeHTMLResult {
   __html: string;
 }
 
-const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
+export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
   const sanitizedString = DOMPurify.sanitize(htmlString);
-  return { __html: sanitizedString };
+  return {
+    __html: sanitizedString,
+  };
 };
 
 const PostDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useUserContext();
-  const { toast } = useToast();
-
-  const { data: post, isPending: isPostLoading } = useGetPostById(id || "");
+  const { toast } = useToast(); // Initialize the toast hook
+  const { data: post, isPending } = useGetPostById(id || "");
   const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
   const { mutate: deletePost } = useDeletePost();
   const { mutate: deleteComment } = useDeleteComment();
-  const { mutate: createComment } = useCreateComment();
-  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
-
   const relatedPosts = userPosts?.documents.filter((userPost) => userPost.$id !== id);
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
+
+  const handleDeletePost = async () => {
+    deletePost({ postId: id, imageId: post?.imageId });
+    navigate(-1);
+  };
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
@@ -56,15 +58,11 @@ const PostDetails = () => {
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
   const [isVideoLoading, setIsVideoLoading] = useState(true);
 
-  const [isMuted, setIsMuted] = useState(false);
-  const [commentText, setCommentText] = useState("");
-  const [showComments, setShowComments] = useState(false);
-  const [commentsTransition, setCommentsTransition] = useState(false);
-
   useEffect(() => {
     const fetchImage = async () => {
       try {
         const response = await fetch(imageUrl);
+
         if (response.ok) {
           const contentTypeHeader = response.headers.get("Content-Type");
           setContentType(contentTypeHeader || "");
@@ -81,17 +79,21 @@ const PostDetails = () => {
     fetchImage();
   }, [imageUrl]);
 
-  const handleDeletePost = async () => {
-    deletePost({ postId: id, imageId: post?.imageId });
-    navigate(-1);
-  };
-
+  const [isMuted, setIsMuted] = useState(false);
   const handleTap = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
-    const isShowingOn = isAndroid || isWindows || isMacOs;
-    videoElement.muted = isShowingOn ? !isMuted : false;
-    setIsMuted(isShowingOn ? !isMuted : false);
+    const ShowingOn = isAndroid || isWindows || isMacOs;
+
+    videoElement.muted = ShowingOn ? !isMuted : false;
+    setIsMuted(ShowingOn ? !isMuted : false);
   };
+
+  const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false); // Add state to control comments visibility
+  const [commentsTransition, setCommentsTransition] = useState(false); // State for text transition
+
+  const { mutate: createComment } = useCreateComment();
+  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
 
   const handleCreateComment = () => {
     const commentData = {
@@ -102,6 +104,7 @@ const PostDetails = () => {
 
     const result = CommentValidation.safeParse(commentData);
     if (!result.success) {
+      // Handle validation errors
       console.log(result.error.errors);
       return;
     }
@@ -125,11 +128,11 @@ const PostDetails = () => {
   };
 
   const toggleComments = () => {
-    setCommentsTransition(true);
+    setCommentsTransition(true); // Start the transition
     setTimeout(() => {
       setShowComments(!showComments);
-      setCommentsTransition(false);
-    }, 200);
+      setCommentsTransition(false); // End the transition after the duration
+    }, 200); // Transition duration
   };
 
   return (
@@ -141,7 +144,7 @@ const PostDetails = () => {
         </Button>
       </div>
 
-      {isPostLoading || !post ? (
+      {isPending || !post ? (
         <Loader />
       ) : (
         <div className="post_details-card">
@@ -162,7 +165,10 @@ const PostDetails = () => {
                 />
               </PhotoView>
             ) : (
-              <div className="post_details-img object-cover !p-0" style={{ position: "relative", borderRadius: "10px" }}>
+              <div
+                className="post_details-img object-cover !p-0"
+                style={{ position: "relative", borderRadius: "10px" }}
+              >
                 {isVideoLoading ? (
                   <div className="flex justify-center items-center h-full">
                     <Loader />
