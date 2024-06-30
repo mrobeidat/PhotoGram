@@ -38,8 +38,6 @@ module.exports = {
       },
       screens: {
         xs: '480px',
-        'no-scroll': { 'raw': '(overflow: hidden)' },
-
       },
       width: {
         420: '420px',
@@ -93,7 +91,6 @@ module.exports = {
     extend: {
       scrollbar: ['rounded'],
       boxShadow: ['focus'],
-      overflow: ['no-scroll'],
     },
   },
   plugins: [require('tailwindcss-animate')],
