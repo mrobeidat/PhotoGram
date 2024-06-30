@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { IComment } from '@/types';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-interface ModalProps {
+interface ReusableModalProps {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
@@ -25,7 +25,7 @@ interface ModalProps {
   CommentsLoader: React.FC;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const ReusableModal: React.FC<ReusableModalProps> = ({
   isOpen,
   onClose,
   children,
@@ -43,22 +43,22 @@ const Modal: React.FC<ModalProps> = ({
   formatDateShort,
   CommentsLoader,
 }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [showModal, setShowModal] = useState(false);
+  const ReusableModalRef = useRef<HTMLDivElement>(null);
+  const [showReusableModal, setShowReusableModal] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setMounted(true);
       setTimeout(() => {
-        setShowModal(true);
+        setShowReusableModal(true);
       }, 10);
       document.body.classList.add('overflow-hidden', 'touch-action-none');
       if (containerRef.current) {
         containerRef.current.classList.add('overflow-hidden');
       }
     } else {
-      setShowModal(false);
+      setShowReusableModal(false);
       setTimeout(() => {
         setMounted(false);
         document.body.classList.remove('overflow-hidden', 'touch-action-none');
@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({
   }, [isOpen, containerRef]);
 
   const handleOutsideClick = (e: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+    if (ReusableModalRef.current && !ReusableModalRef.current.contains(e.target as Node)) {
       onClose();
     }
   };
@@ -92,12 +92,12 @@ const Modal: React.FC<ModalProps> = ({
 
  return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300 ${showModal ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300 ${showReusableModal ? 'opacity-100' : 'opacity-0'}`}
       onClick={handleOutsideClick}
     >
       <div
-        ref={modalRef}
-        className={`bg-black/30 max-w-92 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${showModal ? 'scale-100' : 'scale-95'} shadow-lg`}
+        ref={ReusableModalRef}
+        className={`bg-black/30 max-w-92 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${showReusableModal ? 'scale-100' : 'scale-95'} shadow-lg`}
         tabIndex={1}
         onKeyDown={handleEscapePress}
       >
@@ -231,4 +231,4 @@ const Modal: React.FC<ModalProps> = ({
   );
 };
 
-export default Modal;
+export default ReusableModal;
