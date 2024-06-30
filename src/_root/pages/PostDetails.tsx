@@ -26,7 +26,6 @@ import Modal from "../../components/ui/Modal";
 import { IComment } from "@/types";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-
 interface SanitizeHTMLResult {
   __html: string;
 }
@@ -133,6 +132,8 @@ const PostDetails = () => {
   const toggleComments = () => {
     setShowComments(!showComments);
   };
+
+
 
   return (
     <div className="post_details-container">
@@ -288,45 +289,99 @@ const PostDetails = () => {
                   <CommentsLoader />
                 ) : (
                   (comments?.documents?.length ?? 0) > 0 ? (
-                    comments?.documents.map((comment: IComment) => (
-                      <div
-                        key={comment.$id}
-                        className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
-                      >
-                        <div className="flex items-start gap-2">
-                          <Link to={`/profile/${comment.userId}`}>
-                            <img
-                              src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                              alt="user"
-                              className="w-6 h-6 rounded-full object-cover"
-                            />
-                          </Link>
-                          <div>
-                            <Link to={`/profile/${comment.userId}`} className="text-light-1 text-sm font-semibold hover:underline">
-                              {comment.user?.name ?? 'Unknown User'}
+                    comments?.documents.map((comment: IComment) => {
+                      const isTopCreator = comment.userId === TopCreator;
+                      const isVerifiedUser = comment.userId === YousefID;
+                      return (
+                        <div
+                          key={comment.$id}
+                          className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
+                        >
+                          <div className="flex items-start gap-2">
+                            <Link to={`/profile/${comment.userId}`}>
+                              <img
+                                src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                                alt="user"
+                                className="w-6 h-6 rounded-full object-cover"
+                              />
                             </Link>
-                            <p className="text-light-1 text-sm">{comment.text}</p>
+                            <div>
+                              <div className="flex items-center gap-1">
+                                <Link to={`/profile/${comment.userId}`} className="text-light-1 text-sm font-semibold hover:underline">
+                                  {comment.user?.name ?? 'Unknown User'}
+                                </Link>
+                                {isTopCreator && (
+                                  <div className="group relative pin-icon-container">
+                                    <img
+                                      alt="badge"
+                                      width={12}
+                                      src={"/assets/icons/top-creator.png"}
+                                      className="object-contain pointer-events-none select-none"
+                                      draggable="false"
+                                    />
+                                    <div className="tooltip-verified-creator absolute transition-opacity duration-300 text-xs">
+                                      Top Creator
+                                    </div>
+                                  </div>
+                                )}
+                                {isVerifiedUser && (
+                                  <div className="group relative pin-icon-container">
+                                    <img
+                                      alt="badge"
+                                      width={12}
+                                      src={"/assets/icons/verified-badge.svg"}
+                                      className="object-contain pointer-events-none select-none"
+                                      draggable="false"
+                                    />
+                                    <div className="tooltip-verified absolute transition-opacity duration-300 text-xs">
+                                      Verified User
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                              <p className="text-light-1 text-sm">{comment.text}</p>
+                              <p className="text-light-3 text-xs">{formatDate(comment.$createdAt)}</p>
+                            </div>
                           </div>
+                          {user.id === comment.userId && (
+                            <Button
+                              onClick={() => handleDeleteComment(comment.$id)}
+                              variant="ghost"
+                              className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
+                            >
+                              <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
+                            </Button>
+                          )}
                         </div>
-                        {user.id === comment.userId && (
-                          <Button
-                            onClick={() => handleDeleteComment(comment.$id)}
-                            variant="ghost"
-                            className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
-                          >
-                            <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
-                          </Button>
-                        )}
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
-                    <p className="text-light-3 text-center mb-3">No comments yet. Be the first to comment!</p>
+                    <div className="text-light-4 text-center pb-5 overflow-hidden">
+                      <svg
+                        width="200"
+                        height="200"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="m-auto"
+                      >
+                        <path
+                          d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.6569 3.59695 15.1566 4.63604 16.3636L3 21L7.63604 19.3636C8.84315 20.4036 10.3439 21 12 21Z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="animate-pulse"
+                        />
+                      </svg>
+                        No comments yet. Be the first to comment!
+                    </div>
                   )
                 )}
               </div>
               <div className="flex gap-3 items-center">
                 <textarea
-                  onKeyDown={(e) => {
+                  onKeyUp={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
                       handleCreateComment();
@@ -346,7 +401,6 @@ const PostDetails = () => {
                   <ArrowForwardIcon />
                 </Button>
               </div>
-
             </Modal>
             <div className="w-full mt-4">
               <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
