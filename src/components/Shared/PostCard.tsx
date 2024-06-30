@@ -23,7 +23,6 @@ type PostCardProps = {
 interface SanitizeHTMLResult {
   __html: string;
 }
-
 export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
   const sanitizedString = DOMPurify.sanitize(htmlString);
   return {
@@ -43,14 +42,15 @@ const PostCard = ({ post }: PostCardProps) => {
   const { mutate: deleteComment } = useDeleteComment();
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Environment Variables
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   const { data: creatorData, isPending: isCreatorLoading } = useGetUserById(post.creator.$id);
 
   if (!post.creator || isCreatorLoading) return null;
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
 
   useEffect(() => {
@@ -63,14 +63,10 @@ const PostCard = ({ post }: PostCardProps) => {
           setContentType(contentTypeHeader || "");
 
           if (contentTypeHeader && contentTypeHeader.startsWith("video")) {
-            const videoElement = document.getElementById(
-              `video-${post.$id}`
-            ) as HTMLVideoElement | null;
+            const videoElement = document.getElementById(`video-${post.$id}`) as HTMLVideoElement | null;
 
             if (videoElement) {
-              const handleIntersection = (
-                entries: IntersectionObserverEntry[]
-              ) => {
+              const handleIntersection = (entries: IntersectionObserverEntry[]) => {
                 const [entry] = entries;
                 if (entry.isIntersecting) {
                   if (!isVideoPlaying) {
@@ -85,25 +81,18 @@ const PostCard = ({ post }: PostCardProps) => {
                 }
               };
 
-              const options = {
+              const observer = new IntersectionObserver(handleIntersection, {
                 root: null,
                 rootMargin: "0px",
                 threshold: 0.5,
-              };
-
-              const observer = new IntersectionObserver(
-                handleIntersection,
-                options
-              );
+              });
               observer.observe(videoElement);
 
               return () => {
                 observer.disconnect();
               };
             } else {
-              console.error(
-                `Video element with ID 'video-${post.$id}' not found.`
-              );
+              console.error(`Video element with ID 'video-${post.$id}' not found.`);
             }
           }
         } else {
@@ -162,21 +151,13 @@ const PostCard = ({ post }: PostCardProps) => {
   // Check if the creator has three or more posts
   const hasThreeOrMorePosts = creatorData?.posts?.length >= 3;
   return (
-    <div
-      className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID
-        ? "post-card-pinned"
-        : "post-card"
-        }`}
-    >
+    <div className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? "post-card-pinned" : "post-card"}`}>
       <Link to={`/posts/${post.$id}`}>
         <div className="flex-between">
           <div className="flex items-center gap-3">
             <Link to={`/profile/${post.creator.$id}`}>
               <img
-                src={
-                  post?.creator?.imageUrl ||
-                  "assets/icons/profile-placeholder.svg"
-                }
+                src={post?.creator?.imageUrl || "assets/icons/profile-placeholder.svg"}
                 alt="avatar"
                 className="w-12 h-12 lg:h-12 rounded-full object-cover"
               />
@@ -184,9 +165,7 @@ const PostCard = ({ post }: PostCardProps) => {
             <div className="flex flex-col">
               <div className="flex items-center">
                 <Link to={`/profile/${post.creator.$id}`}>
-                  <p className="base-medium lg:body-bold text-light-1">
-                    {post.creator.name}
-                  </p>
+                  <p className="base-medium lg:body-bold text-light-1">{post.creator.name}</p>
                 </Link>
                 {hasThreeOrMorePosts && post.creator.$id !== YousefID && (
                   <div className="group relative pin-icon-container">
@@ -218,17 +197,11 @@ const PostCard = ({ post }: PostCardProps) => {
                 )}
               </div>
               <div className="flex-center gap-1 text-light-3">
-                <p className="subtle-semibold lg:small-regular">
-                  {formatDate(post.$createdAt)}
-                </p>
+                <p className="subtle-semibold lg:small-regular">{formatDate(post.$createdAt)}</p>
                 •
-                <p className="subtle-semibold lg:small-regular">
-                  {post.location}
-                </p>
+                <p className="subtle-semibold lg:small-regular">{post.location}</p>
                 <span>{post.updated ? "•" : ""}</span>
-                <p className="subtle-semibold lg:small-regular">
-                  {post.updated == true ? "(Edited)" : ""}
-                </p>
+                <p className="subtle-semibold lg:small-regular">{post.updated == true ? "(Edited)" : ""}</p>
               </div>
             </div>
           </div>
@@ -246,16 +219,8 @@ const PostCard = ({ post }: PostCardProps) => {
               </div>
             </Link>
           ) : (
-            <Link
-              className={`${user.id !== post.creator.$id && "hidden"}`}
-              to={`/update-post/${post.$id}`}
-            >
-              <img
-                src="assets/icons/edit.svg"
-                alt="edit"
-                width={20}
-                height={50}
-              />
+            <Link className={`${user.id !== post.creator.$id && "hidden"}`} to={`/update-post/${post.$id}`}>
+              <img src="assets/icons/edit.svg" alt="edit" width={20} height={50} />
             </Link>
           )}
         </div>
@@ -264,14 +229,11 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="small-medium lg:base-medium py-5">
         <a onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}>
           <p
-            className={`${isFullContent ? "max-h-full" : "max-h-36"
-              } transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
-              }`}
+            className={`${isFullContent ? "max-h-full" : "max-h-36"} transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""}`}
             dangerouslySetInnerHTML={{
               __html: isFullContent
                 ? sanitizedCaption
-                : sanitizedCaption.substring(0, 550) +
-                (sanitizedCaption.length > 550 ? "..." : ""),
+                : sanitizedCaption.substring(0, 550) + (sanitizedCaption.length > 550 ? "..." : ""),
             }}
             style={{ fontSize: "14px", fontWeight: "100" }}
           />
@@ -295,7 +257,6 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           )}
         </a>
-
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (
             <li key={`${tag}${index}`} className="text-light-3 small-regular">
@@ -304,25 +265,16 @@ const PostCard = ({ post }: PostCardProps) => {
           ))}
         </ul>
       </div>
-
       <PhotoProvider
         speed={() => 450}
-        easing={(type) =>
-          type === 2
-            ? "cubic-bezier(0.36, 0, 0.66, -0.56)"
-            : "cubic-bezier(0.34, 1.56, 0.64, 1)"
-        }
+        easing={(type) => (type === 2 ? "cubic-bezier(0.36, 0, 0.66, -0.56)" : "cubic-bezier(0.34, 1.56, 0.64, 1)")}
         bannerVisible={false}
         maskOpacity={0.8}
       >
         {contentType.startsWith("image/") ? (
           <Link to={`/posts/${post.$id}`}>
             <PhotoView src={post?.imageUrl}>
-              <img
-                src={post.imageUrl}
-                alt="Image"
-                className="post-card_img hover:cursor-pointer"
-              />
+              <img src={post.imageUrl} alt="Image" className="post-card_img hover:cursor-pointer" />
             </PhotoView>
           </Link>
         ) : (
@@ -346,15 +298,7 @@ const PostCard = ({ post }: PostCardProps) => {
                 >
                   <source src={imageUrl} type="video/mp4" />
                 </video>
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "5px",
-                    right: "10px",
-                    cursor: "pointer",
-                  }}
-                >
-                </div>
+                <div style={{ position: "absolute", bottom: "5px", right: "10px", cursor: "pointer" }}></div>
               </div>
             )}
           </div>
@@ -380,8 +324,6 @@ const PostCard = ({ post }: PostCardProps) => {
           formatDateShort={formatDateShort}
           CommentsLoader={CommentsLoader}
         />
-
-
       )}
     </div>
   );
