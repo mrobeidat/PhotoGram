@@ -9,7 +9,7 @@ import {
   useGetCommentsByPost,
   useDeleteComment,
 } from "@/lib/react-query/queriesAndMutations";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatDateShort } from "@/lib/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import DetailsLoader from "../../components/Shared/Loaders/DetailsLoader";
 import Loader from "@/components/Shared/Loader";
@@ -340,7 +340,7 @@ const PostDetails = () => {
                                 )}
                               </div>
                               <p className="text-light-1 text-sm">{comment.text}</p>
-                              <p className="text-light-3 text-xs">{formatDate(comment.$createdAt)}</p>
+                              <p className="text-light-3 text-xs">{formatDateShort(comment.$createdAt)}</p>
                             </div>
                           </div>
                           {user.id === comment.userId && (

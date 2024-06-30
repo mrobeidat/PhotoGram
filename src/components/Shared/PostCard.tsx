@@ -13,7 +13,7 @@ import {
   useCreateComment,
   useDeleteComment,
 } from "@/lib/react-query/queriesAndMutations";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -418,7 +418,7 @@ const PostCard = ({ post }: PostCardProps) => {
                             )}
                           </div>
                           <p className="text-light-1 text-sm">{comment.text}</p>
-                          <p className="text-light-3 text-xs">{formatDate(comment.$createdAt)}</p> {/* Added created date */}
+                          <p className="text-light-3 text-xs">{formatDateShort(comment.$createdAt)}</p> {/* Added created date */}
                         </div>
                       </div>
                       {user.id === comment.userId && (

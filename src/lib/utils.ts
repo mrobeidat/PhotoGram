@@ -45,6 +45,46 @@ export function formatDate(dateString: string = ""): string {
     }
 }
 
+export function formatDateShort(dateString: string = ""): string {
+    const currentDate: Date = new Date();
+    const inputDate: Date = new Date(dateString);
+
+    const timeDifference: number = currentDate.getTime() - inputDate.getTime();
+    const seconds: number = Math.floor(timeDifference / 1000);
+    const minutes: number = Math.floor(seconds / 60);
+    const hours: number = Math.floor(minutes / 60);
+    const days: number = Math.floor(hours / 24);
+    const months: number = Math.floor(days / 30);
+    const years: number = Math.floor(days / 365);
+
+    if (years > 1) {
+        return `${years}y`;
+    } else if (years === 1) {
+        return '1y';
+    } else if (months > 1) {
+        return `${months}mo`;
+    } else if (months === 1) {
+        return '1mo';
+    } else if (days > 1) {
+        return `${days}d`;
+    } else if (days === 1) {
+        return '1d';
+    } else if (hours > 1) {
+        return `${hours}h`;
+    } else if (hours === 1) {
+        return '1h';
+    } else if (minutes > 1) {
+        return `${minutes}m`;
+    } else if (minutes === 1) {
+        return '1m';
+    } else if (seconds > 1) {
+        return `${seconds}s`;
+    } else {
+        return 'Just now';
+    }
+}
+
+
 export const getFormattedImageUrl = (imageUrl: string | undefined): string | undefined => {
     return imageUrl ? imageUrl.replace('/preview', '/view') : undefined;
 };
