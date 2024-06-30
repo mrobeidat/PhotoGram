@@ -3,24 +3,23 @@ import { Link } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import PostStats from "@/components/Shared/PostStats";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import Modal from "../../components/ui/Modal";
-import { IComment } from "@/types";
-import { Button } from "@/components/ui/button";
 import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
 import { useToast } from "@/components/ui/use-toast";
 import {
   useGetCommentsByPost,
   useCreateComment,
   useDeleteComment,
+  useGetUserById,
 } from "@/lib/react-query/queriesAndMutations";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Modal from "../../components/ui/Modal";
 
 type PostCardProps = {
   post: Models.Document;
 };
+
 interface SanitizeHTMLResult {
   __html: string;
 }
@@ -44,12 +43,14 @@ const PostCard = ({ post }: PostCardProps) => {
   const { mutate: deleteComment } = useDeleteComment();
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
 
-  if (!post.creator) return null;
+  const { data: creatorData, isPending: isCreatorLoading } = useGetUserById(post.creator.$id);
+
+  if (!post.creator || isCreatorLoading) return null;
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
 
   useEffect(() => {
@@ -158,6 +159,8 @@ const PostCard = ({ post }: PostCardProps) => {
     setIsFullContent(false);
   };
 
+  // Check if the creator has three or more posts
+  const hasThreeOrMorePosts = creatorData?.posts?.length >= 3;
   return (
     <div
       className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID
@@ -185,7 +188,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     {post.creator.name}
                   </p>
                 </Link>
-                {post.creator.$id === TopCreator && (
+                {hasThreeOrMorePosts && post.creator.$id !== YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
                       alt="badge"
@@ -360,110 +363,26 @@ const PostCard = ({ post }: PostCardProps) => {
 
       <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
       {showComments && (
-        <Modal containerRef={containerRef} isOpen={showComments} onClose={toggleComments}>
-          <h3 className="body-bold md:h3-bold mb-8">Comments</h3>
-          <div className="max-h-60 overflow-y-auto space-y-2 scrollbar-thin">
-            {areCommentsLoading ? (
-              <CommentsLoader />
-            ) : (
-              (comments?.documents?.length ?? 0) > 0 ? (
-                comments?.documents.map((comment: IComment) => {
-                  const isTopCreator = comment.userId === TopCreator;
-                  const isVerifiedUser = comment.userId === YousefID;
-                  return (
-                    <div
-                      key={comment.$id}
-                      className="comment p-2 rounded-lg flex justify-between items-start animate-slideIn"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Link to={`/profile/${comment.userId}`}>
-                          <img
-                            src={comment.user?.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                            alt="user"
-                            className="w-6 h-6 rounded-full object-cover"
-                          />
-                        </Link>
-                        <div>
-                          <div className="flex items-center gap-1">
-                            <Link to={`/profile/${comment.userId}`} className="text-light-1 text-sm font-semibold hover:underline">
-                              {comment.user?.name ?? 'Unknown User'}
-                            </Link>
-                            {isTopCreator && (
-                              <div className="group relative pin-icon-container">
-                                <img
-                                  alt="badge"
-                                  width={12}
-                                  src={"/assets/icons/top-creator.png"}
-                                  className="object-contain pointer-events-none select-none"
-                                  draggable="false"
-                                />
-                                <div className="tooltip-verified-creator absolute transition-opacity duration-300 text-xs">
-                                  Top Creator
-                                </div>
-                              </div>
-                            )}
-                            {isVerifiedUser && (
-                              <div className="group relative pin-icon-container">
-                                <img
-                                  alt="badge"
-                                  width={12}
-                                  src={"/assets/icons/verified-badge.svg"}
-                                  className="object-contain pointer-events-none select-none"
-                                  draggable="false"
-                                />
-                                <div className="tooltip-verified absolute transition-opacity duration-300 text-xs">
-                                  Verified User
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                          <p className="text-light-1 text-sm">{comment.text}</p>
-                          <p className="text-light-3 text-xs">{formatDateShort(comment.$createdAt)}</p> {/* Added created date */}
-                        </div>
-                      </div>
-                      {user.id === comment.userId && (
-                        <Button
-                          onClick={() => handleDeleteComment(comment.$id)}
-                          variant="ghost"
-                          className="shad-button_ghost cursor-pointer hover:scale-108 transition duration-300"
-                        >
-                          <img src={"/assets/icons/delete.svg"} alt="delete" width={16} height={16} />
-                        </Button>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-light-3 text-center p-5">No comments yet. Be the first to comment!</p>
-              )
-            )}
-          </div>
-          <div className="flex gap-3 items-center">
-            <textarea
-              onKeyUp={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleCreateComment();
-                }
-              }}
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Add a comment..."
-              className="flex-1 p-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
-              style={{ height: '40px', overflow: 'hidden' }}
-            />
-            <Button
-              onClick={handleCreateComment}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
-              disabled={!commentText.trim()}
-            >
-              <ArrowForwardIcon />
-            </Button>
-          </div>
-        </Modal>
+        <Modal
+          isOpen={showComments}
+          onClose={toggleComments}
+          containerRef={containerRef}
+          title="Comments"
+          commentsLoading={areCommentsLoading}
+          comments={comments?.documents || []}
+          handleCreateComment={handleCreateComment}
+          handleDeleteComment={handleDeleteComment}
+          commentText={commentText}
+          setCommentText={setCommentText}
+          user={user}
+          TopCreator={TopCreator}
+          YousefID={YousefID}
+          formatDateShort={formatDateShort}
+          CommentsLoader={CommentsLoader}
+        />
+
+
       )}
-
-
     </div>
   );
 };
