@@ -4,7 +4,7 @@
     <ContentLoader
       speed={1.6} 
       backgroundColor="rgba(40, 35, 100, 0.1)"
-      foregroundColor="rgba(40, 30, 70, 0.2)"
+      foregroundColor="rgba(40, 30, 70, 0.5)"
       viewBox="0 0 400 460"
       {...rest}
     >

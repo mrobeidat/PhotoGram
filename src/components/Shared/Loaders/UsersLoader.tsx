@@ -4,7 +4,7 @@ const Card = ({...props}) => {
   return (
     <ContentLoader 
       backgroundColor="rgba(40, 35, 100, 0.1)" // Updated background color to match the style
-      foregroundColor="rgba(40, 30, 70, 0.4)" // Updated foreground color to match the style
+      foregroundColor="rgba(40, 30, 70, 0.5)" // Updated foreground color to match the style
       speed={1.6} // Adjust the speed for smoother movement
       viewBox="0 0 260 160" 
       height={160} 
