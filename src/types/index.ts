@@ -69,4 +69,5 @@ export type IComment = {
   userId: string;
   text: string;
   user?: IUser;
+  likes?:string[]
 };

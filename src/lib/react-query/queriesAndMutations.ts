@@ -1,7 +1,9 @@
 import { IComment, INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import {
-  SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts, createComment, getCommentsByPost, deleteComment
+  SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts, createComment, getCommentsByPost, deleteComment,
+  likeComment,
+  unlikeComment
 } from '../appwrite/api';
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
@@ -220,6 +222,38 @@ export const useCreateComment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST],
+      });
+    },
+  });
+};
+
+export const useLikeComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ commentId, userId }: { commentId: string; userId: string }) => {
+      console.log(`Liking comment with ID: ${commentId} by user with ID: ${userId}`);
+      return likeComment(commentId, userId);
+    },
+    onSuccess: (data) => {
+      console.log(`Successfully liked comment. Data:`, data);
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data.postId],
+      });
+    },
+    onError: (error) => {
+      console.log(`Error liking comment:`, error);
+    },
+  });
+};
+
+
+export const useUnlikeComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ commentId, userId }: { commentId: string; userId: string }) => unlikeComment(commentId, userId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data.postId],
       });
     },
   });

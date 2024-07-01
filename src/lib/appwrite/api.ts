@@ -59,16 +59,42 @@ export async function saveUserToDB(user: {
 
 }
 
-export async function SignInAccount(user: { email: string, password: string }) {
+async function logoutAllSessions() {
     try {
-        const session = await account.createEmailSession(user.email, user.password)
-        return session
-    }
-    catch (error) {
+        const sessions = await account.listSessions();
+        for (const session of sessions.sessions) {
+            await account.deleteSession(session.$id);
+        }
+    } catch (error) {
         console.log(error);
     }
 }
 
+export async function checkActiveSession() {
+    try {
+        const sessions = await account.listSessions();
+        return sessions.total > 0;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+
+export async function SignInAccount(user: { email: string, password: string }) {
+    try {
+        const activeSession = await checkActiveSession();
+        if (activeSession) {
+            await logoutAllSessions();
+        }
+
+        const session = await account.createEmailSession(user.email, user.password);
+        return session;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 export async function getCurrentUser() {
     try {
         const currentAccount = await account.get()
@@ -519,11 +545,82 @@ export async function createComment(comment: { postId: string; userId: string; t
                 postId: comment.postId,
                 userId: comment.userId,
                 text: comment.text,
+                likes: [], // Initialize the likes field as an empty array
             }
         );
         return newComment;
     } catch (error) {
         console.error('Failed to create comment:', error);
+        throw error;
+    }
+}
+
+
+export async function likeComment(commentId: string, userId: string) {
+    try {
+        // Fetch the current comment document
+        const comment = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            commentId
+        );
+
+        // Check if the user has already liked the comment
+        if (comment.likes.includes(userId)) {
+            throw new Error('User has already liked this comment');
+        }
+
+        // Add the user ID to the likes array
+        const updatedLikes = [...comment.likes, userId];
+
+        // Update the comment document with the new likes array
+        const updatedComment = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            commentId,
+            {
+                likes: updatedLikes,
+            }
+        );
+
+        return updatedComment;
+    } catch (error) {
+        console.error('Failed to like comment:', error);
+        throw error;
+    }
+}
+
+
+export async function unlikeComment(commentId: string, userId: string) {
+    try {
+        // Fetch the current comment document
+        const comment = await databases.getDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            commentId
+        );
+
+        // Check if the user has not liked the comment yet
+        if (!comment.likes.includes(userId)) {
+            throw new Error('User has not liked this comment');
+        }
+
+        // Remove the user ID from the likes array
+        const updatedLikes = comment.likes.filter((id: string) => id !== userId);
+
+        // Update the comment document with the new likes array
+        const updatedComment = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.commentsCollectionId,
+            commentId,
+            {
+                likes: updatedLikes,
+            }
+        );
+
+        return updatedComment;
+    } catch (error) {
+        console.error('Failed to unlike comment:', error);
         throw error;
     }
 }

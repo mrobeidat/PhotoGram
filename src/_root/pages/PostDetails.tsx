@@ -22,7 +22,7 @@ import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
-import ReusableModal from "@/components/ui/Modal";
+import Modal from "@/components/ui/Modal";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -279,7 +279,7 @@ const PostDetails = () => {
                 ))}
               </ul>
             </div>
-            <ReusableModal
+            <Modal
               isOpen={showComments}
               onClose={toggleComments}
               containerRef={containerRef}

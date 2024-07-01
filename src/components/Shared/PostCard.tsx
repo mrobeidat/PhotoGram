@@ -13,7 +13,7 @@ import {
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
-import ReusableModal from "../../components/ui/Modal";
+import Modal from "../../components/ui/Modal";
 
 type PostCardProps = {
   post: Models.Document;
@@ -357,7 +357,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
       <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
       {showComments && (
-        <ReusableModal
+        <Modal
           isOpen={showComments}
           onClose={toggleComments}
           containerRef={containerRef}
@@ -374,8 +374,6 @@ const PostCard = ({ post }: PostCardProps) => {
           formatDateShort={formatDateShort}
           CommentsLoader={CommentsLoader}
         />
-
-
       )}
     </div>
   );
