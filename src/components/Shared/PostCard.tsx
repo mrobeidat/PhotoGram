@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import PostStats from "@/components/Shared/PostStats";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
+import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
 import { useToast } from "@/components/ui/use-toast";
 import {
   useGetCommentsByPost,

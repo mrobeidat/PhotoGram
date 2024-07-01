@@ -5,7 +5,9 @@ const ProfileShow = ({...props}) => (
     width={1200}
     height={900}
     viewBox="0 0 500 200"
-    backgroundColor='rgba(17, 15.5, 61, 1)' foregroundColor='#CCCCCC'
+    backgroundColor='rgba(40, 35, 150, 0.1)'
+    foregroundColor='rgba(40, 30, 100, 0.5)'
+    speed={1.3}
     {...props}
   >
     <circle cx="248" cy="59" r="49" />
@@ -16,6 +18,5 @@ const ProfileShow = ({...props}) => (
     <rect x="252" y="166" rx="0" ry="0" width="1" height="0" />
   </ContentLoader>
 )
-
 
 export default ProfileShow

@@ -21,7 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
-import { CommentsLoader } from "@/components/Shared/Loaders/SkeletonLoader";
+import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
 import ReusableModal from "@/components/ui/Modal";
 
 interface SanitizeHTMLResult {
