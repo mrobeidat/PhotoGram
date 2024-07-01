@@ -150,7 +150,10 @@ const Modal: React.FC<ModalProps> = ({
     }, 100);
   };
 
-
+  const handleDeleteCommentAndUpdate = (commentId: string) => {
+    setComments((prevComments) => prevComments.filter((comment) => comment.$id !== commentId));
+    handleDeleteComment(commentId);
+  };
 
   if (!mounted) return null;
 
@@ -162,7 +165,7 @@ const Modal: React.FC<ModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={`bg-black/30 max-w-92 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${showModal ? 'scale-100' : 'scale-95'
+        className={`bg-black/30 max-w-92 backdrop-blur-xl rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${showModal ? 'scale-100' : 'scale-95'
           }`}
         tabIndex={1}
         onKeyDown={handleEscapePress}
@@ -186,7 +189,7 @@ const Modal: React.FC<ModalProps> = ({
                   YousefID={YousefID}
                   formatDateShort={formatDateShort}
                   handleLike={handleLike}
-                  handleDeleteComment={handleDeleteComment}
+                  handleDeleteComment={handleDeleteCommentAndUpdate}
                   ref={index === comments.length - 1 ? newCommentRef : null}
                 />
               ))
@@ -238,9 +241,10 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
         aria-describedby="alert-dialog-description"
         sx={{
           '& .MuiPaper-root': {
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            backdropFilter: 'blur(40px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.1)',
             color: 'white',
+            borderRadius: "20px",
             maxWidth: '25rem'
           },
         }}
@@ -263,6 +267,17 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
     </div>
   );
 };
+
+interface CommentItemProps {
+  comment: IComment;
+  user: { id: string };
+  TopCreator: string;
+  YousefID: string;
+  formatDateShort: (date: string) => string;
+  handleLike: (commentId: string, hasLiked: boolean | undefined) => void;
+  handleDeleteComment: (commentId: string) => void;
+}
+
 const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
   comment,
   user,
@@ -272,12 +287,18 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
   handleLike,
   handleDeleteComment,
 }, ref) => {
+  const [isFadingOut, setIsFadingOut] = useState(false);
   const isTopCreator = comment.userId === TopCreator;
   const isVerifiedUser = comment.userId === YousefID;
   const hasLiked = comment.likes?.includes(user.id);
 
+  const handleDelete = () => {
+    setIsFadingOut(true);
+    setTimeout(() => handleDeleteComment(comment.$id), 500); // match the duration of the CSS transition
+  };
+
   return (
-    <div ref={ref} className="comment p-4 rounded-lg flex justify-between items-start shadow-md mb-3">
+    <div ref={ref} className={`transition-opacity duration-500 ease-out ${isFadingOut ? 'opacity-0 transform -translate-y-5' : ''} p-2 flex justify-between mb-3`}>
       <div className="flex items-start gap-3">
         <Link to={`/profile/${comment.userId}`}>
           <img
@@ -301,11 +322,11 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
           <p className="text-light-4 text-xs">{formatDateShort(comment.$createdAt)}</p>
         </div>
       </div>
-      <div className="flex flex-col-reverse items-center gap-2">
+      <div className="flex flex-col items-center gap-2">
         <div className="flex items-center">
           <i
             className={`pi ${hasLiked ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
-            style={{ color: '#ff0000', fontSize: '12px' }}
+            style={{ color: '#ff0000', fontSize: '14px' }}
             onClick={() => handleLike(comment.$id, hasLiked)}
           ></i>
           {comment.likes && comment.likes.length > 0 && (
@@ -315,7 +336,7 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
           )}
         </div>
         {user.id === comment.userId && (
-          <DeleteButton onDelete={() => handleDeleteComment(comment.$id)} />
+          <DeleteButton onDelete={handleDelete} />
         )}
       </div>
     </div>
@@ -323,6 +344,7 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
 });
 
 CommentItem.displayName = 'CommentItem';
+
 
 const Badge: React.FC<{ icon: string; label: string }> = ({ icon, label }) => (
   <div className="group relative flex items-center">
@@ -369,7 +391,7 @@ const CommentInput: React.FC<{
 }> = ({ commentText, setCommentText, handleCreateComment }) => (
   <div className="flex gap-3 items-center">
     <textarea
-      onKeyUp={(e) => {
+      onKeyDown={(e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           handleCreateComment();
@@ -383,7 +405,7 @@ const CommentInput: React.FC<{
     />
     <Button
       onClick={handleCreateComment}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
       disabled={!commentText.trim()}
     >
       <ArrowForwardIcon />
