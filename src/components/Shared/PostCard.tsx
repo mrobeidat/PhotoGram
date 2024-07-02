@@ -264,7 +264,7 @@ const PostCard = ({ post }: PostCardProps) => {
             __html: isFullContent
               ? sanitizedCaption
               : sanitizedCaption.substring(0, 200) +
-              (sanitizedCaption.length > 200 ? '... <span class="text-neutral-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>' : ""),
+              (sanitizedCaption.length > 200 ? '... <span class="text-gray-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>' : ""),
           }}
           style={{ fontSize: "14px", fontWeight: "100" }}
         />
