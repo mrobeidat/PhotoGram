@@ -256,40 +256,26 @@ const PostCard = ({ post }: PostCardProps) => {
       </Link>
 
       <div className="small-medium lg:base-medium py-5">
-        <a onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}>
-          <p
-            className={`${isFullContent ? "max-h-full" : "max-h-36"
-              } transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
-              }`}
-            dangerouslySetInnerHTML={{
-              __html: isFullContent
-                ? sanitizedCaption
-                : sanitizedCaption.substring(0, 550) +
-                (sanitizedCaption.length > 550 ? "..." : ""),
-            }}
-            style={{ fontSize: "14px", fontWeight: "100" }}
-          />
-          {sanitizedCaption.length > 500 && (
-            <div>
-              {!isFullContent ? (
-                <a
-                  onClick={handleSeeMoreClick}
-                  className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
-                >
-                  ...see more
-                </a>
-              ) : (
-                <a
-                  onClick={handleSeeLessClick}
-                  className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
-                >
-                  ...see less
-                </a>
-              )}
-            </div>
-          )}
-        </a>
-
+        <p
+          onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}
+          className={`${isFullContent ? "max-h-full" : "max-h-36"} transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
+            } cursor-default`}
+          dangerouslySetInnerHTML={{
+            __html: isFullContent
+              ? sanitizedCaption
+              : sanitizedCaption.substring(0, 200) +
+              (sanitizedCaption.length > 200 ? '... <span class="text-neutral-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>' : ""),
+          }}
+          style={{ fontSize: "14px", fontWeight: "100" }}
+        />
+        {isFullContent && sanitizedCaption.length > 200 && (
+          <a
+            onClick={handleSeeLessClick}
+            className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+          >
+            ...see less
+          </a>
+        )}
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (
             <li key={`${tag}${index}`} className="text-light-3 small-regular">
