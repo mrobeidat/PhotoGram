@@ -5,8 +5,8 @@ const ProfileShow = ({...props}) => (
     width={1200}
     height={900}
     viewBox="0 0 500 200"
-    backgroundColor='rgba(40, 35, 150, 0.3)'
-    foregroundColor='rgba(40, 30, 100, 0.6)'
+    backgroundColor='rgba(40, 35, 150, 0.5)'
+    foregroundColor='rgba(40, 30, 100, 0.8)'
     speed={1.3}
     {...props}
   >

@@ -6,8 +6,8 @@ const DoorDashFavorite = ({ ...props }) => (
     width={450}
     height={400}
     viewBox="0 0 450 400"
-    backgroundColor="rgba(40, 35, 100, 0.3)" // Updated background color to match the style
-    foregroundColor="rgba(40, 30, 70, 0.6)" // Updated foreground color to match the style
+    backgroundColor="rgba(40, 35, 100, 0.5)" // Updated background color to match the style
+    foregroundColor="rgba(40, 30, 70, 0.8)" // Updated foreground color to match the style
     style={{ display: "flex", flexDirection: "column" }}
     {...props}
   >

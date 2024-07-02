@@ -4,8 +4,8 @@ const DevtoCard = ({ ...props }) => (
   <ContentLoader
     className="max-w-xs md:max-w-full"
     speed={1.6}
-    backgroundColor="rgba(40, 35, 100, 0.6)"
-    foregroundColor="rgba(40, 30, 70, 0.3)"
+    backgroundColor="rgba(40, 35, 100, 0.5)"
+    foregroundColor="rgba(40, 30, 70, 0.8)"
     viewBox="0 0 600 600"
     height={600}
     width={600}

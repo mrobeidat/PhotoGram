@@ -3,8 +3,8 @@
   const InstagramStyleSkeleton = ({ ...rest }) => (
     <ContentLoader
       speed={1.6} 
-      backgroundColor="rgba(40, 35, 100, 0.3)"
-      foregroundColor="rgba(40, 30, 70, 0.6)"
+      backgroundColor="rgba(40, 35, 100, 0.5)"
+      foregroundColor="rgba(40, 30, 70, 0.8)"
       viewBox="0 0 400 460"
       {...rest}
     >
