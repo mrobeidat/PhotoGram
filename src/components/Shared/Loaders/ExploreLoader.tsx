@@ -1,20 +1,35 @@
 import ContentLoader from 'react-content-loader';
+import styled, { keyframes } from 'styled-components';
+
+const pulse = keyframes`
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.4;
+  }
+`;
+
+const PulsingLoader = styled(ContentLoader)`
+  animation: ${pulse} 1.6s ease-in-out infinite;
+`;
 
 const DoorDashFavorite = ({ ...props }) => (
-  <ContentLoader
-    speed={1.6} // Adjust the speed for smoother movement
+  <PulsingLoader
+    speed={1.6}
     width={450}
     height={400}
     viewBox="0 0 450 400"
-    backgroundColor="rgba(40, 35, 100, 0.5)" // Updated background color to match the style
-    foregroundColor="rgba(40, 30, 70, 0.8)" // Updated foreground color to match the style
     style={{ display: "flex", flexDirection: "column" }}
     {...props}
   >
     <rect x="43" y="304" rx="4" ry="4" width="271" height="9" />
     <rect x="44" y="323" rx="3" ry="3" width="119" height="6" />
     <rect x="42" y="77" rx="10" ry="10" width="388" height="217" />
-  </ContentLoader>
+  </PulsingLoader>
 );
 
 export default DoorDashFavorite;

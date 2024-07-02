@@ -1,13 +1,27 @@
-import ContentLoader from 'react-content-loader'
+import ContentLoader from 'react-content-loader';
+import styled, { keyframes } from 'styled-components';
 
-const ProfileShow = ({...props}) => (
-  <ContentLoader
+const pulse = keyframes`
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.3;
+  }
+`;
+
+const PulsingLoader = styled(ContentLoader)`
+  animation: ${pulse} 1.6s ease-in-out infinite;
+`;
+
+const ProfileShow = ({ ...props }) => (
+  <PulsingLoader
     width={1200}
     height={900}
     viewBox="0 0 500 200"
-    backgroundColor='rgba(40, 35, 150, 0.5)'
-    foregroundColor='rgba(40, 30, 100, 0.8)'
-    speed={1.3}
     {...props}
   >
     <circle cx="248" cy="59" r="49" />
@@ -16,7 +30,7 @@ const ProfileShow = ({...props}) => (
     <rect x="204" y="137" rx="0" ry="0" width="100" height="8" />
     <rect x="248" y="128" rx="0" ry="0" width="0" height="1" />
     <rect x="252" y="166" rx="0" ry="0" width="1" height="0" />
-  </ContentLoader>
-)
+  </PulsingLoader>
+);
 
-export default ProfileShow
+export default ProfileShow;

@@ -1,11 +1,25 @@
-import ContentLoader from 'react-content-loader'
+import ContentLoader from 'react-content-loader';
+import styled, { keyframes } from 'styled-components';
 
-const Card = ({...props}) => {
+const pulse = keyframes`
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.5;
+  }
+`;
+
+const PulsingLoader = styled(ContentLoader)`
+  animation: ${pulse} 1.6s ease-in-out infinite;
+`;
+
+const Card = ({ ...props }) => {
   return (
-    <ContentLoader 
-      backgroundColor="rgba(40, 35, 100, 0.5)" // Updated background color to match the style
-      foregroundColor="rgba(40, 30, 70, 0.8)" // Updated foreground color to match the style
-      speed={1.6} // Adjust the speed for smoother movement
+    <PulsingLoader 
       viewBox="0 0 260 160" 
       height={160} 
       width={260} 
@@ -19,8 +33,8 @@ const Card = ({...props}) => {
       <rect x="110" y="90" rx="3" ry="3" width="70" height="10" />
       <rect x="10" y="110" rx="3" ry="3" width="70" height="10" />
       <rect x="90" y="110" rx="3" ry="3" width="60" height="10" />
-    </ContentLoader>
+    </PulsingLoader>
   )
 }
 
-export default Card
+export default Card;
