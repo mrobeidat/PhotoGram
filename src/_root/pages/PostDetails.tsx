@@ -96,6 +96,19 @@ const PostDetails = () => {
   const { mutate: createComment } = useCreateComment();
   const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
 
+  const [isFullContent, setIsFullContent] = useState(false);
+  const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false);
+
+  const handleSeeMoreClick = () => {
+    setIsSeeMoreClicked(true);
+    setIsFullContent(true);
+  };
+
+  const handleSeeLessClick = () => {
+    setIsSeeMoreClicked(false);
+    setIsFullContent(false);
+  };
+
   const handleCreateComment = () => {
     const commentData = {
       postId: id || "",
@@ -130,8 +143,6 @@ const PostDetails = () => {
   const toggleComments = () => {
     setShowComments(!showComments);
   };
-
-
 
   return (
     <div className="post_details-container">
@@ -268,9 +279,28 @@ const PostDetails = () => {
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
               {/* Render caption as readonly */}
               <p
-                dangerouslySetInnerHTML={{ __html: sanitizedCaption }}
+                onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}
+                className={`${isFullContent ? "max-h-full" : "max-h-36"
+                  } transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
+                  } cursor-default`}
+                dangerouslySetInnerHTML={{
+                  __html: isFullContent
+                    ? sanitizedCaption
+                    : sanitizedCaption.substring(0, 500) +
+                    (sanitizedCaption.length > 500
+                      ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
+                      : ""),
+                }}
                 style={{ fontSize: "14px", fontWeight: "100" }}
               />
+              {isFullContent && sanitizedCaption.length > 500 && (
+                <a
+                  onClick={handleSeeLessClick}
+                  className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
+                >
+                  ...see less
+                </a>
+              )}
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li key={`${tag}${index}`} className="text-light-3 small-regular">
@@ -279,6 +309,7 @@ const PostDetails = () => {
                 ))}
               </ul>
             </div>
+
             <Modal
               isOpen={showComments}
               onClose={toggleComments}
