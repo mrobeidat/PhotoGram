@@ -144,13 +144,27 @@ const PostDetails = () => {
   };
 
   const handleDeletePost = () => {
-    setShowDeleteModal(true);
+    if (user.id === post?.creator.$id) {
+      setShowDeleteModal(true);
+    } else {
+      toast({
+        title: "You are not authorized to delete this post.",
+        style: { background: "rgb(255, 0, 0)" },
+      });
+    }
   };
 
   const confirmDeletePost = async () => {
-    deletePost({ postId: id, imageId: post?.imageId });
-    setShowDeleteModal(false);
-    navigate(-1);
+    if (user.id === post?.creator.$id) {
+      deletePost({ postId: id, imageId: post?.imageId });
+      setShowDeleteModal(false);
+      navigate(-1);
+    } else {
+      toast({
+        title: "You are not authorized to delete this post.",
+        style: { background: "rgb(255, 0, 0)" },
+      });
+    }
   };
 
   const cancelDeletePost = () => {
@@ -329,21 +343,21 @@ const PostDetails = () => {
                   />
                 </Link>
 
-                <Button
-                  onClick={handleDeletePost}
-                  variant="ghost"
-                  className={`post_details-delete_btn ${
-                    user.id !== post?.creator.$id && "hidden"
-                  }`}
-                >
-                  <img
-                    src={"/assets/icons/delete.svg"}
-                    alt="delete"
-                    width={24}
-                    height={24}
-                    className="select-none pointer-events-none"
-                  />
-                </Button>
+                {user.id === post?.creator.$id && (
+                  <Button
+                    onClick={handleDeletePost}
+                    variant="ghost"
+                    className="post_details-delete_btn"
+                  >
+                    <img
+                      src={"/assets/icons/delete.svg"}
+                      alt="delete"
+                      width={24}
+                      height={24}
+                      className="select-none pointer-events-none"
+                    />
+                  </Button>
+                )}
               </div>
             </div>
 
