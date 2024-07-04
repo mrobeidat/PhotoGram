@@ -186,7 +186,7 @@ const PostDetails = () => {
                 <img
                   src={post.imageUrl}
                   alt="Image"
-                  className="post_ details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
+                  className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
                 />
               </PhotoView>
             ) : (
