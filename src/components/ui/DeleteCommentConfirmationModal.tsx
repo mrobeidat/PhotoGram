@@ -39,7 +39,7 @@ interface CommentItemProps {
   handleDeleteComment: (commentId: string) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({
+const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   children,
@@ -413,4 +413,4 @@ const CommentInput: React.FC<{
   </div>
 );
 
-export default Modal;
+export default DeleteCommentConfirmationModal;

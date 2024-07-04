@@ -22,7 +22,8 @@ import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
-import Modal from "@/components/ui/Modal";
+import DeleteCommentConfirmationModal from "@/components/ui/DeleteCommentConfirmationModal";
+import DeletePostConfirmationModal from "@/components/ui/DeletePostConfirmationModal";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -52,14 +53,7 @@ const PostDetails = () => {
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleDeletePost = async () => {
-    deletePost({ postId: id, imageId: post?.imageId });
-    navigate(-1);
-  };
-
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contentType, setContentType] = useState("");
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
   const [isVideoLoading, setIsVideoLoading] = useState(true);
@@ -148,6 +142,23 @@ const PostDetails = () => {
   const toggleComments = () => {
     setShowComments(!showComments);
   };
+
+  const handleDeletePost = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeletePost = async () => {
+    deletePost({ postId: id, imageId: post?.imageId });
+    setShowDeleteModal(false);
+    navigate(-1);
+  };
+
+  const cancelDeletePost = () => {
+    setShowDeleteModal(false);
+  };
+
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
 
   return (
     <div className="post_details-container">
@@ -321,7 +332,7 @@ const PostDetails = () => {
                 <Button
                   onClick={handleDeletePost}
                   variant="ghost"
-                  className={`ost_details-delete_btn ${
+                  className={`post_details-delete_btn ${
                     user.id !== post?.creator.$id && "hidden"
                   }`}
                 >
@@ -379,7 +390,7 @@ const PostDetails = () => {
               </ul>
             </div>
 
-            <Modal
+            <DeleteCommentConfirmationModal
               isOpen={showComments}
               onClose={toggleComments}
               containerRef={containerRef}
@@ -423,6 +434,13 @@ const PostDetails = () => {
           <RelatedPosts posts={relatedPosts} />
         )}
       </div>
+
+      <DeletePostConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={cancelDeletePost}
+        onConfirm={confirmDeletePost}
+        containerRef={containerRef}
+      />
     </div>
   );
 };
