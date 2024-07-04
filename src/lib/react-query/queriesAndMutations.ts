@@ -237,7 +237,7 @@ export const useLikeComment = () => {
     onSuccess: (data) => {
       console.log(`Successfully liked comment. Data:`, data);
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data.postId],
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data?.postId],
       });
     },
     onError: (error) => {
@@ -253,7 +253,7 @@ export const useUnlikeComment = () => {
     mutationFn: ({ commentId, userId }: { commentId: string; userId: string }) => unlikeComment(commentId, userId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data.postId],
+        queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data?.postId],
       });
     },
   });
@@ -264,6 +264,9 @@ export const useGetCommentsByPost = (postId: string) => {
     queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, postId],
     queryFn: async (): Promise<{ documents: IComment[] }> => {
       const comments = await getCommentsByPost(postId);
+      if (!comments || !comments.documents) {
+        return { documents: [] };
+      }
       const commentsWithUser = await Promise.all(
         comments.documents.map(async (comment) => {
           const user = await getUserById(comment.userId);
