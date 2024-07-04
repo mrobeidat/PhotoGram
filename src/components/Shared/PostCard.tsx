@@ -274,7 +274,7 @@ const PostCard = ({ post }: PostCardProps) => {
             className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
           >
             ...see less
-          </a>
+          </a>  
         )}
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (

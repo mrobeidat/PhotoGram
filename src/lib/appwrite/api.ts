@@ -43,7 +43,6 @@ export async function saveUserToDB(user: {
 
 
 }) {
-
     try {
         const newUser = await databases.createDocument(
             appwriteConfig.databaseId,
@@ -95,8 +94,12 @@ export async function SignInAccount(user: { email: string, password: string }) {
         throw error;
     }
 }
+
 export async function getCurrentUser() {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const currentAccount = await account.get()
 
         if (!currentAccount) throw Error;
@@ -126,27 +129,54 @@ export async function SignOutAccount() {
     }
 }
 
+async function checkAndHandleSession() {
+    try {
+        const session = await account.get();
+        return session.$id ? true : false;
+    } catch (error) {
+        await handleLogout();
+        return false;
+    }
+}
+
+async function handleLogout() {
+    try {
+        await account.deleteSession('current');
+
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userProfile');
+        localStorage.clear();
+
+        // Redirect to login page
+        window.location.href = '/sign-in';
+    } catch (error) {
+        console.log('Failed to log out:', error);
+        // If session deletion fails, clear local storage and redirect to login page
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userProfile');
+        localStorage.clear();
+        window.location.href = '/sign-in';
+    }
+}
+
 
 // ============================== CREATE POST
 
 export async function createPost(post: INewPost) {
     try {
-        // Upload file to appwrite storage
-        const uploadedFile = await uploadFile(post.file[0]);
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
 
+        const uploadedFile = await uploadFile(post.file[0]);
         if (!uploadedFile) throw Error;
 
-        // Get file url
         const fileUrl = getFilePreview(uploadedFile.$id);
         if (!fileUrl) {
             await deleteFile(uploadedFile.$id);
             throw Error;
         }
 
-        // Convert tags into array
         const tags = post.tags?.replace(/ /g, "").split(",") || [];
-
-        // Create post
         const newPost = await databases.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -175,6 +205,9 @@ export async function createPost(post: INewPost) {
 // ============================== UPLOAD FILE
 export async function uploadFile(file: File) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const uploadedFile = await storage.createFile(
             appwriteConfig.storageId,
             ID.unique(),
@@ -208,6 +241,8 @@ export function getFilePreview(fileId: string) {
 }
 export async function deleteFile(fileId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
         // Initiating the deletion in the background
         storage.deleteFile(appwriteConfig.storageId, fileId);
 
@@ -223,8 +258,10 @@ export async function deleteFile(fileId: string) {
 
 export async function updatePost(post: IUpdatePost) {
     const hasFileToUpdate = post.file.length > 0;
-
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         let image = {
             imageUrl: post.imageUrl,
             imageId: post.imageId,
@@ -280,6 +317,8 @@ export async function updatePost(post: IUpdatePost) {
 // ============================== GET HOME POSTS
 export async function getRecentPosts() {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
         const posts = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -294,9 +333,10 @@ export async function getRecentPosts() {
     }
 }
 
-
 export async function likePost(postId: string, likesArray: string[]) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
         const likedPost = await databases.updateDocument(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -316,6 +356,9 @@ export async function likePost(postId: string, likesArray: string[]) {
 
 export async function savePost(postId: string, userId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const updatedPost = await databases.createDocument(
             appwriteConfig.databaseId,
             appwriteConfig.savesCollectionId,
@@ -336,6 +379,9 @@ export async function savePost(postId: string, userId: string) {
 
 export async function deleteSavedPost(savedRecordId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const statusCode = await databases.deleteDocument(
             appwriteConfig.databaseId,
             appwriteConfig.savesCollectionId,
@@ -350,8 +396,10 @@ export async function deleteSavedPost(savedRecordId: string) {
 }
 
 export async function getPostById(postId: string) {
-
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const post = await databases.getDocument(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -371,7 +419,11 @@ export async function getPostById(postId: string) {
 
 export async function deletePost(postId: string, imageId: string) {
     if (!postId || !imageId) throw Error;
+
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const statusCode = await databases.deleteDocument(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -383,10 +435,13 @@ export async function deletePost(postId: string, imageId: string) {
     } catch (error) {
         console.log(error);
     }
-
 }
 
+
 export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+    const authenticated = await checkAndHandleSession();
+    if (!authenticated) return;
+
     const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(10)]
 
     if (pageParam) {
@@ -408,6 +463,9 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
 
 export async function searchPosts(searchTerm: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const posts = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.postCollectionId,
@@ -440,6 +498,9 @@ export async function getUserById(userId: string) {
 export async function updateUser(user: IUpdateUser) {
     const hasFileToUpdate = user.file.length > 0;
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         let image = {
             imageUrl: user.imageUrl,
             imageId: user.imageId,
@@ -558,6 +619,9 @@ export async function createComment(comment: { postId: string; userId: string; t
 
 export async function likeComment(commentId: string, userId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         // Fetch the current comment document
         const comment = await databases.getDocument(
             appwriteConfig.databaseId,
@@ -593,6 +657,9 @@ export async function likeComment(commentId: string, userId: string) {
 
 export async function unlikeComment(commentId: string, userId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         // Fetch the current comment document
         const comment = await databases.getDocument(
             appwriteConfig.databaseId,
@@ -629,6 +696,9 @@ export async function unlikeComment(commentId: string, userId: string) {
 
 export async function getCommentsByPost(postId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const comments = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.commentsCollectionId,
@@ -644,6 +714,9 @@ export async function getCommentsByPost(postId: string) {
 
 export async function deleteComment(commentId: string) {
     try {
+        const authenticated = await checkAndHandleSession();
+        if (!authenticated) return;
+
         const result = await databases.deleteDocument(
             appwriteConfig.databaseId,
             appwriteConfig.commentsCollectionId,
