@@ -43,7 +43,7 @@ export const PostValidation = z.object({
   caption: z
     .string()
     .min(5, { message: "Caption must be at least 5 characters." })
-    .max(2200, { message: "Caption can't exceed 2,200 characters" }),
+    .max(30000, { message: "Caption can't exceed 2,200 characters" }),
   file: z.custom<File[]>(),
   location: z
     .string()
