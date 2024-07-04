@@ -1,15 +1,25 @@
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
-
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
+import { useGetUserPosts } from "@/lib/react-query/queriesAndMutations";
 
 type UserCardProps = {
   user: Models.Document;
 };
+
 const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR
 
 const UserCard = ({ user }: UserCardProps) => {
+  const { data: userPosts } = useGetUserPosts(user.$id);
+  const [creatorPostCount, setCreatorPostCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (userPosts) {
+      setCreatorPostCount(userPosts.documents.length);
+    }
+  }, [userPosts]);
+
   return (
     <Link to={`/profile/${user.$id}`} className="user-card">
       <img
@@ -24,9 +34,9 @@ const UserCard = ({ user }: UserCardProps) => {
           <p className="base-medium text-light-1 text-center line-clamp-1">
             {user.name}
           </p>
-          {user.$id === TopCreator && (
+          {creatorPostCount !== null && creatorPostCount >= 3 && user.$id !== YousefID && (
             <div className="group relative pin-icon-container">
-              <img
+              <img  
                 alt="badge"
                 width={16}
                 src={"/assets/icons/top-creator.png"}

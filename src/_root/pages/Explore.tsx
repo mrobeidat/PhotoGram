@@ -60,7 +60,7 @@ const Explore = () => {
   const debouncedSearch = useDebounce(searchValue, 500);
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
 
-  const [filter, setFilter] = useState<'week' | 'month' | 'year'>('week');
+  const [filter, setFilter] = useState<'week' | 'month' | 'year'>('year');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {

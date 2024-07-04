@@ -9,6 +9,7 @@ import {
   useGetCommentsByPost,
   useCreateComment,
   useDeleteComment,
+  useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
@@ -41,8 +42,17 @@ const PostCard = ({ post }: PostCardProps) => {
   const { mutate: createComment } = useCreateComment();
   const { mutate: deleteComment } = useDeleteComment();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { data: userPosts } = useGetUserPosts(post.creator.$id);
+  const [creatorPostCount, setCreatorPostCount] = useState<number | null>(null);
+
 
   if (!post.creator) return null;
+
+  useEffect(() => {
+    if (userPosts) {
+      setCreatorPostCount(userPosts.documents.length);
+    }
+  }, [userPosts]);
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
@@ -182,7 +192,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     {post.creator.name}
                   </p>
                 </Link>
-                {post.creator.$id === TopCreator && (
+                {creatorPostCount !== null && creatorPostCount >= 3 && post.creator.$id !== YousefID &&(
                   <div className="group relative pin-icon-container">
                     <img
                       alt="badge"
