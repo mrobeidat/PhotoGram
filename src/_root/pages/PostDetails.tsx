@@ -41,10 +41,14 @@ const PostDetails = () => {
   const { user } = useUserContext();
   const { toast } = useToast();
   const { data: post, isPending } = useGetPostById(id || "");
-  const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(post?.creator.$id);
+  const { data: userPosts, isPending: isUserPostLoading } = useGetUserPosts(
+    post?.creator.$id
+  );
   const { mutate: deletePost } = useDeletePost();
   const { mutate: deleteComment } = useDeleteComment();
-  const relatedPosts = userPosts?.documents.filter((userPost) => userPost.$id !== id);
+  const relatedPosts = userPosts?.documents.filter(
+    (userPost) => userPost.$id !== id
+  );
   const sanitizedCaption = sanitizeHTML(post?.caption).__html;
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -94,7 +98,8 @@ const PostDetails = () => {
   const [showComments, setShowComments] = useState(false);
 
   const { mutate: createComment } = useCreateComment();
-  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(id || "");
+  const { data: comments, isPending: areCommentsLoading } =
+    useGetCommentsByPost(id || "");
 
   const [isFullContent, setIsFullContent] = useState(false);
   const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false);
@@ -147,8 +152,17 @@ const PostDetails = () => {
   return (
     <div className="post_details-container">
       <div className="hidden md:flex max-w-5xl w-full">
-        <Button onClick={() => navigate(-1)} variant="ghost" className="shad-button_ghost">
-          <img src={"/assets/icons/back.svg"} alt="back" width={24} height={24} />
+        <Button
+          onClick={() => navigate(-1)}
+          variant="ghost"
+          className="shad-button_ghost"
+        >
+          <img
+            src={"/assets/icons/back.svg"}
+            alt="back"
+            width={24}
+            height={24}
+          />
           <p className="small-medium lg:base-medium">Back</p>
         </Button>
       </div>
@@ -160,7 +174,9 @@ const PostDetails = () => {
           <PhotoProvider
             speed={() => 450}
             easing={(type) =>
-              type === 2 ? "cubic-bezier(0.36, 0, 0.66, -0.56)" : "cubic-bezier(0.34, 1.56, 0.64, 1)"
+              type === 2
+                ? "cubic-bezier(0.36, 0, 0.66, -0.56)"
+                : "cubic-bezier(0.34, 1.56, 0.64, 1)"
             }
             bannerVisible={false}
             maskOpacity={0.8}
@@ -170,7 +186,7 @@ const PostDetails = () => {
                 <img
                   src={post.imageUrl}
                   alt="Image"
-                  className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
+                  className="post_ details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
                 />
               </PhotoView>
             ) : (
@@ -206,9 +222,19 @@ const PostDetails = () => {
                 >
                   {isAndroid || isWindows || isMacOs ? (
                     isMuted ? (
-                      <img height={21} width={21} src="/assets/icons/mute.png" alt="Mute" />
+                      <img
+                        height={21}
+                        width={21}
+                        src="/assets/icons/mute.png"
+                        alt="Mute"
+                      />
                     ) : (
-                      <img height={22} width={22} src="/assets/icons/volume.png" alt="Unmute" />
+                      <img
+                        height={22}
+                        width={22}
+                        src="/assets/icons/volume.png"
+                        alt="Unmute"
+                      />
                     )
                   ) : null}
                 </div>
@@ -217,18 +243,31 @@ const PostDetails = () => {
           </PhotoProvider>
           <div className="post_details-info">
             <div className="flex-between w-full">
-              <Link to={`/profile/${post?.creator.$id}`} className="flex items-center gap-3">
+              <Link
+                to={`/profile/${post?.creator.$id}`}
+                className="flex items-center gap-3"
+              >
                 <img
-                  src={post?.creator.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                  src={
+                    post?.creator.imageUrl ||
+                    "/assets/icons/profile-placeholder.svg"
+                  }
                   alt="creator"
                   className="w-8 h-8 lg:w-12 lg:h-12 rounded-full object-cover"
                 />
                 <div className="flex gap-1 flex-col">
                   <div className="flex items-center">
-                    <p className="base-medium lg:body-bold text-light-1">{post?.creator.name}</p>
+                    <p className="base-medium lg:body-bold text-light-1">
+                      {post?.creator.name}
+                    </p>
                     {post.creator.$id === TopCreator && (
                       <div className="group relative pin-icon-container">
-                        <img alt="badge" width={15} src={"/assets/icons/top-creator.png"} className="ml-2 object-contain" />
+                        <img
+                          alt="badge"
+                          width={15}
+                          src={"/assets/icons/top-creator.png"}
+                          className="ml-2 object-contain"
+                        />
                         <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
                           Top Creator
                         </div>
@@ -250,26 +289,49 @@ const PostDetails = () => {
                     )}
                   </div>
                   <div className="flex-center gap-1 mr-3 text-light-3">
-                    <p className="subtle-semibold lg:small-regular ">{formatDate(post?.$createdAt)}</p>
+                    <p className="subtle-semibold lg:small-regular ">
+                      {formatDate(post?.$createdAt)}
+                    </p>
                     •
-                    <p className="subtle-semibold lg:small-regular">{post?.location}</p>
+                    <p className="subtle-semibold lg:small-regular">
+                      {post?.location}
+                    </p>
                     <span>{post.updated ? "•" : ""}</span>
-                    <p className="subtle-semibold lg:small-regular">{post.updated == true ? "(Edited)" : ""}</p>
+                    <p className="subtle-semibold lg:small-regular">
+                      {post.updated == true ? "(Edited)" : ""}
+                    </p>
                   </div>
                 </div>
               </Link>
 
               <div className="flex-center gap-2">
-                <Link to={`/update-post/${post?.$id}`} className={`${user.id !== post?.creator.$id && "hidden"}`}>
-                  <img src={"/assets/icons/edit.svg"} alt="edit" width={22} height={24} className="select-none pointer-events-none" />
+                <Link
+                  to={`/update-post/${post?.$id}`}
+                  className={`${user.id !== post?.creator.$id && "hidden"}`}
+                >
+                  <img
+                    src={"/assets/icons/edit.svg"}
+                    alt="edit"
+                    width={22}
+                    height={24}
+                    className="select-none pointer-events-none"
+                  />
                 </Link>
 
                 <Button
                   onClick={handleDeletePost}
                   variant="ghost"
-                  className={`ost_details-delete_btn ${user.id !== post?.creator.$id && "hidden"}`}
+                  className={`ost_details-delete_btn ${
+                    user.id !== post?.creator.$id && "hidden"
+                  }`}
                 >
-                  <img src={"/assets/icons/delete.svg"} alt="delete" width={24} height={24} className="select-none pointer-events-none" />
+                  <img
+                    src={"/assets/icons/delete.svg"}
+                    alt="delete"
+                    width={24}
+                    height={24}
+                    className="select-none pointer-events-none"
+                  />
                 </Button>
               </div>
             </div>
@@ -279,17 +341,21 @@ const PostDetails = () => {
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
               {/* Render caption as readonly */}
               <p
-                onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}
-                className={`${isFullContent ? "max-h-full" : "max-h-36"
-                  } transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
-                  } cursor-default`}
+                onClick={
+                  !isFullContent ? handleSeeMoreClick : handleSeeLessClick
+                }
+                className={`${
+                  isFullContent ? "max-h-full" : "max-h-36"
+                } transition-max-height ${
+                  isSeeMoreClicked ? "smooth-transition" : ""
+                } cursor-default`}
                 dangerouslySetInnerHTML={{
                   __html: isFullContent
                     ? sanitizedCaption
                     : sanitizedCaption.substring(0, 500) +
-                    (sanitizedCaption.length > 500
-                      ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
-                      : ""),
+                      (sanitizedCaption.length > 500
+                        ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
+                        : ""),
                 }}
                 style={{ fontSize: "14px", fontWeight: "100" }}
               />
@@ -303,7 +369,10 @@ const PostDetails = () => {
               )}
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
-                  <li key={`${tag}${index}`} className="text-light-3 small-regular">
+                  <li
+                    key={`${tag}${index}`}
+                    className="text-light-3 small-regular"
+                  >
                     #{tag}
                   </li>
                 ))}
@@ -329,7 +398,12 @@ const PostDetails = () => {
             />
 
             <div className="w-full mt-4">
-              <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
+              <PostStats
+                post={post}
+                userId={user.id}
+                commentsCount={comments?.documents.length || 0}
+                onToggleComments={toggleComments}
+              />
             </div>
           </div>
         </div>
@@ -338,7 +412,9 @@ const PostDetails = () => {
       <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
-        <h3 className="body-bold md:h3-bold w-full my-10">More Related Posts</h3>
+        <h3 className="body-bold md:h3-bold w-full my-10">
+          More Related Posts
+        </h3>
         {isUserPostLoading || !relatedPosts ? (
           <div className="details-loader-wrapper sm:flex gap-3">
             <DetailsLoader />
