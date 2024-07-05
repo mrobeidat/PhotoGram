@@ -5,7 +5,6 @@ import {
   Outlet,
   useParams,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
 
 import { LikedPosts } from "@/_root/pages";
@@ -35,61 +34,38 @@ const getRandomNumber = (min: number, max: number) => {
 };
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
-  // Generate random follower and following counts
   const randomFollowers = getRandomNumber(100, 200);
   const randomFollowing = getRandomNumber(100, 200);
 
-  // Extract user ID from route parameters
   const { id } = useParams();
 
   // Access user context
   const { user } = useUserContext();
   const { pathname } = useLocation();
 
-  // Fetch user data by ID using a custom hook
   const { data: currentUser } = useGetUserById(id || "");
-
-  // State for profile view count
   const [viewCount, setViewCount] = useState<number>(0);
 
   useEffect(() => {
-    // Retrieve the view count from localStorage
     const storedViewCount = localStorage.getItem(`profileViewCount_${id}`);
 
     if (storedViewCount) {
       setViewCount(parseInt(storedViewCount, 10));
     } else {
-      // Initialize view count if not stored
       setViewCount(0);
     }
   }, [id]);
 
   useEffect(() => {
-    // Increment view count when component mounts or when 'viewCount' changes
     if (user.id !== id) {
       setViewCount((prevViewCount) => {
         const newViewCount = prevViewCount + 1;
-        // Update localStorage with the new view count
         localStorage.setItem(`profileViewCount_${id}`, String(newViewCount));
         return newViewCount;
       });
     }
   }, [id, user.id]);
 
-  // Display loader while fetching user data
   if (!currentUser)
     return (
       <div className="flex-center w-full h-full">
@@ -99,6 +75,7 @@ const Profile = () => {
 
   // Determine if the user has three or more posts
   const hasThreeOrMorePosts = currentUser.posts.length >= 3;
+
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   return (

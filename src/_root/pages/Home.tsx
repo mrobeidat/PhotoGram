@@ -8,25 +8,9 @@ import HomeLoader from "@/components/Shared/Loaders/HomeLoader";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUserContext } from "@/context/AuthContext";
+import { useMemo } from "react";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
-
   // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
 
