@@ -24,12 +24,9 @@ interface SanitizeHTMLResult {
   __html: string;
 }
 
-export const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => {
-  const sanitizedString = DOMPurify.sanitize(htmlString);
-  return {
-    __html: sanitizedString,
-  };
-};
+const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => ({
+  __html: DOMPurify.sanitize(htmlString),
+});
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
@@ -37,16 +34,19 @@ const PostCard = ({ post }: PostCardProps) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [showComments, setShowComments] = useState(false);
+  const [isFullContent, setIsFullContent] = useState(false);
   const { toast } = useToast();
-  const { data: comments, isPending: areCommentsLoading } = useGetCommentsByPost(post.$id);
+  const { data: comments, isPending: areCommentsLoading } =
+    useGetCommentsByPost(post.$id);
   const { mutate: createComment } = useCreateComment();
   const { mutate: deleteComment } = useDeleteComment();
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: userPosts } = useGetUserPosts(post.creator.$id);
   const [creatorPostCount, setCreatorPostCount] = useState<number | null>(null);
 
-
-  if (!post.creator) return null;
+  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
+  const imageUrl = post?.imageUrl.replace("/preview", "/view");
 
   useEffect(() => {
     if (userPosts) {
@@ -54,58 +54,37 @@ const PostCard = ({ post }: PostCardProps) => {
     }
   }, [userPosts]);
 
-  const sanitizedCaption = sanitizeHTML(post.caption).__html;
-  const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-  const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
-  const imageUrl = post?.imageUrl.replace("/preview", "/view");
-
   useEffect(() => {
-    const fetchDataAndPlayVideo = async () => {
+    const handleVideoPlay = async () => {
       try {
         const response = await fetch(imageUrl);
-
         if (response.ok) {
           const contentTypeHeader = response.headers.get("Content-Type");
           setContentType(contentTypeHeader || "");
 
-          if (contentTypeHeader && contentTypeHeader.startsWith("video")) {
+          if (contentTypeHeader?.startsWith("video")) {
             const videoElement = document.getElementById(
               `video-${post.$id}`
             ) as HTMLVideoElement | null;
-
             if (videoElement) {
-              const handleIntersection = (
-                entries: IntersectionObserverEntry[]
-              ) => {
-                const [entry] = entries;
-                if (entry.isIntersecting) {
-                  if (!isVideoPlaying) {
-                    setIsVideoPlaying(true);
-                    videoElement.play();
-                  }
-                } else {
-                  if (isVideoPlaying) {
-                    setIsVideoPlaying(false);
-                    videoElement.pause();
-                  }
-                }
-              };
-
-              const options = {
-                root: null,
-                rootMargin: "0px",
-                threshold: 0.5,
-              };
-
               const observer = new IntersectionObserver(
-                handleIntersection,
-                options
+                ([entry]) => {
+                  if (entry.isIntersecting) {
+                    if (!isVideoPlaying) {
+                      setIsVideoPlaying(true);
+                      videoElement.play();
+                    }
+                  } else {
+                    if (isVideoPlaying) {
+                      setIsVideoPlaying(false);
+                      videoElement.pause();
+                    }
+                  }
+                },
+                { root: null, rootMargin: "0px", threshold: 0.5 }
               );
               observer.observe(videoElement);
-
-              return () => {
-                observer.disconnect();
-              };
+              return () => observer.disconnect();
             } else {
               console.error(
                 `Video element with ID 'video-${post.$id}' not found.`
@@ -119,26 +98,16 @@ const PostCard = ({ post }: PostCardProps) => {
         console.error("Error fetching image:", error);
       }
     };
-
-    fetchDataAndPlayVideo();
+    handleVideoPlay();
   }, [imageUrl, post.$id, isVideoPlaying]);
 
-  const toggleComments = () => {
-    setShowComments(!showComments);
-  };
+  const toggleComments = () => setShowComments(!showComments);
 
   const handleCreateComment = () => {
-    const commentData = {
-      postId: post.$id,
-      userId: user.id,
-      text: commentText,
-    };
-
-    createComment(commentData, {
-      onSuccess: () => {
-        setCommentText("");
-      },
-    });
+    createComment(
+      { postId: post.$id, userId: user.id, text: commentText },
+      { onSuccess: () => setCommentText("") }
+    );
   };
 
   const handleDeleteComment = (commentId: string) => {
@@ -152,37 +121,29 @@ const PostCard = ({ post }: PostCardProps) => {
     });
   };
 
-  const [isFullContent, setIsFullContent] = useState(false);
-  const [isSeeMoreClicked, setIsSeeMoreClicked] = useState(false);
+  if (!post.creator) return null;
 
-  const handleSeeMoreClick = () => {
-    setIsSeeMoreClicked(true);
-    setIsFullContent(true);
-  };
-
-  const handleSeeLessClick = () => {
-    setIsSeeMoreClicked(false);
-    setIsFullContent(false);
-  };
+  const sanitizedCaption = sanitizeHTML(post.caption).__html;
 
   return (
     <div
-      className={`${post.$id === import.meta.env.VITE_APPWRITE_POST_ID
-        ? "post-card-pinned"
-        : "post-card"
-        }`}
+      className={
+        post.$id === import.meta.env.VITE_APPWRITE_POST_ID
+          ? "post-card-pinned"
+          : "post-card"
+      }
     >
       <Link to={`/posts/${post.$id}`}>
-        <div className="flex-between">
+        <div className="flex justify-between">
           <div className="flex items-center gap-3">
             <Link to={`/profile/${post.creator.$id}`}>
               <img
                 src={
-                  post?.creator?.imageUrl ||
+                  post.creator.imageUrl ||
                   "assets/icons/profile-placeholder.svg"
                 }
                 alt="avatar"
-                className="w-12 h-12 lg:h-12 rounded-full object-cover"
+                className="w-12 h-12 lg:w-12 rounded-full object-cover"
               />
             </Link>
             <div className="flex flex-col">
@@ -192,20 +153,22 @@ const PostCard = ({ post }: PostCardProps) => {
                     {post.creator.name}
                   </p>
                 </Link>
-                {creatorPostCount !== null && creatorPostCount >= 3 && post.creator.$id !== YousefID &&(
-                  <div className="group relative pin-icon-container">
-                    <img
-                      alt="badge"
-                      width={17}
-                      src={"/assets/icons/top-creator.png"}
-                      className="ml-2 object-contain pointer-events-none select-none"
-                      draggable="false"
-                    />
-                    <div className="tooltip-verified-creator absolute transition-opacity duration-300 ">
-                      Top Creator
+                {creatorPostCount !== null &&
+                  creatorPostCount >= 3 &&
+                  post.creator.$id !== YousefID && (
+                    <div className="group relative pin-icon-container">
+                      <img
+                        alt="badge"
+                        width={17}
+                        src={"/assets/icons/top-creator.png"}
+                        className="ml-2 object-contain pointer-events-none select-none"
+                        draggable="false"
+                      />
+                      <div className="tooltip-verified-creator absolute transition-opacity duration-300">
+                        Top Creator
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 {post.creator.$id === YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
@@ -215,13 +178,13 @@ const PostCard = ({ post }: PostCardProps) => {
                       className="ml-2 object-contain pointer-events-none select-none"
                       draggable="false"
                     />
-                    <div className="tooltip-verified absolute transition-opacity duration-300 ">
+                    <div className="tooltip-verified absolute transition-opacity duration-300">
                       Website Creator
                     </div>
                   </div>
                 )}
               </div>
-              <div className="flex-center gap-1 text-light-3">
+              <div className="flex items-center gap-1 text-light-3">
                 <p className="subtle-semibold lg:small-regular">
                   {formatDate(post.$createdAt)}
                 </p>
@@ -229,10 +192,9 @@ const PostCard = ({ post }: PostCardProps) => {
                 <p className="subtle-semibold lg:small-regular">
                   {post.location}
                 </p>
-                <span>{post.updated ? "•" : ""}</span>
-                <p className="subtle-semibold lg:small-regular">
-                  {post.updated == true ? "(Edited)" : ""}
-                </p>
+                {post.updated && (
+                  <p className="subtle-semibold lg:small-regular">• (Edited)</p>
+                )}
               </div>
             </div>
           </div>
@@ -246,45 +208,47 @@ const PostCard = ({ post }: PostCardProps) => {
                   height={20}
                   className="resize-none pointer-events-none select-none"
                 />
-                <span className="tooltip ">📌 Pinned Post</span>
+                <span className="tooltip">📌 Pinned Post</span>
               </div>
             </Link>
           ) : (
-            <Link
-              className={`${user.id !== post.creator.$id && "hidden"}`}
-              to={`/update-post/${post.$id}`}
-            >
-              <img
-                src="assets/icons/edit.svg"
-                alt="edit"
-                width={20}
-                height={50}
-              />
-            </Link>
+            user.id === post.creator.$id && (
+              <Link to={`/update-post/${post.$id}`}>
+                <img
+                  src="assets/icons/edit.svg"
+                  alt="edit"
+                  width={20}
+                  height={50}
+                />
+              </Link>
+            )
           )}
         </div>
       </Link>
 
       <div className="small-medium lg:base-medium py-5">
         <p
-          onClick={!isFullContent ? handleSeeMoreClick : handleSeeLessClick}
-          className={`${isFullContent ? "max-h-full" : "max-h-36"} transition-max-height ${isSeeMoreClicked ? "smooth-transition" : ""
-            } cursor-default`}
+          onClick={() => setIsFullContent(!isFullContent)}
+          className={`transition-max-height ${
+            isFullContent ? "max-h-full" : "max-h-36"
+          } cursor-default`}
           dangerouslySetInnerHTML={{
             __html: isFullContent
               ? sanitizedCaption
-              : sanitizedCaption.substring(0, 200) +
-              (sanitizedCaption.length > 200 ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>' : ""),
+              : `${sanitizedCaption.substring(0, 500)}${
+                  sanitizedCaption.length > 500
+                    ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
+                    : ""
+                }`,
           }}
-          style={{ fontSize: "14px", fontWeight: "100" }}
         />
-        {isFullContent && sanitizedCaption.length > 200 && (
+        {isFullContent && sanitizedCaption.length > 500 && (
           <a
-            onClick={handleSeeLessClick}
+            onClick={() => setIsFullContent(false)}
             className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
           >
             ...see less
-          </a>  
+          </a>
         )}
         <ul className="flex gap-1 mt-2">
           {post.tags.map((tag: string, index: number) => (
@@ -311,47 +275,31 @@ const PostCard = ({ post }: PostCardProps) => {
               <img
                 src={post.imageUrl}
                 alt="Image"
-                className="post-card_img hover:cursor-pointer"
+                className="post-card_img hover:cursor-pointer rounded-md shadow-lg"
               />
             </PhotoView>
           </Link>
         ) : (
-          <div style={{ position: "relative", borderRadius: "25px" }}>
-            {imageUrl && (
-              <div
-                className="post_details-img object-cover !w-full !h-auto !p-0"
-                style={{ position: "relative", borderRadius: "10px" }}
-              >
-                <video
-                  id={`video-${post?.$id}`}
-                  autoPlay={isVideoPlaying}
-                  loop
-                  controls={true}
-                  className="post-card_img"
-                  style={{
-                    width: "100%",
-                    borderRadius: "10px",
-                    boxShadow: "rgba(17, 67, 98, 0.841) 0px 20px 30px -10px",
-                  }}
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                </video>
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "5px",
-                    right: "10px",
-                    cursor: "pointer",
-                  }}
-                >
-                </div>
-              </div>
-            )}
-          </div>
+          imageUrl && (
+            <video
+              id={`video-${post.$id}`}
+              autoPlay={isVideoPlaying}
+              loop
+              controls={true}
+              className="post-card_img rounded-md shadow-lg"
+            >
+              <source src={imageUrl} type="video/mp4" />
+            </video>
+          )
         )}
       </PhotoProvider>
 
-      <PostStats post={post} userId={user.id} commentsCount={comments?.documents.length || 0} onToggleComments={toggleComments} />
+      <PostStats
+        post={post}
+        userId={user.id}
+        commentsCount={comments?.documents.length || 0}
+        onToggleComments={toggleComments}
+      />
       {showComments && (
         <Modal
           isOpen={showComments}

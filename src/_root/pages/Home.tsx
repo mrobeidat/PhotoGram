@@ -1,4 +1,4 @@
-import { Models } from "appwrite";
+import { useMemo } from "react";
 import {
   useGetRecentPosts,
   useGetUsers,
@@ -8,27 +8,21 @@ import HomeLoader from "@/components/Shared/Loaders/HomeLoader";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { useMemo } from "react";
+import { Models } from "appwrite";
 
 const Home = () => {
-  // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
-
-  // Memoize the query result using useMemo
-  const {
-    data: posts,
-    isLoading: isPostLoading,
-    isError: isErrorPosts,
-  } = useMemo(() => {
-    return recentPostsQuery;
-  }, [recentPostsQuery]);
-
-  // Fetch recent users using the custom hook
   const {
     data: creators,
     isLoading: isUserLoading,
     isError: isErrorCreators,
   } = useGetUsers(10);
+
+  const {
+    data: posts,
+    isLoading: isPostLoading,
+    isError: isErrorPosts,
+  } = useMemo(() => recentPostsQuery, [recentPostsQuery]);
 
   // Handle error cases
   if (isErrorPosts || isErrorCreators) {
@@ -45,11 +39,10 @@ const Home = () => {
   }
 
   // Pin Yousef's post to the top of the array of posts
-  if (posts?.documents) {
-    const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
-
+  const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
+  const pinnedPosts = useMemo(() => {
+    if (!posts?.documents) return [];
     const updatedPosts = [...posts.documents];
-
     const postIndex = updatedPosts.findIndex(
       (post) => post.$id === postIdToMoveToTop
     );
@@ -58,26 +51,19 @@ const Home = () => {
       const postToMove = updatedPosts.splice(postIndex, 1)[0];
       updatedPosts.unshift(postToMove);
     }
-    // Update the posts variable with the modified array
-    posts.documents = updatedPosts;
-  }
+    return updatedPosts;
+  }, [posts, postIdToMoveToTop]);
 
-  // Yousef Account ID
+  // Pin Yousef's user card to the top
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
-
-  // Pin yousef's post to the top and useMemo to memorize its position
   const sortedCreators = useMemo(() => {
-    const sorted = [...(creators?.documents || [])].sort((a, b) => {
-      if (a.$id === YousefID) {
-        return -1; // Yousef's card comes first
-      }
-      if (b.$id === YousefID) {
-        return 1; // Yousef's card comes first
-      }
+    if (!creators?.documents) return [];
+    return [...creators.documents].sort((a, b) => {
+      if (a.$id === YousefID) return -1;
+      if (b.$id === YousefID) return 1;
       return 0;
     });
-    return sorted;
-  }, [creators]);
+  }, [creators, YousefID]);
 
   return (
     <div className="flex flex-1">
@@ -87,8 +73,8 @@ const Home = () => {
           {isPostLoading && !posts ? (
             Array.from({ length: 3 }, (_, index) => <HomeLoader key={index} />)
           ) : (
-            <ul className="flex flex-col flex-1 gap-9 w-full ">
-              {posts?.documents.map((post: Models.Document) => (
+            <ul className="flex flex-col flex-1 gap-9 w-full">
+              {pinnedPosts.map((post: Models.Document) => (
                 <li key={post.$id} className="flex justify-center w-full">
                   <PostCard post={post} key={post.caption} />
                 </li>
