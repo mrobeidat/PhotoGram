@@ -1,9 +1,25 @@
 import PostForm from '@/components/forms/PostForm'
 import { useGetPostById } from '@/lib/react-query/queriesAndMutations'
 import EditLoader from '../../components/Shared/Loaders/EditLoader'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useUserContext } from '@/context/AuthContext'
+import { useEffect } from 'react'
 
 const EditPost = () => {
+
+  const navigate = useNavigate();
+  const { checkAuthUser } = useUserContext();
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const isValid = await checkAuthUser();
+      if (!isValid) {
+        navigate("/sign-in");
+      }
+    };
+
+    verifyAuth();
+  }, [checkAuthUser, navigate]);
 
   const { id } = useParams()
   const { data: post, isPending } = useGetPostById(id || '')
@@ -16,7 +32,6 @@ const EditPost = () => {
       </div>
     </div>
   )
-
 
   return (
     <div className="flex flex-1">

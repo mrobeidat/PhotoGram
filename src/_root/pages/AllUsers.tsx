@@ -8,14 +8,19 @@ import { useNavigate } from "react-router-dom";
 
 const AllUsers = () => {
   const navigate = useNavigate();
+  const { checkAuthUser } = useUserContext();
 
-  const { isAuthenticated } = useUserContext();
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/sign-in");
-    }
-  }, [isAuthenticated, navigate]);
+    const verifyAuth = async () => {
+      const isValid = await checkAuthUser();
+      if (!isValid) {
+        navigate("/sign-in");
+      }
+    };
 
+    verifyAuth();
+  }, [checkAuthUser, navigate]);
+  
   const { toast } = useToast();
   const { data: creators, isLoading, isError: isErrorCreators } = useGetUsers();
 

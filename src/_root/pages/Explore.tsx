@@ -9,6 +9,8 @@ import GridPostList from "@/components/Shared/GridPostsList";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "@/context/AuthContext";
 
 export type SearchResultProps = {
   isSearchFetching: boolean;
@@ -28,6 +30,21 @@ const SearchResults = memo(({ isSearchFetching, searchedPosts }: SearchResultPro
 });
 
 const Explore = () => {
+
+  const navigate = useNavigate();
+  const { checkAuthUser } = useUserContext();
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const isValid = await checkAuthUser();
+      if (!isValid) {
+        navigate("/sign-in");
+      }
+    };
+
+    verifyAuth();
+  }, [checkAuthUser, navigate]);
+
   const hasShownAlert = sessionStorage.getItem('hasShownAlert');
   const showAlert = useCallback(() => {
     if (!hasShownAlert) {
@@ -53,6 +70,7 @@ const Explore = () => {
   useEffect(() => {
     showAlert();
   }, [showAlert]);
+  
 
   const { ref, inView } = useInView();
   const { data: posts, fetchNextPage, hasNextPage, isLoading: isLoadingPosts } = useGetPosts();

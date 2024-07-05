@@ -1,10 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
-
 import { IUser } from "@/types";
 import { getCurrentUser } from "@/lib/appwrite/api";
-
-
 
 export const INITIAL_USER = {
   id: "",
@@ -55,13 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-
+        localStorage.setItem("authToken", JSON.stringify(currentAccount.$id));
         return true;
       }
-
+      setIsAuthenticated(false);
       return false;
     } catch (error) {
       console.error(error);
+      setIsAuthenticated(false);
       return false;
     } finally {
       setisPending(false);
@@ -69,17 +67,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const cookieFallback = localStorage.getItem("cookieFallback");
-    if (
-      cookieFallback === "[]" ||
-      cookieFallback === null ||
-      cookieFallback === undefined
-    ) {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
       navigate("/sign-in");
+    } else {
+      checkAuthUser();
     }
-
-    checkAuthUser();
-  }, []);
+  }, [navigate]);
 
   const value = {
     user,

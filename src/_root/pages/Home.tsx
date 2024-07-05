@@ -14,14 +14,19 @@ import { useUserContext } from "@/context/AuthContext";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useUserContext();
+  const { checkAuthUser } = useUserContext();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/sign-in");
-    }
-  }, [isAuthenticated, navigate]);
+    const verifyAuth = async () => {
+      const isValid = await checkAuthUser();
+      if (!isValid) {
+        navigate("/sign-in");
+      }
+    };
 
+    verifyAuth();
+  }, [checkAuthUser, navigate]);
+  
   // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
 

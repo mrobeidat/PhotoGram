@@ -36,13 +36,17 @@ const getRandomNumber = (min: number, max: number) => {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useUserContext();
+  const { checkAuthUser } = useUserContext();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/sign-in");
-    }
-  }, [isAuthenticated, navigate]);
+    const verifyAuth = async () => {
+      const isValid = await checkAuthUser();
+      if (!isValid) {
+        navigate("/sign-in");
+      }
+    };
+    verifyAuth();
+  }, [checkAuthUser, navigate]);
 
   // Generate random follower and following counts
   const randomFollowers = getRandomNumber(100, 200);
