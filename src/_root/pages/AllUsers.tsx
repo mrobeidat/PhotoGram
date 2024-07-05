@@ -2,9 +2,20 @@ import { useToast } from "@/components/ui/use-toast";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import { useGetUsers } from "@/lib/react-query/queriesAndMutations";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useUserContext } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const AllUsers = () => {
+  const navigate = useNavigate();
+
+  const { isAuthenticated } = useUserContext();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
   const { toast } = useToast();
   const { data: creators, isLoading, isError: isErrorCreators } = useGetUsers();
 
@@ -20,8 +31,12 @@ const AllUsers = () => {
 
   // Memoize indices using useMemo
   const indices = useMemo(() => {
-    const yousefIndex = sortedCreators.findIndex((creator) => creator?.$id === YousefID);
-    const topCreatorIndex = sortedCreators.findIndex((creator) => creator?.$id === TopCreator);
+    const yousefIndex = sortedCreators.findIndex(
+      (creator) => creator?.$id === YousefID
+    );
+    const topCreatorIndex = sortedCreators.findIndex(
+      (creator) => creator?.$id === TopCreator
+    );
     return { yousefIndex, topCreatorIndex };
   }, [sortedCreators, YousefID, TopCreator]);
 
@@ -40,7 +55,10 @@ const AllUsers = () => {
 
   // Add the remaining cards to the new array
   newSortedCreators.push(
-    ...sortedCreators.filter((_, index) => index !== indices.yousefIndex && index !== indices.topCreatorIndex)
+    ...sortedCreators.filter(
+      (_, index) =>
+        index !== indices.yousefIndex && index !== indices.topCreatorIndex
+    )
   );
 
   return (

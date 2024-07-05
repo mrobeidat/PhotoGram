@@ -58,6 +58,14 @@ const PostDetails = () => {
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
   const [isVideoLoading, setIsVideoLoading] = useState(true);
 
+  const { isAuthenticated } = useUserContext();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
   useEffect(() => {
     const fetchImage = async () => {
       try {

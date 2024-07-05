@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "react-photo-view/dist/react-photo-view.css";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import { useNavigate } from "react-router-dom";
 
 interface StabBlockProps {
   value: string | number;
@@ -34,6 +35,15 @@ const getRandomNumber = (min: number, max: number) => {
 };
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useUserContext();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
   // Generate random follower and following counts
   const randomFollowers = getRandomNumber(100, 200);
   const randomFollowing = getRandomNumber(100, 200);

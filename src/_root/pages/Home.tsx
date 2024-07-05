@@ -1,20 +1,36 @@
 import { Models } from "appwrite";
-
-// import Loader from "@/components/Shared/Loader";
-import { useGetRecentPosts, useGetUsers } from "@/lib/react-query/queriesAndMutations";
+import {
+  useGetRecentPosts,
+  useGetUsers,
+} from "@/lib/react-query/queriesAndMutations";
 import PostCard from "@/components/Shared/PostCard";
-import HomeLoader from '../../components/Shared/Loaders/HomeLoader'
+import HomeLoader from "@/components/Shared/Loaders/HomeLoader";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { useMemo } from "react";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "@/context/AuthContext";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useUserContext();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/sign-in");
+    }
+  }, [isAuthenticated, navigate]);
+
   // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
 
   // Memoize the query result using useMemo
-  const { data: posts, isLoading: isPostLoading, isError: isErrorPosts } = useMemo(() => {
+  const {
+    data: posts,
+    isLoading: isPostLoading,
+    isError: isErrorPosts,
+  } = useMemo(() => {
     return recentPostsQuery;
   }, [recentPostsQuery]);
 
@@ -39,13 +55,15 @@ const Home = () => {
     );
   }
 
-  //***********/ Pin Yousef post to the top of the array of posts //***********/
+  // Pin Yousef's post to the top of the array of posts
   if (posts?.documents) {
     const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
 
     const updatedPosts = [...posts.documents];
 
-    const postIndex = updatedPosts.findIndex((post) => post.$id === postIdToMoveToTop);
+    const postIndex = updatedPosts.findIndex(
+      (post) => post.$id === postIdToMoveToTop
+    );
 
     if (postIndex !== -1) {
       const postToMove = updatedPosts.splice(postIndex, 1)[0];
@@ -54,12 +72,13 @@ const Home = () => {
     // Update the posts variable with the modified array
     posts.documents = updatedPosts;
   }
+
   // Yousef Account ID
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
 
   // Pin yousef's post to the top and useMemo to memorize its position
   const sortedCreators = useMemo(() => {
-    const sorted = [...creators?.documents || []].sort((a, b) => {
+    const sorted = [...(creators?.documents || [])].sort((a, b) => {
       if (a.$id === YousefID) {
         return -1; // Yousef's card comes first
       }
@@ -71,16 +90,13 @@ const Home = () => {
     return sorted;
   }, [creators]);
 
-
   return (
     <div className="flex flex-1">
       <div className="home-container">
         <div className="home-posts">
           <h2 className="h3-bold md:h2-bold text-left w-full">Home Feed</h2>
           {isPostLoading && !posts ? (
-            Array.from({ length: 3 }, (_, index) => (
-              <HomeLoader key={index} />
-            ))
+            Array.from({ length: 3 }, (_, index) => <HomeLoader key={index} />)
           ) : (
             <ul className="flex flex-col flex-1 gap-9 w-full ">
               {posts?.documents.map((post: Models.Document) => (
@@ -93,7 +109,9 @@ const Home = () => {
         </div>
       </div>
       <div className="home-creators">
-        <h3 className="h3-bold text-light-1">PhotoGrammers <PeopleAltIcon /></h3>
+        <h3 className="h3-bold text-light-1">
+          PhotoGrammers <PeopleAltIcon />
+        </h3>
         {isUserLoading && !creators ? (
           <div className="grid grid-cols-2 gap-4">
             {[...Array(10)].map((_, index) => (
