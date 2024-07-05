@@ -71,6 +71,7 @@ const PostDetails = () => {
     verifyAuth();
   }, [checkAuthUser, navigate]);
 
+  
   useEffect(() => {
     const fetchImage = async () => {
       try {

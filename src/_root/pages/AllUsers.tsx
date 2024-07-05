@@ -2,25 +2,9 @@ import { useToast } from "@/components/ui/use-toast";
 import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
 import { useGetUsers } from "@/lib/react-query/queriesAndMutations";
-import { useEffect, useMemo } from "react";
-import { useUserContext } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 
 const AllUsers = () => {
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
-  
   const { toast } = useToast();
   const { data: creators, isLoading, isError: isErrorCreators } = useGetUsers();
 

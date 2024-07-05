@@ -5,6 +5,7 @@ import {
   Outlet,
   useParams,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 
 import { LikedPosts } from "@/_root/pages";
@@ -16,7 +17,6 @@ import { useEffect, useState } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "react-photo-view/dist/react-photo-view.css";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { useNavigate } from "react-router-dom";
 
 interface StabBlockProps {
   value: string | number;
@@ -45,9 +45,9 @@ const Profile = () => {
         navigate("/sign-in");
       }
     };
+
     verifyAuth();
   }, [checkAuthUser, navigate]);
-
   // Generate random follower and following counts
   const randomFollowers = getRandomNumber(100, 200);
   const randomFollowing = getRandomNumber(100, 200);

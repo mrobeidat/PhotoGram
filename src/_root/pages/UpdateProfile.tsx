@@ -23,7 +23,6 @@ import {
   useGetUserById,
   useUpdateUser,
 } from "@/lib/react-query/queriesAndMutations";
-import { useEffect } from "react";
 
 const UpdateProfile = () => {
   const { toast } = useToast();
@@ -42,18 +41,6 @@ const UpdateProfile = () => {
       bio: user.bio || "",
     },
   });
-
-  const { checkAuthUser } = useUserContext();
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
 
   // Queries
   const { data: currentUser } = useGetUserById(id || "");

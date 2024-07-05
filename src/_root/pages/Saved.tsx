@@ -2,24 +2,8 @@ import { Models } from "appwrite";
 import SavedPostsList from "@/components/Shared/SavedPostsList";
 import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
-import { useUserContext } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const Saved = () => {
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
   // Fetch the current user's data using a custom React Query hook
   const { data: currentUser } = useGetCurrentUser();
 

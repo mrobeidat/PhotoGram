@@ -1,84 +1,86 @@
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/useDebounce";
-import { useGetPosts, useSearchPosts } from "@/lib/react-query/queriesAndMutations";
+import {
+  useGetPosts,
+  useSearchPosts,
+} from "@/lib/react-query/queriesAndMutations";
 import { memo, useEffect, useState, useCallback } from "react";
-import ExploreLoader from '../../components/Shared/Loaders/ExploreLoader';
+import ExploreLoader from "../../components/Shared/Loaders/ExploreLoader";
 import Loader from "@/components/Shared/Loader";
 import { useInView } from "react-intersection-observer";
 import GridPostList from "@/components/Shared/GridPostsList";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
-import { useNavigate } from "react-router-dom";
-import { useUserContext } from "@/context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+} from "@mui/material";
 
 export type SearchResultProps = {
   isSearchFetching: boolean;
   searchedPosts: any;
 };
 
-const SearchResults = memo(({ isSearchFetching, searchedPosts }: SearchResultProps) => {
-  if (isSearchFetching) {
-    return <Loader />;
-  } else if (searchedPosts && searchedPosts.documents?.length > 0) {
-    return <GridPostList posts={searchedPosts.documents} filter="week" />;
-  } else {
-    return (
-      <p className="text-light-4 mt-10 text-center w-full">No results found</p>
-    );
+const SearchResults = memo(
+  ({ isSearchFetching, searchedPosts }: SearchResultProps) => {
+    if (isSearchFetching) {
+      return <Loader />;
+    } else if (searchedPosts && searchedPosts.documents?.length > 0) {
+      return <GridPostList posts={searchedPosts.documents} filter="week" />;
+    } else {
+      return (
+        <p className="text-light-4 mt-10 text-center w-full">
+          No results found
+        </p>
+      );
+    }
   }
-});
+);
 
 const Explore = () => {
-
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
-
-  const hasShownAlert = sessionStorage.getItem('hasShownAlert');
+  const hasShownAlert = sessionStorage.getItem("hasShownAlert");
   const showAlert = useCallback(() => {
     if (!hasShownAlert) {
-      toast.info('This page displays posts created within this week!', {
-        position: 'top-center',
+      toast.info("This page displays posts created within this week!", {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'dark',
+        theme: "dark",
         style: {
           backgroundColor: "rgb(63, 94, 251)",
-          background: "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)",
-          width: "fit-content"
+          background:
+            "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)",
+          width: "fit-content",
         },
       });
     }
-    sessionStorage.setItem('hasShownAlert', 'true');
+    sessionStorage.setItem("hasShownAlert", "true");
   }, [hasShownAlert]);
 
   useEffect(() => {
     showAlert();
   }, [showAlert]);
-  
 
   const { ref, inView } = useInView();
-  const { data: posts, fetchNextPage, hasNextPage, isLoading: isLoadingPosts } = useGetPosts();
+  const {
+    data: posts,
+    fetchNextPage,
+    hasNextPage,
+    isLoading: isLoadingPosts,
+  } = useGetPosts();
   const [searchValue, setSearchValue] = useState("");
   const debouncedSearch = useDebounce(searchValue, 500);
-  const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedSearch);
+  const { data: searchedPosts, isFetching: isSearchFetching } =
+    useSearchPosts(debouncedSearch);
 
-  const [filter, setFilter] = useState<'week' | 'month' | 'year'>('year');
+  const [filter, setFilter] = useState<"week" | "month" | "year">("year");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -87,8 +89,10 @@ const Explore = () => {
     }
   }, [inView, searchValue, fetchNextPage]);
 
-  const handleFilterChange = (event: SelectChangeEvent<'week' | 'month' | 'year'>) => {
-    setFilter(event.target.value as 'week' | 'month' | 'year');
+  const handleFilterChange = (
+    event: SelectChangeEvent<"week" | "month" | "year">
+  ) => {
+    setFilter(event.target.value as "week" | "month" | "year");
   };
 
   const handleDropdownOpen = () => {
@@ -118,7 +122,9 @@ const Explore = () => {
   }
 
   const shouldShowSearchResults = searchValue !== "";
-  const shouldShowPosts = !shouldShowSearchResults && posts?.pages.every((item) => item.documents.length === 0);
+  const shouldShowPosts =
+    !shouldShowSearchResults &&
+    posts?.pages.every((item) => item.documents.length === 0);
 
   return (
     <div className="explore-container">
@@ -143,8 +149,8 @@ const Explore = () => {
       </div>
       <div className="flex justify-between items-center w-full max-w-5xl mt-16 mb-7 text-white">
         <h3 className="body-bold md:h3-bold">Popular this week</h3>
-        <FormControl variant="outlined" sx={{ minWidth: 150, color: 'white' }}>
-          <InputLabel sx={{ color: 'white' }}>Filter</InputLabel>
+        <FormControl variant="outlined" sx={{ minWidth: 150, color: "white" }}>
+          <InputLabel sx={{ color: "white" }}>Filter</InputLabel>
           <Select
             value={filter}
             onChange={handleFilterChange}
@@ -153,30 +159,37 @@ const Explore = () => {
             label="Filter"
             MenuProps={{
               sx: {
-                '& .MuiPaper-root': {
-                  backdropFilter: 'blur(30px)',
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                "& .MuiPaper-root": {
+                  backdropFilter: "blur(30px)",
+                  backgroundColor: "rgba(0, 0, 0, 0.3)",
                 },
               },
             }}
             sx={{
-              color: 'white',
-              '.MuiOutlinedInput-notchedOutline': {
-                borderColor: 'white',
+              color: "white",
+              ".MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
               },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(29,43,110,1) 100%)',
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor:
+                  "linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(29,43,110,1) 100%)",
               },
-              '.MuiSvgIcon-root': {
-                color: 'white',
-                transition: 'transform 0.3s ease',
-                transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+              ".MuiSvgIcon-root": {
+                color: "white",
+                transition: "transform 0.3s ease",
+                transform: isDropdownOpen ? "rotate(180deg)" : "rotate(0deg)",
               },
             }}
           >
-            <MenuItem value="week" sx={{ color: 'white' }}>This Week</MenuItem>
-            <MenuItem value="month" sx={{ color: 'white' }}>This Month</MenuItem>
-            <MenuItem value="year" sx={{ color: 'white' }}>This Year</MenuItem>
+            <MenuItem value="week" sx={{ color: "white" }}>
+              This Week
+            </MenuItem>
+            <MenuItem value="month" sx={{ color: "white" }}>
+              This Month
+            </MenuItem>
+            <MenuItem value="year" sx={{ color: "white" }}>
+              This Year
+            </MenuItem>
           </Select>
         </FormControl>
       </div>
@@ -190,12 +203,19 @@ const Explore = () => {
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
           posts?.pages.map((item, index) => (
-            <GridPostList key={`page-${index}`} posts={item.documents} filter={filter} />
+            <GridPostList
+              key={`page-${index}`}
+              posts={item.documents}
+              filter={filter}
+            />
           ))
         )}
       </div>
       {hasNextPage && !searchValue && (
-        <div ref={ref} className="mt-10 flex justify-center items-center w-full h-full">
+        <div
+          ref={ref}
+          className="mt-10 flex justify-center items-center w-full h-full"
+        >
           <Loader />
         </div>
       )}

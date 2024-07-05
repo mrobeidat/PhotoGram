@@ -26,7 +26,7 @@ const Home = () => {
 
     verifyAuth();
   }, [checkAuthUser, navigate]);
-  
+
   // Fetch recent posts using the custom hook
   const recentPostsQuery = useGetRecentPosts();
 

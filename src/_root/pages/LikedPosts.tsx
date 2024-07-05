@@ -1,26 +1,8 @@
 import LikedPostsList from "@/components/Shared/LikedPosts";
 import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
-import { useUserContext } from "@/context/AuthContext";
-
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 const LikedPosts = () => {
-  const navigate = useNavigate();
-  const { checkAuthUser } = useUserContext();
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const isValid = await checkAuthUser();
-      if (!isValid) {
-        navigate("/sign-in");
-      }
-    };
-
-    verifyAuth();
-  }, [checkAuthUser, navigate]);
-
   const { data: currentUser } = useGetCurrentUser();
 
   if (!currentUser)
