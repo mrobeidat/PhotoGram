@@ -86,6 +86,10 @@ const SigninForm = () => {
     setShowPassword((prev) => !prev);
   };
 
+  const handleSignUpClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate("/sign-up");
+  };
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
@@ -172,6 +176,7 @@ const SigninForm = () => {
           <p className="text-small-regular text-light-2 text-center mt-2">
             Don&apos;t have an account?
             <Link
+            onClick={handleSignUpClick}
               to="/sign-up"
               className="text-primary-500 text-small-semibold ml-1"
             >

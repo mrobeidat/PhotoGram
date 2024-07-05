@@ -343,7 +343,11 @@
   .tooltip-verified {
     visibility: hidden;
     width: 100px;
-    background: linear-gradient(to right, #004e9287, #0004286f);
+    background-image: linear-gradient(
+      85.2deg,
+      rgb(42, 10, 49) 7.5%,
+      rgb(73, 6, 73) 88.7%
+    );
     color: #fff;
     text-align: center;
     padding: 5px;
@@ -391,9 +395,8 @@
   .tooltip {
     visibility: visible;
     width: 100px;
+    background-color: rgb(138, 8, 138);
     backdrop-filter: blur(70px);
-    background: linear-gradient(to right, #004e92, #000428);
-    -webkit-backdrop-filter: blur(70px);
     color: #fff;
     text-align: center;
     padding: 5px;
