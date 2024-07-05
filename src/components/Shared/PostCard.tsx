@@ -14,7 +14,7 @@ import {
 import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
-import Modal from "../ui/DeleteCommentConfirmationModal";
+import Modal from "../ui/deleteCommentConfirmationModal";
 
 type PostCardProps = {
   post: Models.Document;

@@ -2,11 +2,20 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Input from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
-// import Loader from "@/components/Shared/Loader";
 import { useToast } from "@/components/ui/use-toast";
 
 import { SigninValidation } from "@/lib/validation";
@@ -17,6 +26,8 @@ const SigninForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { checkAuthUser, isPending: isUserLoading } = useUserContext();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // Query
   const { mutateAsync: signInAccount, isPending } = useSignInAccount();
@@ -37,7 +48,10 @@ const SigninForm = () => {
       if (!session) {
         toast({
           title: "Login failed. Incorrect username or password",
-          style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
+          style: {
+            background:
+              "linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)",
+          },
         });
 
         return;
@@ -60,11 +74,17 @@ const SigninForm = () => {
 
       toast({
         title: "Login failed. Something went wrong. Please try again later.",
-        style: { background: 'linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)' },
+        style: {
+          background:
+            "linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)",
+        },
       });
     }
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   return (
     <Form {...form}>
@@ -73,7 +93,9 @@ const SigninForm = () => {
           draggable="false"
           className="pointer-events-none select-none"
           width={250}
-          src="/assets/images/photogram.png" alt="logo" />
+          src="/assets/images/photogram.png"
+          alt="logo"
+        />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Log in to your account
         </h2>
@@ -82,7 +104,8 @@ const SigninForm = () => {
         </p>
         <form
           onSubmit={form.handleSubmit(handleSignin)}
-          className="flex flex-col gap-5 w-full mt-4">
+          className="flex flex-col gap-5 w-full mt-4"
+        >
           <FormField
             control={form.control}
             name="email"
@@ -90,7 +113,11 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
+                  <Input
+                    type="text"
+                    className="shad-input w-full p-2 rounded-md"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -104,14 +131,35 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    className="shad-input w-full p-2 rounded-md"
+                    {...field}
+                    endAdornment={
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffOutlined className="text-light-3" />
+                        ) : (
+                          <VisibilityOutlined className="text-light-3" />
+                        )}
+                      </IconButton>
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="shad-button_primary" disabled={!formState.isDirty}>
+          <Button
+            type="submit"
+            className="shad-button_primary"
+            disabled={!formState.isDirty}
+          >
             {isPending || isUserLoading ? (
               <div className="flex-center gap-2">
                 <span className="general-loader"></span> Loading...
@@ -125,7 +173,8 @@ const SigninForm = () => {
             Don&apos;t have an account?
             <Link
               to="/sign-up"
-              className="text-primary-500 text-small-semibold ml-1">
+              className="text-primary-500 text-small-semibold ml-1"
+            >
               Sign up
             </Link>
           </p>

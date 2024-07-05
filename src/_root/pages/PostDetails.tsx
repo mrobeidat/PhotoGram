@@ -22,8 +22,8 @@ import { isAndroid, isWindows, isMacOs, isIOS } from "react-device-detect";
 import { CommentValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
-import DeleteCommentConfirmationModal from "@/components/ui/DeleteCommentConfirmationModal";
-import DeletePostConfirmationModal from "@/components/ui/DeletePostConfirmationModal";
+import DeleteCommentConfirmationModal from "@/components/ui/deleteCommentConfirmationModal";
+import DeletePostConfirmationModal from "@/components/ui/deletePostConfirmationModal";
 
 interface SanitizeHTMLResult {
   __html: string;
