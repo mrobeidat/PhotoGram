@@ -14,8 +14,10 @@ const Bottombar = () => {
             key={`bottombar-${link.label}`}
             to={link.route}
             className={`${
-              isActive && "rounded-[10px] bg-blue-950 "
-            } flex-center flex-col gap-1 p-2 transition`}>
+              isActive && "rounded-[10px] "
+            } flex-center flex-col gap-1 p-2 transition`}
+            style={isActive ? { backgroundImage: 'linear-gradient(85.2deg, rgba(33,3,40,1) 7.5%, rgba(65,5,72,1) 88.7%)' } : {}}
+          >
             <img
               src={link.imgURL}
               alt={link.label}

@@ -12,7 +12,7 @@ const AuthLayout = () => {
             <Outlet />
           </section>
           <img
-            src="/assets/images/side-img.jpg"
+            src="/assets/images/photogram.webp"
             draggable="false"
             alt="logo"
             className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat pointer-events-none select-none"

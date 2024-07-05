@@ -1,14 +1,25 @@
-import React, { useEffect, useRef, useState, forwardRef } from 'react';
-import { createPortal } from 'react-dom';
-import CloseIcon from '@mui/icons-material/Cancel';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button } from './button';
-import { Link } from 'react-router-dom';
-import { IComment } from '@/types';
-import { useLikeComment, useUnlikeComment } from '@/lib/react-query/queriesAndMutations';
-import 'primeicons/primeicons.css';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip } from '@mui/material';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import React, { useEffect, useRef, useState, forwardRef } from "react";
+import { createPortal } from "react-dom";
+import CloseIcon from "@mui/icons-material/Cancel";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Button } from "./button";
+import { Link } from "react-router-dom";
+import { IComment } from "@/types";
+import {
+  useLikeComment,
+  useUnlikeComment,
+} from "@/lib/react-query/queriesAndMutations";
+import "primeicons/primeicons.css";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 interface ModalProps {
   isOpen: boolean;
@@ -71,34 +82,34 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
   }, [initialComments]);
 
   useEffect(() => {
-    const handleBodyClass = (action: 'add' | 'remove') => {
-      document.body.classList[action]('overflow-hidden', 'touch-action-none');
+    const handleBodyClass = (action: "add" | "remove") => {
+      document.body.classList[action]("overflow-hidden", "touch-action-none");
       if (containerRef.current) {
-        containerRef.current.classList[action]('overflow-hidden');
+        containerRef.current.classList[action]("overflow-hidden");
       }
     };
 
     if (isOpen) {
       setMounted(true);
       setTimeout(() => setShowModal(true), 10);
-      handleBodyClass('add');
+      handleBodyClass("add");
     } else {
       setShowModal(false);
       setTimeout(() => {
         setMounted(false);
-        handleBodyClass('remove');
+        handleBodyClass("remove");
       }, 300);
     }
 
-    return () => handleBodyClass('remove');
+    return () => handleBodyClass("remove");
   }, [isOpen, containerRef]);
 
   useEffect(() => {
     if (newCommentRef.current) {
-      newCommentRef.current.scrollIntoView({ behavior: 'smooth' });
-      newCommentRef.current.classList.add('flash');
+      newCommentRef.current.scrollIntoView({ behavior: "smooth" });
+      newCommentRef.current.classList.add("flash");
       setTimeout(() => {
-        newCommentRef.current?.classList.remove('flash');
+        newCommentRef.current?.classList.remove("flash");
       }, 2000);
     }
   }, [comments.length]);
@@ -110,7 +121,7 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
   };
 
   const handleEscapePress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       onClose();
     }
   };
@@ -119,11 +130,11 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
     const updatedComments = comments.map((comment) =>
       comment.$id === commentId
         ? {
-          ...comment,
-          likes: hasLiked
-            ? comment.likes?.filter((id) => id !== user.id)
-            : [...(comment.likes ?? []), user.id],
-        }
+            ...comment,
+            likes: hasLiked
+              ? comment.likes?.filter((id) => id !== user.id)
+              : [...(comment.likes ?? []), user.id],
+          }
         : comment
     );
     setComments(updatedComments);
@@ -141,17 +152,19 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
     handleCreateComment();
     setTimeout(() => {
       if (newCommentRef.current) {
-        newCommentRef.current.scrollIntoView({ behavior: 'smooth' });
-        newCommentRef.current.classList.add('flash');
+        newCommentRef.current.scrollIntoView({ behavior: "smooth" });
+        newCommentRef.current.classList.add("flash");
         setTimeout(() => {
-          newCommentRef.current?.classList.remove('flash');
+          newCommentRef.current?.classList.remove("flash");
         }, 2000);
       }
     }, 100);
   };
 
   const handleDeleteCommentAndUpdate = (commentId: string) => {
-    setComments((prevComments) => prevComments.filter((comment) => comment.$id !== commentId));
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.$id !== commentId)
+    );
     handleDeleteComment(commentId);
   };
 
@@ -159,14 +172,16 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300 ${showModal ? 'opacity-100' : 'opacity-0'
-        }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 transition-opacity duration-300 ${
+        showModal ? "opacity-100" : "opacity-0"
+      }`}
       onClick={handleOutsideClick}
     >
       <div
         ref={modalRef}
-        className={`bg-black/30 max-w-92 backdrop-blur-xl rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${showModal ? 'scale-100' : 'scale-95'
-          }`}
+        className={`bg-black/10 max-w-92 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-xl w-full max-w-md mx-4 sm:mx-6 transition-transform duration-300 transform ${
+          showModal ? "scale-100" : "scale-95"
+        }`}
         tabIndex={1}
         onKeyDown={handleEscapePress}
         onClick={(e) => e.stopPropagation()}
@@ -210,7 +225,6 @@ const DeleteCommentConfirmationModal: React.FC<ModalProps> = ({
   );
 };
 
-
 const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
   const [open, setOpen] = useState(false);
 
@@ -230,8 +244,12 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <Tooltip title="Delete" arrow>
-        <IconButton onClick={handleClickOpen} size="small" style={{ color: 'white' }}>
-          <DeleteOutlineIcon className='text-red hover:scale-110 transform duration-800' />
+        <IconButton
+          onClick={handleClickOpen}
+          size="small"
+          style={{ color: "white" }}
+        >
+          <DeleteOutlineIcon className="text-red hover:scale-110 transform duration-800" />
         </IconButton>
       </Tooltip>
       <Dialog
@@ -240,26 +258,34 @@ const DeleteButton: React.FC<{ onDelete: () => void }> = ({ onDelete }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         sx={{
-          '& .MuiPaper-root': {
-            backdropFilter: 'blur(40px)',
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            color: 'white',
+          "& .MuiPaper-root": {
+            backdropFilter: "blur(40px)",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            color: "white",
             borderRadius: "20px",
-            maxWidth: '25rem'
+            maxWidth: "25rem",
           },
         }}
       >
         <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description" className='!text-white'>
-            Are you sure you want to delete this comment? This action cannot be undone.
+          <DialogContentText
+            id="alert-dialog-description"
+            className="!text-white"
+          >
+            Are you sure you want to delete this comment? This action cannot be
+            undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} className='bg-white/20 rounded-full'>
+          <Button onClick={handleClose} className="bg-white/20 rounded-full">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} autoFocus className='bg-red rounded-full cursor-pointer'>
+          <Button
+            onClick={handleConfirmDelete}
+            autoFocus
+            className="bg-red rounded-full cursor-pointer"
+          >
             Delete
           </Button>
         </DialogActions>
@@ -278,73 +304,102 @@ interface CommentItemProps {
   handleDeleteComment: (commentId: string) => void;
 }
 
-const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(({
-  comment,
-  user,
-  TopCreator,
-  YousefID,
-  formatDateShort,
-  handleLike,
-  handleDeleteComment,
-}, ref) => {
-  const [isFadingOut, setIsFadingOut] = useState(false);
-  const isTopCreator = comment.userId === TopCreator;
-  const isVerifiedUser = comment.userId === YousefID;
-  const hasLiked = comment.likes?.includes(user.id);
+const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(
+  (
+    {
+      comment,
+      user,
+      TopCreator,
+      YousefID,
+      formatDateShort,
+      handleLike,
+      handleDeleteComment,
+    },
+    ref
+  ) => {
+    const [isFadingOut, setIsFadingOut] = useState(false);
+    const isTopCreator = comment.userId === TopCreator;
+    const isVerifiedUser = comment.userId === YousefID;
+    const hasLiked = comment.likes?.includes(user.id);
 
-  const handleDelete = () => {
-    setIsFadingOut(true);
-    setTimeout(() => handleDeleteComment(comment.$id), 500); // match the duration of the CSS transition
-  };
+    const handleDelete = () => {
+      setIsFadingOut(true);
+      setTimeout(() => handleDeleteComment(comment.$id), 500);
+    };
 
-  return (
-    <div ref={ref} className={`transition-opacity duration-500 ease-out ${isFadingOut ? 'opacity-0 transform -translate-y-5' : ''} p-2 flex justify-between mb-3`}>
-      <div className="flex items-start gap-3">
-        <Link to={`/profile/${comment.userId}`}>
-          <img
-            src={comment.user?.imageUrl || '/assets/icons/profile-placeholder.svg'}
-            alt="user"
-            className="w-8 h-8 rounded-full object-cover"
-          />
-        </Link>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <Link
-              to={`/profile/${comment.userId}`}
-              className="text-dark-800 text-sm font-semibold hover:underline"
-            >
-              {comment.user?.name ?? 'Unknown User'}
-            </Link>
-            {isTopCreator && <Badge icon="/assets/icons/top-creator.png" label="Top Creator" />}
-            {isVerifiedUser && <Badge icon="/assets/icons/verified-badge.svg" label="Verified User" />}
+    return (
+      <div
+        ref={ref}
+        className={`transition-opacity duration-500 ease-out ${
+          isFadingOut ? "opacity-0 transform -translate-y-5" : ""
+        } p-2 flex justify-between mb-3`}
+      >
+        <div className="flex items-start gap-3">
+          <Link to={`/profile/${comment.userId}`}>
+            <img
+              src={
+                comment.user?.imageUrl ||
+                "/assets/icons/profile-placeholder.svg"
+              }
+              alt="user"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+          </Link>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <Link
+                to={`/profile/${comment.userId}`}
+                className="text-dark-800 text-sm font-semibold hover:underline"
+              >
+                {comment.user?.name ?? "Unknown User"}
+              </Link>
+              {isTopCreator && (
+                <Badge
+                  icon="/assets/icons/top-creator.png"
+                  label="Top Creator"
+                />
+              )}
+              {isVerifiedUser && (
+                <Badge
+                  icon="/assets/icons/verified-badge.svg"
+                  label="Verified User"
+                />
+              )}
+            </div>
+            <p className="text-dark-600 text-sm">{comment.text}</p>
+            <p className="text-light-4 text-xs">
+              {formatDateShort(comment.$createdAt)}
+            </p>
           </div>
-          <p className="text-dark-600 text-sm">{comment.text}</p>
-          <p className="text-light-4 text-xs">{formatDateShort(comment.$createdAt)}</p>
         </div>
-      </div>
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex items-center">
-          <i
-            className={`pi ${hasLiked ? 'pi-heart-fill' : 'pi-heart'} cursor-pointer`}
-            style={{ color: '#ff0000', fontSize: '14px' }}
-            onClick={() => handleLike(comment.$id, hasLiked)}
-          ></i>
-          {comment.likes && comment.likes.length > 0 && (
-            <span className="ml-1" style={{ minWidth: '1.5rem', textAlign: 'center' }}>
-              {comment.likes.length}
-            </span>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center">
+            <i
+              className={`pi ${
+                hasLiked ? "pi-heart-fill" : "pi-heart"
+              } cursor-pointer`}
+              style={{ color: "#ff0000", fontSize: "14px" }}
+              onClick={() => handleLike(comment.$id, hasLiked)}
+            ></i>
+            {comment.likes && comment.likes.length > 0 && (
+              <span
+                className="ml-1"
+                style={{ minWidth: "1.5rem", textAlign: "center" }}
+              >
+                {comment.likes.length}
+              </span>
+            )}
+          </div>
+          {user.id === comment.userId && (
+            <DeleteButton onDelete={handleDelete} />
           )}
         </div>
-        {user.id === comment.userId && (
-          <DeleteButton onDelete={handleDelete} />
-        )}
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
-CommentItem.displayName = 'CommentItem';
-
+CommentItem.displayName = "CommentItem";
 
 const Badge: React.FC<{ icon: string; label: string }> = ({ icon, label }) => (
   <div className="group relative flex items-center">
@@ -392,7 +447,7 @@ const CommentInput: React.FC<{
   <div className="flex gap-3 items-center">
     <textarea
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
           e.preventDefault();
           handleCreateComment();
         }
@@ -401,11 +456,11 @@ const CommentInput: React.FC<{
       onChange={(e) => setCommentText(e.target.value)}
       placeholder="Add a comment..."
       className="flex-1 p-2 border border-dark-4 rounded-xl bg-dark-1 text-light-1 placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
-      style={{ height: '40px', overflow: 'hidden' }}
+      style={{ height: "40px", overflow: "hidden" }}
     />
     <Button
       onClick={handleCreateComment}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
+      className="bg-purple-800 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-primary-500"
       disabled={!commentText.trim()}
     >
       <ArrowForwardIcon />

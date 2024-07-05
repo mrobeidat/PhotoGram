@@ -18,11 +18,13 @@
   }
 
   body {
-    background: rgb(63, 94, 251);
-    background: radial-gradient(circle,
-        rgb(29, 43, 110) 0%,
-        rgba(0, 0, 0, 1) 100%);
+    background-image: linear-gradient(
+      85.2deg,
+      rgb(42, 10, 49) 7.5%,
+      rgb(73, 6, 73) 88.7%
+    );
     @apply text-white min-h-screen font-inter;
+    background-size: cover;
     font-family: "FacebookFont", sans-serif;
   }
 }
@@ -53,7 +55,6 @@
 }
 
 @keyframes shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -89,7 +90,6 @@
 }
 
 @layer utilities {
-
   /* TYPOGRAPHY */
   .h1-bold {
     @apply text-[36px] font-bold leading-[140%] tracking-tighter;
@@ -316,8 +316,11 @@
 
   .leftsidebar-link:hover {
     background: #000428;
-    background: -webkit-linear-gradient(to left, #004e92, #000428);
-    background: linear-gradient(to left, #004e92, #000428);
+    background-image: linear-gradient(
+      85.2deg,
+      rgba(33, 3, 40, 1) 7.5%,
+      rgba(65, 5, 72, 1) 88.7%
+    );
   }
 
   /* Post Card */
@@ -428,7 +431,6 @@
   }
 
   @keyframes moveBorder {
-
     0%,
     100% {
       box-shadow: 0 0 5px rgba(89, 159, 205, 0.5);
@@ -453,7 +455,6 @@
   }
 
   @keyframes hvr-hang-sink {
-
     0%,
     100% {
       transform: translateY(0);
@@ -515,22 +516,27 @@
   }
 
   .shad-input {
-    background-image: linear-gradient(111.4deg,
-        rgba(7, 7, 9, 1) 6.5%,
-        rgba(27, 24, 113, 0.339) 93.2%);
-    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    background-image: linear-gradient(
+      85.2deg,
+      rgb(26, 5, 31) 7.5%,
+      rgb(39, 3, 43) 88.7%
+    );
+
+    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-4 !important;
   }
 
   .shad-textarea {
-    background-image: linear-gradient(111.4deg,
-        rgba(7, 7, 9, 1) 6.5%,
-        rgba(27, 24, 113, 0.339) 93.2%);
-    @apply h-auto bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    background-image: linear-gradient(
+      85.2deg,
+      rgb(26, 5, 31) 7.5%,
+      rgb(39, 3, 43) 88.7%
+    );
+    @apply h-auto bg-dark-3 rounded-xl focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
   /* Button */
   .shad-button_primary {
-    @apply bg-blue-500 hover:bg-gradient-to-r from-cyan-500 to-blue-500 text-light-1 flex gap-2 !important;
+    @apply bg-purple-800 hover:bg-gradient-to-r from-purple-500 to-purple-900 text-light-1 flex gap-2 !important;
   }
 
   .shad-button_dark_4 {
@@ -544,9 +550,11 @@
 
 .ql-snow .ql-picker-options {
   background: rgb(63, 94, 251) !important;
-  background: radial-gradient(circle,
-      rgb(29, 43, 110) 0%,
-      rgba(0, 0, 0, 1) 100%) !important;
+  background: radial-gradient(
+    circle,
+    rgb(29, 43, 110) 0%,
+    rgba(0, 0, 0, 1) 100%
+  ) !important;
 }
 
 /* 
