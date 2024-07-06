@@ -12,7 +12,7 @@ const SearchResults = ({ isSearchFetching, searchedPosts, filter }: SearchResult
   if (isSearchFetching) return <Loader />;
   if (searchedPosts && searchedPosts.length > 0) {
     return (
-      <GridPostList posts={searchedPosts} filter={filter} />
+      <GridPostList posts={searchedPosts} filter={filter} isLoading={false} />
     );
   }
   return (
