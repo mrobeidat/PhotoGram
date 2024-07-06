@@ -2,6 +2,7 @@ import {
   IComment,
   INewPost,
   INewUser,
+  IReply,
   IUpdatePost,
   IUpdateUser,
 } from "@/types";
@@ -15,27 +16,52 @@ import {
   SignInAccount,
   SignOutAccount,
   createUserAccount,
+} from "@/lib/appwrite/auth";
+import {
   createPost,
   updatePost,
   getRecentPosts,
   likePost,
   savePost,
   deleteSavedPost,
-  getCurrentUser,
   getPostById,
   deletePost,
   getInfinitePosts,
-  getUserById,
   searchPosts,
-  updateUser,
-  getUsers,
   getUserPosts,
+  getPinnedPost,
+  getPostsFromFollowedUsers,
+} from "@/lib/appwrite/post";
+import {
+  getCurrentUser,
+  getUserById,
+  updateUser,
+  getInfiniteUsers,
+  searchUsers,
+} from "@/lib/appwrite/user";
+import {
   createComment,
   getCommentsByPost,
   deleteComment,
   likeComment,
   unlikeComment,
-} from "../appwrite/api";
+} from "@/lib/appwrite/comment";
+import {
+  createReply,
+  getRepliesByComment,
+  likeReply,
+  unlikeReply,
+  deleteReply,
+} from "@/lib/appwrite/reply";
+import {
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowees,
+  getFollowersDetails,
+  getFolloweesDetails,
+} from "@/lib/appwrite/follow";
+
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
@@ -190,16 +216,25 @@ export const useGetPostById = (postId: string) => {
 
 export const useGetPosts = () => {
   return useInfiniteQuery({
-    initialPageParam: "",
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts as any,
-    getNextPageParam: (lastPage: any) => {
-      if (lastPage && lastPage.documents.length === 0) {
+    queryFn: ({ pageParam = "" }) => getInfinitePosts({ pageParam }),
+    getNextPageParam: (lastPage) => {
+      if (lastPage && lastPage.data.length === 0) {
         return null;
       }
-      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
+      const lastId = lastPage?.data[lastPage.data.length - 1].$id;
       return lastId;
     },
+    initialPageParam: "",
+  });
+};
+
+export const useGetUsers = () => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_USERS],
+    queryFn: ({ pageParam = "" }) => getInfiniteUsers({ pageParam }),
+    getNextPageParam: (lastPage) => lastPage?.nextCursor ?? null,
+    initialPageParam: "",
   });
 };
 
@@ -207,6 +242,15 @@ export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
     queryFn: () => searchPosts(searchTerm),
+    enabled: !!searchTerm,
+  });
+};
+
+// Todo
+export const useSearchUsers = (searchTerm: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
+    queryFn: () => searchUsers(searchTerm),
     enabled: !!searchTerm,
   });
 };
@@ -232,13 +276,6 @@ export const useUpdateUser = () => {
         queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
       });
     },
-  });
-};
-
-export const useGetUsers = (limit?: number) => {
-  return useQuery({
-    queryKey: [QUERY_KEYS.GET_USERS],
-    queryFn: () => getUsers(limit),
   });
 };
 
@@ -342,5 +379,181 @@ export const useDeleteComment = () => {
         queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST],
       });
     },
+  });
+};
+
+
+// Reply Hooks
+export const useCreateReply = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (reply: { commentId: string; userId: string; text: string }) => createReply(reply),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT],
+      });
+    },
+  });
+};
+
+export const useGetRepliesByComment = (commentId: string) => {
+  return useQuery<IReply[]>({
+    queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT, commentId],
+    queryFn: () => getRepliesByComment(commentId),
+    enabled: !!commentId,
+  });
+};
+
+export const useLikeReply = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      replyId,
+      userId,
+    }: {
+      replyId: string;
+      userId: string;
+    }) => likeReply(replyId, userId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT, data?.commentId],
+      });
+    },
+  });
+};
+
+export const useUnlikeReply = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      replyId,
+      userId,
+    }: {
+      replyId: string;
+      userId: string;
+    }) => unlikeReply(replyId, userId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT, data?.commentId],
+      });
+    },
+  });
+};
+
+export const useDeleteReply = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (replyId: string) => deleteReply(replyId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT],
+      });
+    },
+  });
+};
+
+// Follow/Unfollow Hooks
+export const useFollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      followerId,
+      followeeId,
+    }: {
+      followerId: string;
+      followeeId: string;
+    }) => followUser({ followerId, followeeId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWEES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POSTS_FROM_FOLLOWED_USERS],
+      });
+    },
+  });
+};
+
+export const useUnfollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      followerId,
+      followeeId,
+    }: {
+      followerId: string;
+      followeeId: string;
+    }) => unfollowUser({ followerId, followeeId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWEES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POSTS_FROM_FOLLOWED_USERS],
+      });
+    },
+  });
+};
+
+// Query Hooks for Followers and Followees
+export const useGetFollowers = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWERS, userId],
+    queryFn: () => getFollowers(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetFollowees = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWEES, userId],
+    queryFn: () => getFollowees(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetPostsFromFollowedUsers = (userId: string) => {
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_POSTS_FROM_FOLLOWED_USERS, userId],
+    queryFn: ({ pageParam = "" }) =>
+      getPostsFromFollowedUsers(userId, pageParam),
+    getNextPageParam: (lastPage) => {
+      if (lastPage.documents.length === 0) return null;
+      return lastPage.documents[lastPage.documents.length - 1].$id;
+    },
+    enabled: !!userId,
+    initialPageParam: "",
+  });
+};
+
+export const useGetPinnedPost = (postId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_PINNED_POST, postId],
+    queryFn: () => getPinnedPost(postId),
+    enabled: !!postId,
+  });
+};
+
+
+// Query Hooks for Followers and Followees Details
+export const useGetFollowersDetails = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWERS_DETAILS, userId],
+    queryFn: () => getFollowersDetails(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetFolloweesDetails = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWEES_DETAILS, userId],
+    queryFn: () => getFolloweesDetails(userId),
+    enabled: !!userId,
   });
 };

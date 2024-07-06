@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   Route,
   Routes,
@@ -6,49 +7,92 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
-
 import { LikedPosts } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
-import { useGetUserById } from "@/lib/react-query/queriesAndMutations";
+import {
+  useGetUserById,
+  useFollowUser,
+  useUnfollowUser,
+  useGetFollowers,
+  useGetFollowees,
+  useGetFollowersDetails,
+  useGetFolloweesDetails,
+} from "@/lib/react-query/queriesAndMutations";
 import ProfileLoader from "../../components/Shared/Loaders/ProfileLoader";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
-import { useEffect, useState } from "react";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "react-photo-view/dist/react-photo-view.css";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import Button from "@mui/material/Button";
+import EditIcon from "@mui/icons-material/Edit";
+import PostsIcon from "@mui/icons-material/Article";
+import LikeIcon from "@mui/icons-material/ThumbUp";
+import FollowersModal from "@/components/Shared/FollowersModal";
+import { IUser } from "@/types";
 
-interface StabBlockProps {
+interface StatBlockProps {
   value: string | number;
   label: string;
+  onClick?: () => void;
 }
 
-const StatBlock = ({ value, label }: StabBlockProps) => (
-  <div className="flex-center gap-2">
-    <p className="small-semibold lg:body-bold text-primary-500">{value}</p>
-    <p className="small-medium lg:base-medium text-light-2">{label}</p>
+const StatBlock = ({ value, label, onClick }: StatBlockProps) => (
+  <div className="flex-center gap-2 cursor-pointer" onClick={onClick}>
+    <p className="text-lg lg:body-bold text-primary-500">{value}</p>
+    <p className="text-lg lg:base-medium text-light-2">{label}</p>
   </div>
 );
 
-const getRandomNumber = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
 const Profile = () => {
-  const randomFollowers = getRandomNumber(100, 200);
-  const randomFollowing = getRandomNumber(100, 200);
-
   const { id } = useParams();
-
-  // Access user context
   const { user } = useUserContext();
   const { pathname } = useLocation();
 
-  const { data: currentUser } = useGetUserById(id || "");
+  const { data: currentUser, isLoading: isUserLoading } = useGetUserById(
+    id || ""
+  );
+  const { data: followersData, refetch: refetchFollowers } = useGetFollowers(
+    id || ""
+  );
+  const {
+    data: followeesData,
+    refetch: refetchFollowees,
+    isLoading: isFolloweesLoading,
+  } = useGetFollowees(id || "");
+  const {
+    data: followersDetails,
+    refetch: refetchFollowersDetails,
+    isLoading: isFollowersLoading,
+  } = useGetFollowersDetails(id || "");
+  const { data: followeesDetails, refetch: refetchFolloweesDetails } =
+    useGetFolloweesDetails(id || "");
+
+  const followMutation = useFollowUser();
+  const unfollowMutation = useUnfollowUser();
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const [viewCount, setViewCount] = useState<number>(0);
+  const [followersCount, setFollowersCount] = useState<number>(0);
+  const [followeesCount, setFolloweesCount] = useState<number>(0);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [isFollowersModalOpen, setIsFollowersModalOpen] =
+    useState<boolean>(false);
+  const [isFolloweesModalOpen, setIsFolloweesModalOpen] =
+    useState<boolean>(false);
+
+  const handleFollowersModalOpen = () => {
+    refetchFollowersDetails();
+    setIsFollowersModalOpen(true);
+  };
+  const handleFollowersModalClose = () => setIsFollowersModalOpen(false);
+  const handleFolloweesModalOpen = () => {
+    refetchFolloweesDetails();
+    setIsFolloweesModalOpen(true);
+  };
+  const handleFolloweesModalClose = () => setIsFolloweesModalOpen(false);
 
   useEffect(() => {
     const storedViewCount = localStorage.getItem(`profileViewCount_${id}`);
-
     if (storedViewCount) {
       setViewCount(parseInt(storedViewCount, 10));
     } else {
@@ -66,17 +110,119 @@ const Profile = () => {
     }
   }, [id, user.id]);
 
-  if (!currentUser)
+  useEffect(() => {
+    if (followersData) {
+      const isUserFollowing = followersData.some(
+        (follower: any) => follower.followerId === user.id
+      );
+      setIsFollowing(isUserFollowing);
+      setFollowersCount(followersData.length);
+    }
+  }, [followersData, user.id]);
+
+  useEffect(() => {
+    if (followeesData) {
+      setFolloweesCount(followeesData.length);
+    }
+  }, [followeesData]);
+
+  const updateIndicator = useCallback(() => {
+    const activeTab = tabsRef.current.find(
+      (tab) => tab && tab.classList.contains("active")
+    );
+    if (activeTab) {
+      setIndicatorStyle({
+        left: activeTab.offsetLeft,
+        width: activeTab.offsetWidth,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => {
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, [pathname, updateIndicator]);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      updateIndicator();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+    };
+  }, [updateIndicator]);
+
+  if (isUserLoading || !currentUser) {
     return (
       <div className="flex-center w-full h-full">
         <ProfileLoader />
       </div>
     );
+  }
 
-  // Determine if the user has three or more posts
+  const handleFollow = () => {
+    setIsFollowing(true);
+    followMutation.mutate(
+      {
+        followerId: user.id,
+        followeeId: currentUser.$id,
+      },
+      {
+        onSuccess: () => {
+          setFollowersCount((prev) => prev + 1);
+          refetchFollowers();
+          refetchFollowees();
+        },
+        onError: () => {
+          setIsFollowing(false);
+        },
+      }
+    );
+  };
+
+  const handleUnfollow = () => {
+    setIsFollowing(false);
+    unfollowMutation.mutate(
+      {
+        followerId: user.id,
+        followeeId: currentUser.$id,
+      },
+      {
+        onSuccess: () => {
+          setFollowersCount((prev) => prev - 1);
+          refetchFollowers();
+          refetchFollowees();
+        },
+        onError: () => {
+          setIsFollowing(true);
+        },
+      }
+    );
+  };
+
+  const transformDocumentToUser = (doc: any): IUser => ({
+    id: doc.$id,
+    name: doc.name || "Unknown",
+    username: doc.username || "unknown_user",
+    email: doc.email || "unknown@example.com",
+    imageUrl: doc.imageUrl || "/path/to/default/image.jpg",
+    bio: doc.bio || "",
+  });
+
+  const transformedFollowers: IUser[] = (followersDetails || []).map(
+    transformDocumentToUser
+  );
+  const transformedFollowees: IUser[] = (followeesDetails || []).map(
+    transformDocumentToUser
+  );
+
   const hasThreeOrMorePosts = currentUser.posts.length >= 3;
-
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
+  const sortedPosts = [...currentUser.posts].reverse();
 
   return (
     <div className="profile-container">
@@ -113,7 +259,6 @@ const Profile = () => {
                 <h3 className="text-center xl:text-left h3-bold md:h2-semibold">
                   {currentUser.name}
                 </h3>
-                {/* Display the badge only for top creators */}
                 {hasThreeOrMorePosts && currentUser.$id !== YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
@@ -128,7 +273,6 @@ const Profile = () => {
                     </div>
                   </div>
                 )}
-                {/* This badge for the website creator */}
                 {currentUser.$id === YousefID && (
                   <div className="group relative pin-icon-container">
                     <img
@@ -148,16 +292,38 @@ const Profile = () => {
                 @{currentUser.username}
               </p>
             </div>
-            <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
+            <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start !text-lg flex-wrap z-20">
               <StatBlock value={currentUser.posts.length} label="Posts" />
-              <StatBlock value={randomFollowers} label="Followers" />
-              <StatBlock value={randomFollowing} label="Following" />
-              {/* <StatBlock value={viewCount} label="Profile Views" /> */}
+              <StatBlock
+                value={followersCount}
+                label="Followers"
+                onClick={handleFollowersModalOpen}
+              />
+              <StatBlock
+                value={followeesCount}
+                label="Following"
+                onClick={handleFolloweesModalOpen}
+              />
             </div>
-
-            <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
+            <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm mb-8">
               {currentUser.bio}
             </p>
+            {currentUser.$id !== user.id &&
+              (isFollowing ? (
+                <Button
+                  onClick={handleUnfollow}
+                  className="!capitalize shad-button_primary !px-8"
+                >
+                  Unfollow
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleFollow}
+                  className="!capitalize shad-button_primary !px-8"
+                >
+                  Follow
+                </Button>
+              ))}
           </div>
         </div>
         <div className="flex justify-center gap-4">
@@ -168,12 +334,7 @@ const Profile = () => {
                 user.id !== currentUser.$id && "hidden"
               }`}
             >
-              <img
-                src={"/assets/icons/edit.svg"}
-                alt="edit"
-                width={20}
-                height={20}
-              />
+              <EditIcon />
               <p className="flex whitespace-nowrap small-medium">
                 Edit Profile
               </p>
@@ -189,33 +350,33 @@ const Profile = () => {
       </div>
       <hr className="border w-4/5 border-dark-4/80" />
       {currentUser.$id === user.id && (
-        <div className="flex max-w-5xl w-full">
+        <div className="flex max-w-5xl w-full relative">
+          <div
+            className="horizontal-indicator"
+            style={{
+              left: `${indicatorStyle.left}px`,
+              width: `${indicatorStyle.width}px`,
+              transition: "left 0.5s, width 0.5s",
+            }}
+          ></div>
           <Link
             to={`/profile/${id}`}
             className={`profile-tab rounded-l-lg ${
-              pathname === `/profile/${id}` && "!bg-dark-3"
+              pathname === `/profile/${id}` && "active"
             }`}
+            ref={(el) => (tabsRef.current[0] = el)}
           >
-            <img
-              src={"/assets/icons/posts.svg"}
-              alt="posts"
-              width={20}
-              height={20}
-            />
+            <PostsIcon />
             Posts
           </Link>
           <Link
             to={`/profile/${id}/liked-posts`}
             className={`profile-tab rounded-r-lg ${
-              pathname === `/profile/${id}/liked-posts` && "!bg-dark-3"
+              pathname === `/profile/${id}/liked-posts` && "active"
             }`}
+            ref={(el) => (tabsRef.current[1] = el)}
           >
-            <img
-              src={"/assets/icons/like.svg"}
-              alt="like"
-              width={20}
-              height={20}
-            />
+            <LikeIcon />
             Liked Posts
           </Link>
         </div>
@@ -237,12 +398,7 @@ const Profile = () => {
         ) : (
           <Route
             index
-            element={
-              <RelatedPosts
-                posts={currentUser.posts.reverse()}
-                showUser={false}
-              />
-            }
+            element={<RelatedPosts posts={sortedPosts} showUser={false} />}
           />
         )}
         {currentUser.$id === user.id && (
@@ -250,6 +406,21 @@ const Profile = () => {
         )}
       </Routes>
       <Outlet />
+
+      <FollowersModal
+        isOpen={isFollowersModalOpen}
+        onClose={handleFollowersModalClose}
+        title="Followers"
+        users={transformedFollowers}
+        isLoading={isFollowersLoading}
+      />
+      <FollowersModal
+        isOpen={isFolloweesModalOpen}
+        onClose={handleFolloweesModalClose}
+        title="Following"
+        users={transformedFollowees}
+        isLoading={isFolloweesLoading}
+      />
     </div>
   );
 };

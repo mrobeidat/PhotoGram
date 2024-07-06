@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "@/components/ui/password-input";
-import { Button } from "@/components/ui/button";
+import Button from "@mui/material/Button";
 import { useToast } from "@/components/ui/use-toast";
 
 import { SigninValidation } from "@/lib/validation";
@@ -159,24 +159,27 @@ const SigninForm = () => {
             )}
           />
 
-          <Button
-            type="submit"
-            className="shad-button_primary"
-            disabled={!formState.isDirty}
-          >
-            {isPending || isUserLoading ? (
-              <div className="flex-center gap-2">
-                <span className="general-loader"></span> Loading...
-              </div>
-            ) : (
-              "Log in"
-            )}
-          </Button>
+<Button
+  type="submit"
+  className={`shad-button_primary ${
+    isPending || isUserLoading || !formState.isDirty ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  disabled={isPending || isUserLoading || !formState.isDirty}
+>
+  {isPending || isUserLoading ? (
+    <div className="flex-center gap-2">
+      <span className="general-loader"></span> Loading...
+    </div>
+  ) : (
+    "Log in"
+  )}
+</Button>
+
 
           <p className="text-small-regular text-light-2 text-center mt-2">
             Don&apos;t have an account?
             <Link
-            onClick={handleSignUpClick}
+              onClick={handleSignUpClick}
               to="/sign-up"
               className="text-primary-500 text-small-semibold ml-1"
             >

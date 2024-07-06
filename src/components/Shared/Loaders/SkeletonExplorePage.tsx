@@ -8,7 +8,9 @@ export const SkeletonSearchBar = () => {
 };
 
 export const SkeletonDropdown = () => {
-  return <div className="w-36 h-14 bg-gray-300 rounded-lg animate-pulse ml-auto"></div>;
+  return (
+    <div className="w-36 h-14 bg-gray-300 rounded-lg animate-pulse ml-auto"></div>
+  );
 };
 
 export const SkeletonGridPost = () => {

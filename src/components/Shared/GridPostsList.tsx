@@ -96,7 +96,7 @@ const PostCreator = ({
       <img
         src={creatorImage || "assets/icons/profile-placeholder.svg"}
         alt="creator"
-        className="w-8 h-8 rounded-full"
+        className="w-8 h-8 rounded-full object-cover"
       />
       <div className="flex items-center">
         <p className="line-clamp-1">{creatorName}</p>

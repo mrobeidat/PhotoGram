@@ -1,12 +1,71 @@
-import ContentLoader from 'react-content-loader'
+import styled, { keyframes } from "styled-components";
 
-const YoutubeFresh = ({...props}) => (
-  <ContentLoader backgroundColor='rgba(17, 15.5, 61, 1)' foregroundColor='#CCCCCC' viewBox="0 0 500 420" height={1000} width={900} {...props}>
-    <rect x="16" y="17" rx="0" ry="0" width="360" height="200" />
-    <circle cx="35" cy="248" r="20" />
-    <rect x="69" y="229" rx="2" ry="2" width="275" height="15" />
-    <rect x="69" y="253" rx="2" ry="2" width="140" height="15" />
-  </ContentLoader>
-)
+const pulse = keyframes`
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.7;
+  }
+`;
 
-export default YoutubeFresh
+const LoaderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+`;
+
+const Placeholder = styled.div`
+  background-color: #f0f0f0;
+  animation: ${pulse} 1.5s infinite;
+  border-radius: 4px;
+`;
+
+const CaptionPlaceholder = styled(Placeholder)`
+  height: 36px;
+  width: 100%;
+`;
+
+const PhotoPlaceholder = styled(Placeholder)`
+  height: 300px;
+  width: 100%;
+`;
+
+const LocationPlaceholder = styled(Placeholder)`
+  height: 36px;
+  width: 100%;
+`;
+
+const TagsPlaceholder = styled(Placeholder)`
+  height: 36px;
+  width: 100%;
+`;
+
+const ButtonPlaceholder = styled(Placeholder)`
+  height: 48px;
+  width: 150px;
+`;
+
+const PulseLoader = () => {
+  return (
+    <LoaderContainer>
+      <CaptionPlaceholder />
+      <PhotoPlaceholder />
+      <LocationPlaceholder />
+      <TagsPlaceholder />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <ButtonPlaceholder style={{ width: "48%" }} />
+        <ButtonPlaceholder style={{ width: "48%" }} />
+      </div>
+    </LoaderContainer>
+  );
+};
+
+export default PulseLoader;

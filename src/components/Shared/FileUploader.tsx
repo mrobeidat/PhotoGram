@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import heic2any from "heic2any";
-import { Button } from "@/components/ui/button";
+import Compressor from 'compressorjs';
+import Button from "@mui/material/Button";
 import { useToast } from "@/components/ui/use-toast";
 
 type FileUploaderProps = {
@@ -13,6 +14,28 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
   const [file, setFile] = useState<File[]>([]);
   const [fileUrl, setFileUrl] = useState<string>(mediaUrl);
   const { toast } = useToast();
+
+  const compressImage = (image: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      new Compressor(image, {
+        quality: 0.8,
+        success: (compressedResult) => {
+          if (compressedResult instanceof File) {
+            resolve(compressedResult);
+          } else {
+            const compressedFile = new File([compressedResult], image.name, {
+              type: image.type,
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          }
+        },
+        error: (err) => {
+          reject(err);
+        },
+      });
+    });
+  };
 
   const onDrop = useCallback(
     async (acceptedFiles: FileWithPath[]) => {
@@ -29,7 +52,11 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
           // Convert HEIC to PNG using heic2any
           const convertedFileBlob = await heic2any({ blob: file });
           const convertedFile = new File([convertedFileBlob as Blob], file.name.replace(/\.[^/.]+$/, ".png"));
-          convertedFiles.push(convertedFile);
+          const compressedImage = await compressImage(convertedFile);
+          convertedFiles.push(compressedImage);
+        } else if (file.type.startsWith("image/")) {
+          const compressedImage = await compressImage(file);
+          convertedFiles.push(compressedImage);
         } else if (file.type.startsWith("video/")) {
           // Handle video files
           const video = document.createElement("video");
@@ -53,7 +80,6 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
               });
             }
           } else {
-            // Handle case where the browser can't play the video
             alert("Unsupported video format");
           }
         } else {
@@ -102,7 +128,7 @@ const FileUploader = ({ fieldChange, mediaUrl }: FileUploaderProps) => {
           <p className="text-light-3 small-regular ">Images: SVG, PNG, JPG </p>
           <p className="text-light-3 small-regular">Videos: MP4, WebM, MKV, HEVC</p>
           <span className="text-red text-sm  mb-6">(Maximum Duration: 30 seconds)</span>
-          <Button type="button" className="shad-button_dark_4">
+          <Button type="button" className="shad-button_dark_4 !capitalize !rounded-md">
             Select file
           </Button>
         </div>

@@ -1,16 +1,19 @@
+import { SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 
 export type IContextType = {
-  user: IUser,
-  isLoading: boolean,
-  setUser: React.Dispatch<React.SetStateAction<IUser>>,
-  isAuthenticated: boolean,
+  user: IUser;
+  isLoading: boolean;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+  isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  checkAuthUser: () => Promise<boolean>
-}
+  checkAuthUser: () => Promise<boolean>;
+};
 
 export type INavLink = {
-  imgURL: string;
+  imgURL?: string;
+  icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string };
   route: string;
   label: string;
 };
@@ -40,7 +43,7 @@ export type IUpdatePost = {
   file: File[];
   location?: string;
   tags?: string;
-  updated?: boolean
+  updated?: boolean;
 };
 
 export type IUser = {
@@ -69,5 +72,16 @@ export type IComment = {
   userId: string;
   text: string;
   user?: IUser;
-  likes?:string[]
+  likes?: string[];
 };
+
+export interface IReply {
+  $id: string;
+  commentId: string;
+  userId: string;
+  text: string;
+  likes: string[];
+  createdAt: string;
+  updatedAt: string;
+  user?: IUser;
+}

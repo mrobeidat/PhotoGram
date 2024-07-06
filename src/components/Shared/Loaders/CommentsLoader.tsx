@@ -1,19 +1,44 @@
 export const CommentsLoader = () => (
-    <div className="space-y-3 mb-3">
-      <div className="animate-pulse flex space-x-4">
-        <div className="rounded-full bg-light-3 h-8 w-8"></div>
-        <div className="flex-1 space-y-2 py-1">
-          <div className="h-4 bg-light-3 rounded"></div>
-          <div className="h-4 bg-light-3 rounded w-5/6"></div>
-        </div>
-      </div>
-      <div className="animate-pulse flex space-x-4">
-        <div className="rounded-full bg-light-3 h-8 w-8"></div>
-        <div className="flex-1 space-y-2 py-1">
-          <div className="h-4 bg-light-3 rounded"></div>
-          <div className="h-4 bg-light-3 rounded w-5/6"></div>
+  <div className="space-y-3 mb-3">
+    <div className="flex items-start gap-3 pt-2">
+      <div className="w-8 h-8 rounded-full bg-gray-700 shimmer" />
+      <div className="flex-1">
+        <div className="bg-white/10 p-2 rounded-lg">
+          <div className="h-4 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full shimmer"></div>
         </div>
       </div>
     </div>
-  );
-  
+    <div className="flex items-start gap-3 pt-2">
+      <div className="w-8 h-8 rounded-full bg-gray-700 shimmer" />
+      <div className="flex-1">
+        <div className="bg-white/10 p-2 rounded-lg">
+          <div className="h-4 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full shimmer"></div>
+        </div>
+      </div>
+    </div>
+    <div className="flex items-start gap-3 pt-2">
+      <div className="w-8 h-8 rounded-full bg-gray-700 shimmer" />
+      <div className="flex-1">
+        <div className="bg-white/10 p-2 rounded-lg">
+          <div className="h-4 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full shimmer"></div>
+        </div>
+      </div>
+    </div>
+    <div className="flex items-start gap-3 pt-2">
+      <div className="w-8 h-8 rounded-full bg-gray-700 shimmer" />
+      <div className="flex-1">
+        <div className="bg-white/10 p-2 rounded-lg">
+          <div className="h-4 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full mb-2 shimmer"></div>
+          <div className="h-3 bg-gray-700 rounded w-full shimmer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);

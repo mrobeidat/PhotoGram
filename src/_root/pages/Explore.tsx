@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/useDebounce";
 import {
   useGetPosts,
@@ -31,7 +30,7 @@ export type SearchResultProps = {
 const SearchResults = memo(
   ({ isSearchFetching, searchedPosts }: SearchResultProps) => {
     if (isSearchFetching) {
-      return <Loader />;
+      return <SkeletonGridPost />;
     } else if (searchedPosts && searchedPosts.documents?.length > 0) {
       return (
         <GridPostList
@@ -54,7 +53,7 @@ const Explore = () => {
   const hasShownAlert = sessionStorage.getItem("hasShownAlert");
   const showAlert = useCallback(() => {
     if (!hasShownAlert) {
-      toast.info("This page displays posts created within this week!", {
+      toast.info("This page displays popular posts!", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -66,8 +65,8 @@ const Explore = () => {
         style: {
           backgroundColor: "rgb(63, 94, 251)",
           background:
-            "radial-gradient(circle, rgb(29, 43, 110) 0%, rgba(0, 0, 0, 1) 100%)",
-          width: "fit-content",
+            "linear-gradient(85.2deg, rgb(42, 10, 49) 7.5%, rgb(73, 6, 73) 88.7%)",
+          width: "100%",
         },
       });
     }
@@ -115,15 +114,22 @@ const Explore = () => {
 
   if (isLoadingPosts) {
     return (
-      <div className="flex flex-col gap-4 w-full max-w-5xl mx-auto !mt-14">
+      <div className="flex flex-col gap-4 w-full max-w-5xl mx-auto !mt-14 p-5">
         <SkeletonSearchBar />
-        <div className="flex justify-between items-center w-full mt-16 mb-7">
+        <div className="flex justify-between items-center w-full mt-16 mb-7 p-5">
           <SkeletonDropdown />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full">
-          {[...Array(9)].map((_, index) => (
-            <SkeletonGridPost key={index} />
-          ))}
+        <div className="">
+          {/* Single Skeleton for mobile */}
+          <div className="block sm:hidden">
+            <SkeletonGridPost />
+          </div>
+          {/* Multiple Skeletons for larger screens */}
+          <div className="hidden sm:block lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full p-5">
+            {[...Array(6)].map((_, index) => (
+              <SkeletonGridPost key={index} />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -132,31 +138,31 @@ const Explore = () => {
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts =
     !shouldShowSearchResults &&
-    posts?.pages.every((item) => item.documents.length === 0);
+    posts?.pages.every((item) => item?.data.length === 0);
 
   return (
     <div className="explore-container">
       <ToastContainer />
       <div className="explore-inner_container">
         <h2 className="h3-bold md:h2-bold w-full">Search Posts</h2>
-        <div className="flex gap-1 px-4 w-full rounded-lg bg-dark-4">
+        <div className="flex gap-1 px-4 w-full rounded-lg bg-dark-4 glassmorphism-search">
           <img
             src="/assets/icons/search.svg"
             width={24}
             height={24}
             alt="search"
           />
-          <Input
+          <input
             type="text"
             placeholder="Search by caption"
-            className="explore-search"
+            className="glassmorphism-input"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
         </div>
       </div>
       <div className="flex justify-between items-center w-full max-w-5xl mt-16 mb-7 text-white">
-        <h3 className="body-bold md:h3-bold">Popular this week</h3>
+        <h3 className="body-bold md:h3-bold">Popular Posts</h3>
         <FormControl variant="outlined" sx={{ minWidth: 150, color: "white" }}>
           <InputLabel sx={{ color: "white" }}>Filter</InputLabel>
           <Select
@@ -210,14 +216,16 @@ const Explore = () => {
         ) : shouldShowPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : (
-          posts?.pages.map((item, index) => (
-            <GridPostList
-              key={`page-${index}`}
-              posts={item.documents}
-              filter={filter}
-              isLoading={false} // Pass isLoading as false here
-            />
-          ))
+          posts?.pages.map((item, index) =>
+            item ? (
+              <GridPostList
+                key={`page-${index}`}
+                posts={item.data}
+                filter={filter}
+                isLoading={false}
+              />
+            ) : null
+          )
         )}
       </div>
       {hasNextPage && !searchValue && (

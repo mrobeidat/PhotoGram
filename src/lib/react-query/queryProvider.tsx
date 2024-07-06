@@ -1,11 +1,11 @@
 import { QueryClient, QueryClientProvider, useMutation, /*useQueryClient*/ } from '@tanstack/react-query'
 import { ReactNode } from 'react'
-import { SignInAccount, createUserAccount } from '../appwrite/api'
+import { SignInAccount, createUserAccount } from '../appwrite/auth'
 import { /*INewPost*/ INewUser, /*IUpdatePost*/ } from '@/types'
 
 
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient() 
 
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
   return (

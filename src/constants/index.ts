@@ -1,54 +1,61 @@
-export const sidebarLinks = [
+import HomeIcon from "@mui/icons-material/Home";
+import ExploreIcon from "@mui/icons-material/Explore";
+import PeopleIcon from "@mui/icons-material/People";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import CreateIcon from "@mui/icons-material/Create";
+import { INavLink } from "@/types";
+
+export const sidebarLinks: INavLink[] = [
+  {
+    icon: HomeIcon,
+    route: "/",
+    label: "Home",
+  },
+  {
+    icon: ExploreIcon,
+    route: "/explore",
+    label: "Explore",
+  },
+  {
+    icon: PeopleIcon,
+    route: "/all-users",
+    label: "People",
+  },
+  {
+    icon: BookmarkIcon,
+    route: "/saved",
+    label: "Saved",
+  },
+  {
+    icon: CreateIcon,
+    route: "/create-post",
+    label: "Create Post",
+  },
+];
+
+  export const bottombarLinks :INavLink[] = [
     {
-      imgURL: "/assets/icons/home.svg",
+      icon: HomeIcon,
       route: "/",
       label: "Home",
     },
     {
-      imgURL: "/assets/icons/wallpaper.svg",
-      route: "/explore",
-      label: "Explore",
-    },
-    {
-      imgURL: "/assets/icons/people.svg",
+      icon: PeopleIcon,
       route: "/all-users",
       label: "People",
     },
     {
-      imgURL: "/assets/icons/bookmark.svg",
-      route: "/saved",
-      label: "Saved",
-    },
-    {
-      imgURL: "/assets/icons/gallery-add.svg",
-      route: "/create-post",
-      label: "Create Post",
-    },
-  ];
-  
-  export const bottombarLinks = [
-    {
-      imgURL: "/assets/icons/home.svg",
-      route: "/",
-      label: "Home",
-    },
-    {
-      imgURL: "/assets/icons/people.svg",
-      route: "/all-users",
-      label: "People",
-    },
-    {
-      imgURL: "/assets/icons/wallpaper.svg",
+      icon: ExploreIcon,
       route: "/explore",
       label: "Explore",
     },
     {
-      imgURL: "/assets/icons/bookmark.svg",
+      icon: BookmarkIcon,
       route: "/saved",
       label: "Saved",
     },
     {
-      imgURL: "/assets/icons/gallery-add.svg",
+      icon: CreateIcon,
       route: "/create-post",
       label: "Create",
     },

@@ -1,7 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useRef, useCallback } from "react";
+import { useUserContext } from "@/context/AuthContext";
 import {
-  useGetRecentPosts,
+  useGetPostsFromFollowedUsers,
+  useGetPinnedPost,
   useGetUsers,
+  useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import PostCard from "@/components/Shared/PostCard";
 import HomeLoader from "@/components/Shared/Loaders/HomeLoader";
@@ -11,21 +14,78 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Models } from "appwrite";
 
 const Home = () => {
-  const recentPostsQuery = useGetRecentPosts();
-  const {
-    data: creators,
-    isLoading: isUserLoading,
-    isError: isErrorCreators,
-  } = useGetUsers(10);
+  const { user } = useUserContext();
+  const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
 
   const {
-    data: posts,
+    data,
     isLoading: isPostLoading,
     isError: isErrorPosts,
-  } = useMemo(() => recentPostsQuery, [recentPostsQuery]);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGetPostsFromFollowedUsers(user.id);
 
-  // Handle error cases
-  if (isErrorPosts || isErrorCreators) {
+  const {
+    data: pinnedPostData,
+    isLoading: isPinnedPostLoading,
+    isError: isErrorPinnedPost,
+  } = useGetPinnedPost(postIdToMoveToTop);
+
+  const {
+    data: creatorsData,
+    isLoading: isUserLoading,
+    isError: isErrorCreators,
+  } = useGetUsers();
+
+  const {
+    data: currentUserPostsData,
+    isLoading: isCurrentUserPostsLoading,
+    isError: isErrorCurrentUserPosts,
+  } = useGetUserPosts(user.id);
+
+  // Intersection Observer for infinite scrolling
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastPostRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (isFetchingNextPage) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isFetchingNextPage, fetchNextPage, hasNextPage]
+  );
+
+  // Flatten paginated data, include pinned post, merge with user posts, and sort by creation date
+  const posts = useMemo(() => {
+    const allPosts = data?.pages.flatMap((page) => page?.documents ?? []) || [];
+    const currentUserPosts = currentUserPostsData?.documents ?? [];
+    const combinedPosts = [...allPosts, ...currentUserPosts];
+    const filteredPosts = combinedPosts.filter(
+      (post) => post.$id !== postIdToMoveToTop
+    );
+    const sortedPosts = filteredPosts.sort(
+      (a, b) =>
+        new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime()
+    );
+    if (pinnedPostData) {
+      sortedPosts.unshift(pinnedPostData);
+    }
+
+    return sortedPosts;
+  }, [data, pinnedPostData, currentUserPostsData, postIdToMoveToTop]);
+
+  if (
+    isErrorPosts ||
+    isErrorCreators ||
+    isErrorPinnedPost ||
+    isErrorCurrentUserPosts
+  ) {
     return (
       <div className="flex flex-1">
         <div className="home-container">
@@ -38,48 +98,58 @@ const Home = () => {
     );
   }
 
-  // Pin Yousef's post to the top of the array of posts
-  const postIdToMoveToTop = import.meta.env.VITE_APPWRITE_POST_ID;
-  const pinnedPosts = useMemo(() => {
-    if (!posts?.documents) return [];
-    const updatedPosts = [...posts.documents];
-    const postIndex = updatedPosts.findIndex(
-      (post) => post.$id === postIdToMoveToTop
-    );
-
-    if (postIndex !== -1) {
-      const postToMove = updatedPosts.splice(postIndex, 1)[0];
-      updatedPosts.unshift(postToMove);
-    }
-    return updatedPosts;
-  }, [posts, postIdToMoveToTop]);
-
-  // Pin Yousef's user card to the top
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const sortedCreators = useMemo(() => {
-    if (!creators?.documents) return [];
-    return [...creators.documents].sort((a, b) => {
+    if (!creatorsData?.pages) return [];
+    const allCreators = creatorsData.pages.flatMap((page) => page?.data ?? []);
+    return [...allCreators].sort((a, b) => {
       if (a.$id === YousefID) return -1;
       if (b.$id === YousefID) return 1;
       return 0;
     });
-  }, [creators, YousefID]);
+  }, [creatorsData, YousefID]);
 
   return (
     <div className="flex flex-1">
       <div className="home-container">
         <div className="home-posts">
           <h2 className="h3-bold md:h2-bold text-left w-full">Home Feed</h2>
-          {isPostLoading && !posts ? (
-            Array.from({ length: 3 }, (_, index) => <HomeLoader key={index} />)
+          {isPostLoading || isPinnedPostLoading || isCurrentUserPostsLoading ? (
+            Array.from({ length: 5 }).map((_, index) => (
+              <HomeLoader key={index} />
+            ))
           ) : (
-            <ul className="flex flex-col flex-1 gap-9 w-full">
-              {pinnedPosts.map((post: Models.Document) => (
-                <li key={post.$id} className="flex justify-center w-full">
-                  <PostCard post={post} key={post.caption} />
-                </li>
-              ))}
-            </ul>
+            <>
+              {posts.length === 0 ? (
+                <p className="body-medium text-light-1">No posts to display.</p>
+              ) : (
+                <ul className="flex flex-col flex-1 gap-9 w-full">
+                  {posts.map((post: Models.Document, index) => {
+                    if (index === posts.length - 1) {
+                      return (
+                        <li
+                          ref={lastPostRef}
+                          key={post.$id}
+                          className="flex justify-center w-full"
+                        >
+                          <PostCard post={post} />
+                        </li>
+                      );
+                    } else {
+                      return (
+                        <li
+                          key={post.$id}
+                          className="flex justify-center w-full"
+                        >
+                          <PostCard post={post} />
+                        </li>
+                      );
+                    }
+                  })}
+                </ul>
+              )}
+              {isFetchingNextPage && <HomeLoader />}
+            </>
           )}
         </div>
       </div>
@@ -87,7 +157,7 @@ const Home = () => {
         <h3 className="h3-bold text-light-1">
           PhotoGrammers <PeopleAltIcon />
         </h3>
-        {isUserLoading && !creators ? (
+        {isUserLoading ? (
           <div className="grid grid-cols-2 gap-4">
             {[...Array(10)].map((_, index) => (
               <UsersLoader key={index} />
@@ -95,9 +165,9 @@ const Home = () => {
           </div>
         ) : (
           <ul className="grid 2xl:grid-cols-2 gap-6">
-            {sortedCreators.map((creator) => (
-              <li key={creator?.$id}>
-                {isUserLoading ? <UsersLoader /> : <UserCard user={creator} />}
+            {sortedCreators.map((creator: Models.Document) => (
+              <li key={creator.$id}>
+                <UserCard user={creator} />
               </li>
             ))}
           </ul>

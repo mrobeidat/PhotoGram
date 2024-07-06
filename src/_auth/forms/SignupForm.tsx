@@ -3,13 +3,22 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-// import Loader from "@/components/Shared/Loader";
+import Button from "@mui/material/Button";
 import { useToast } from "@/components/ui/use-toast";
 
-import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queryProvider";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queryProvider";
 import { SignupValidation } from "@/lib/validation";
 import { useUserContext } from "@/context/AuthContext";
 
@@ -29,8 +38,10 @@ const SignupForm = () => {
   });
   const { formState } = form;
   // Queries
-  const { mutateAsync: createUserAccount, isPending: isCreatingAccount } = useCreateUserAccount();
-  const { mutateAsync: signInAccount, isPending: isSigningInUser } = useSignInAccount();
+  const { mutateAsync: createUserAccount, isPending: isCreatingAccount } =
+    useCreateUserAccount();
+  const { mutateAsync: signInAccount, isPending: isSigningInUser } =
+    useSignInAccount();
 
   // Handler
   const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
@@ -38,7 +49,7 @@ const SignupForm = () => {
       const newUser = await createUserAccount(user);
 
       if (!newUser) {
-        toast({ title: "Sign up failed. Please try again.", });
+        toast({ title: "Sign up failed. Please try again." });
 
         return;
       }
@@ -49,7 +60,7 @@ const SignupForm = () => {
       });
 
       if (!session) {
-        toast({ title: "Something went wrong. Please login your new account", });
+        toast({ title: "Something went wrong. Please login your new account" });
 
         navigate("/sign-in");
 
@@ -64,15 +75,16 @@ const SignupForm = () => {
         navigate("/");
       } else {
         toast({
-          title: "Email Already Exists. Please try again with a different email address.",
+          title:
+            "Email Already Exists. Please try again with a different email address.",
           style: {
-            backgroundColor: '#FEE2E2',
-            borderColor: '#FECACA',
-            color: '#C53030',
-            padding: '1rem',
-            borderRadius: '0.375rem',
-            position: 'relative',
-          }
+            backgroundColor: "#FEE2E2",
+            borderColor: "#FECACA",
+            color: "#C53030",
+            padding: "1rem",
+            borderRadius: "0.375rem",
+            position: "relative",
+          },
         });
 
         return;
@@ -83,12 +95,14 @@ const SignupForm = () => {
   };
   return (
     <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col">
+      <div className="sm:w-420 flex-center flex-col ">
         <img
           draggable="false"
           className="pointer-events-none select-none"
           width={320}
-          src="/assets/images/photogram.png" alt="logo" />
+          src="/assets/images/photogram.png"
+          alt="logo"
+        />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
           Create a new account
         </h2>
@@ -98,7 +112,8 @@ const SignupForm = () => {
 
         <form
           onSubmit={form.handleSubmit(handleSignup)}
-          className="flex flex-col gap-5 w-full mt-4">
+          className="flex flex-col gap-5 w-full mt-4"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -155,7 +170,23 @@ const SignupForm = () => {
             )}
           />
 
-          <Button type="submit" className="shad-button_primary" disabled={!formState.isDirty}>
+          <Button
+            type="submit"
+            className={`shad-button_primary ${
+              isCreatingAccount ||
+              isSigningInUser ||
+              isUserLoading ||
+              !formState.isDirty
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            disabled={
+              isCreatingAccount ||
+              isSigningInUser ||
+              isUserLoading ||
+              !formState.isDirty
+            }
+          >
             {isCreatingAccount || isSigningInUser || isUserLoading ? (
               <div className="flex-center gap-2">
                 <span className="general-loader"></span> Loading...
@@ -169,7 +200,8 @@ const SignupForm = () => {
             Already have an account?
             <Link
               to="/sign-in"
-              className="text-primary-500 text-small-semibold ml-1">
+              className="text-primary-500 text-small-semibold ml-1"
+            >
               Log in
             </Link>
           </p>

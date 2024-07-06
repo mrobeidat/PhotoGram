@@ -7,7 +7,7 @@ import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
 import Loader from "@/components/Shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import DeleteCommentConfirmationModal from "@/components/ui/deleteCommentConfirmationModal";
+import CommentsModal from "@/components/Shared/Comments/CommentsModal";
 import DeletePostConfirmationModal from "@/components/ui/deletePostConfirmationModal";
 import {
   useGetPostById,
@@ -24,6 +24,13 @@ import "react-photo-view/dist/react-photo-view.css";
 import { CommentValidation } from "@/lib/validation";
 import { Models } from "appwrite";
 import { CommentsLoader } from "@/components/Shared/Loaders/CommentsLoader";
+import CustomVideoPlayer from "@/components/Shared/CustomVideoPlayer";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Menu, MenuItem, IconButton, Typography, Grid } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBackTwoTone";
+import HeartAnimation from "../../components/ui/HeartAnimation";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -54,17 +61,17 @@ const PostDetails = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contentType, setContentType] = useState("");
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [isFullContent, setIsFullContent] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sanitizedCaption = sanitizeHTML(post?.caption || "").__html;
   const imageUrl = post?.imageUrl.replace("/preview", "/view");
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
+  const [showHearts, setShowHearts] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -78,19 +85,11 @@ const PostDetails = () => {
         }
       } catch (error) {
         console.error("Error fetching image:", error);
-      } finally {
-        setIsVideoLoading(false);
       }
     };
 
     fetchImage();
   }, [imageUrl]);
-
-  const handleTap = () => {
-    const videoElement = document.getElementById("video") as HTMLVideoElement;
-    videoElement.muted = !isMuted;
-    setIsMuted(!isMuted);
-  };
 
   const handleCreateComment = () => {
     const commentData = {
@@ -147,19 +146,41 @@ const PostDetails = () => {
     }
   };
 
+  const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMoreClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleShowHearts = () => {
+    setShowHearts(true);
+    setTimeout(() => {
+      setShowHearts(false);
+    }, 1500);
+  };
+
   if (isPending || !post) return <Loader />;
 
   return (
     <div className="post_details-container">
-      <div className="hidden md:flex max-w-5xl w-full">
-        <Button
-          onClick={() => navigate(-1)}
-          variant="ghost"
-          className="shad-button_ghost"
-        >
-          <img src="/assets/icons/back.svg" alt="back" width={24} height={24} />
-          <p className="small-medium lg:base-medium">Back</p>
-        </Button>
+      <div className="md:flex max-w-5xl w-full">
+        <Grid item xs={12} className="max-w-5xl w-full">
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outline"
+            className="shad-button_ghost"
+          >
+            <ArrowBackIcon />
+            <Typography
+              variant="button"
+              className="small-medium lg:base-medium"
+            >
+              Back
+            </Typography>
+          </Button>
+        </Grid>
       </div>
 
       <div className="post_details-card">
@@ -174,43 +195,26 @@ const PostDetails = () => {
           maskOpacity={0.8}
         >
           {contentType.startsWith("image/") ? (
-            <PhotoView src={post?.imageUrl}>
-              <img
-                src={post.imageUrl}
-                alt="Image"
-                className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
-              />
-            </PhotoView>
-          ) : (
-            <div className="post_details-img object-cover mb-2 relative rounded-lg">
-              {isVideoLoading ? (
-                <div className="flex justify-center items-center h-full">
-                  <Loader />
-                </div>
-              ) : (
-                <video
-                  id="video"
-                  className="post-card_img rounded-xl shadow-lg"
-                  onClick={handleTap}
-                  autoPlay
-                  loop
-                  controlsList="nodownload noremoteplayback"
-                >
-                  <source src={imageUrl} type="video/mp4" />
-                </video>
-              )}
-              <div
-                className="absolute bottom-8 right-8 cursor-pointer"
-                onClick={handleTap}
-              >
+            <>
+              <PhotoView src={post?.imageUrl}>
                 <img
-                  src={`/assets/icons/${isMuted ? "mute" : "volume"}.png`}
-                  alt={isMuted ? "Mute" : "Unmute"}
-                  width={22}
-                  height={22}
+                  src={post.imageUrl}
+                  alt="Image"
+                  className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
                 />
+              </PhotoView>
+              {showHearts && <HeartAnimation showHearts={showHearts} />}
+            </>
+          ) : (
+            <>
+              <div className="post_details-img object-cover lg:mb-2 -mb-10 relative rounded-lg">
+                <CustomVideoPlayer
+                  videoUrl={imageUrl}
+                  videoClassName="h-full object-cover rounded-xl shadow-lg"
+                />
+                {showHearts && <HeartAnimation showHearts={showHearts} />}
               </div>
-            </div>
+            </>
           )}
         </PhotoProvider>
 
@@ -280,28 +284,51 @@ const PostDetails = () => {
             <div className="flex items-center gap-2">
               {user.id === post?.creator.$id && (
                 <>
-                  <Link to={`/update-post/${post?.$id}`} className="lg:block">
-                    <img
-                      src="/assets/icons/edit.svg"
-                      alt="edit"
-                      width={22}
-                      height={24}
-                      className="select-none pointer-events-none"
-                    />
-                  </Link>
-                  <Button
-                    onClick={handleDeletePost}
-                    variant="ghost"
-                    className="post_details-delete_btn"
+                  <IconButton onClick={handleMoreClick}>
+                    <MoreVertIcon htmlColor="white" />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMoreClose}
+                    slotProps={{
+                      paper: {
+                        style: {
+                          background: "rgba(0, 0, 0, 0.5)",
+                          backdropFilter: "blur(40px)",
+                          color: "white",
+                        },
+                      },
+                    }}
                   >
-                    <img
-                      src="/assets/icons/delete.svg"
-                      alt="delete"
-                      width={24}
-                      height={24}
-                      className="select-none pointer-events-none"
-                    />
-                  </Button>
+                    <MenuItem
+                      onClick={() => navigate(`/update-post/${post?.$id}`)}
+                      style={{ color: "white" }}
+                      className="custom-menu-item"
+                    >
+                      <EditIcon
+                        style={{ marginRight: "8px", color: "white" }}
+                      />{" "}
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      onClick={handleDeletePost}
+                      style={{ color: "white" }}
+                      className="custom-menu-item"
+                    >
+                      <DeleteIcon
+                        style={{ marginRight: "8px", color: "white" }}
+                      />{" "}
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                  <style>
+                    {`
+      .custom-menu-item:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+      }
+    `}
+                  </style>
                 </>
               )}
             </div>
@@ -344,8 +371,7 @@ const PostDetails = () => {
               ))}
             </ul>
           </div>
-
-          <DeleteCommentConfirmationModal
+          <CommentsModal
             isOpen={showComments}
             onClose={toggleComments}
             containerRef={containerRef}
@@ -365,6 +391,7 @@ const PostDetails = () => {
 
           <div className="w-full mt-4">
             <PostStats
+              onShowLikeSvg={handleShowHearts}
               post={post}
               userId={user.id}
               commentsCount={comments?.documents.length || 0}

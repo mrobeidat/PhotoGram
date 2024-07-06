@@ -6,7 +6,8 @@
 
 @font-face {
   font-family: "FacebookFont";
-  src: url("./fonts/your-facebook-font.woff2") format("woff2"),
+  src:
+    url("./fonts/your-facebook-font.woff2") format("woff2"),
     url("./fonts/your-facebook-font.woff") format("woff");
   font-weight: normal;
   font-style: normal;
@@ -20,12 +21,15 @@
   body {
     background-image: linear-gradient(
       85.2deg,
-      rgb(42, 10, 49) 7.5%,
-      rgb(73, 6, 73) 88.7%
+      rgb(21, 4, 24) 7.5%,
+      rgb(48, 7, 48) 88.7%
     );
     @apply text-white min-h-screen font-inter;
     background-size: cover;
+    background-repeat: no-repeat;
     font-family: "FacebookFont", sans-serif;
+    background-attachment: fixed;
+    /* overflow: hidden !important; */
   }
 }
 
@@ -79,6 +83,7 @@
     width: 3px;
     height: 3px;
     border-radius: 2px;
+    background: #9c9c9c;
   }
 
   .tooltip {
@@ -206,10 +211,6 @@
     @apply max-w-5xl flex flex-col items-center w-full gap-6 md:gap-9;
   }
 
-  .explore-search {
-    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-0 focus-visible:ring-offset-0 ring-offset-0 !important;
-  }
-
   /* Home */
   .home-container {
     @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar;
@@ -240,7 +241,7 @@
   }
 
   .post_details-img {
-    @apply h-80 lg:h-[480px] xl:w-[48%] rounded-t-[30px] xl:rounded-l-[24px] xl:rounded-tr-none object-cover p-5;
+    @apply h-full lg:h-[480px] xl:w-[48%] rounded-t-[30px] xl:rounded-l-[24px] xl:rounded-tr-none object-cover p-5;
   }
 
   .post_details-info {
@@ -274,7 +275,45 @@
 
   /* Bottom bar */
   .bottom-bar {
-    @apply z-50 flex-between w-full fixed bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-4 md:hidden;
+    @apply z-50 flex justify-between w-full sticky bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-4 md:hidden;
+    background-image: radial-gradient(
+      circle farthest-corner at 10% 20%,
+      rgb(85, 38, 97) 0%,
+      rgb(44, 5, 44) 90%
+    );
+    box-shadow: 0px 0 10px rgba(0, 0, 0, 0.8);
+  }
+
+  .bottombar-link {
+    @apply flex flex-col items-center gap-1 p-2 transition;
+  }
+
+  .bottombar-link:hover,
+  .bottombar-link.active {
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  .bottombar-link svg {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .bottombar-link:hover svg,
+  .bottombar-link.active svg {
+    transform: rotate(15deg);
+  }
+
+  .horizontal-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background: rgb(224, 9, 73);
+    border-radius: 20% !important;
+    transition:
+      left 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+      width 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 3;
+    transform-origin: left center;
   }
 
   /* File uploader */
@@ -305,22 +344,70 @@
 
   /* Left sidebar */
   .leftsidebar {
-    /* background-image: linear-gradient( 111.4deg,  rgba(7,7,9,1) 6.5%, rgba(27,24,113,1) 93.2% ); */
     @apply hidden md:flex px-6 py-10 flex-col justify-between min-w-[270px];
+    position: relative;
+    height: 100vh;
+    color: #fff;
   }
 
   .leftsidebar-link {
     background-image: none;
     @apply rounded-lg base-medium;
+    position: relative;
+    transition:
+      color 0.3s ease-in-out,
+      transform 0.3s ease-in-out;
+    color: #a68bff;
+    display: flex;
+    align-items: center;
   }
 
   .leftsidebar-link:hover {
-    background: #000428;
-    background-image: linear-gradient(
+    @apply rounded-lg;
+    background: linear-gradient(
       85.2deg,
-      rgba(33, 3, 40, 1) 7.5%,
-      rgba(65, 5, 72, 1) 88.7%
+      rgba(58, 0, 77, 0.8) 7.5%,
+      rgba(122, 0, 135, 0.6) 88.7%
     );
+  }
+
+  .leftsidebar-link.active,
+  .leftsidebar-link:hover {
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  .leftsidebar-link img,
+  .leftsidebar-link svg {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .leftsidebar-link:hover img,
+  .leftsidebar-link:hover svg {
+    transform: rotate(12deg);
+  }
+
+  .vertical-indicator {
+    position: absolute;
+    left: 0;
+    width: 4px;
+    background: rgb(224, 9, 73);
+    border-radius: 2px;
+    transition:
+      top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 3;
+    animation: stretch-and-shrink 0.3s ease-in-out;
+  }
+
+  @keyframes stretch-and-shrink {
+    0%,
+    100% {
+      transform: scaleY(1);
+    }
+    50% {
+      transform: scaleY(1.5);
+    }
   }
 
   /* Post Card */
@@ -345,8 +432,8 @@
     width: 100px;
     background-image: linear-gradient(
       85.2deg,
-      rgb(42, 10, 49) 7.5%,
-      rgb(73, 6, 73) 88.7%
+      rgb(24, 54, 153) 7.5%,
+      rgb(41, 124, 202) 88.7%
     );
     color: #fff;
     text-align: center;
@@ -392,10 +479,39 @@
     z-index: 9999;
   }
 
+  .glassmorphism-search {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+  }
+
+  .glassmorphism-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .glassmorphism-input:focus-within {
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+
   .tooltip {
     visibility: visible;
     width: 100px;
-    background-color: rgb(138, 8, 138);
+    background-image: linear-gradient(
+      85.2deg,
+      rgb(24, 54, 153) 7.5%,
+      rgb(41, 124, 202) 88.7%
+    );
     backdrop-filter: blur(70px);
     color: #fff;
     text-align: center;
@@ -471,7 +587,12 @@
   /* Topbar */
   .topbar {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.573) !important;
-    @apply sticky top-0 z-50 backdrop-blur-xl md:hidden shadow-lg w-full;
+    background-image: radial-gradient(
+      circle farthest-corner at 10% 20%,
+      rgb(85, 38, 97) 0%,
+      rgb(44, 5, 44) 90%
+    );
+    @apply sticky top-0 z-50 md:hidden shadow-lg w-full;
   }
 
   /* User card */
@@ -521,18 +642,17 @@
   .shad-input {
     background-image: linear-gradient(
       85.2deg,
-      rgb(26, 5, 31) 7.5%,
+      rgb(52, 7, 63) 7.5%,
       rgb(39, 3, 43) 88.7%
     );
-
     @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-4 !important;
   }
 
   .shad-textarea {
     background-image: linear-gradient(
       85.2deg,
-      rgb(26, 5, 31) 7.5%,
-      rgb(39, 3, 43) 88.7%
+      rgb(52, 7, 63) 7.5%,
+y      rgb(39, 3, 43) 88.7%
     );
     @apply h-auto bg-dark-3 rounded-xl focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
@@ -560,11 +680,6 @@
   ) !important;
 }
 
-/* 
-.PhotoView__Photo {
-  border-radius: 50%
-} */
-
 .PhotoView__PhotoWrap {
   backdrop-filter: blur(8px);
   color: rgba(17, 67, 98, 0.841) 0px 20px 30px -10px;
@@ -573,4 +688,93 @@
 .smooth-transition {
   transition: max-height 0.8s;
   max-height: 1500px;
+}
+
+.reply-container {
+  display: flex;
+  position: relative;
+}
+
+.reply-content {
+  word-break: break-word;
+  white-space: normal;
+}
+
+@media (min-width: 768px) {
+  .user-card-item {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
+
+/* animation for like posts */
+@keyframes fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+        calc(100px + 100px * var(--random-x)),
+        calc(-200px - 100px * var(--random-x))
+      )
+      scale(0.5);
+    opacity: 0;
+  }
+}
+
+.heart {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: red;
+  opacity: 0;
+  animation: fly 1.2s ease-in-out forwards;
+}
+
+.heart:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.heart:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.heart:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.heart:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.heart:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+/* Improved Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #333 0%, #777 50%, #333 100%);
+  background-size: 1000px 100%;
+}
+
+.comment-container {
+  position: sticky;
+  border-radius: 100px;
+  display: flex;
+  outline: none;
+  color:rgb(0, 65, 126)
 }
