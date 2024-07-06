@@ -5,7 +5,7 @@ import {
 } from "@/lib/react-query/queriesAndMutations";
 import PostCard from "@/components/Shared/PostCard";
 import HomeLoader from "@/components/Shared/Loaders/HomeLoader";
-import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
+import UsersLoader from "@/components/Shared/Loaders/SkeletonUserCard";
 import UserCard from "@/components/Shared/UserCard";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Models } from "appwrite";

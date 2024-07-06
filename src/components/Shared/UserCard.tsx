@@ -36,7 +36,7 @@ const UserCard = ({ user }: UserCardProps) => {
           </p>
           {creatorPostCount !== null && creatorPostCount >= 3 && user.$id !== YousefID && (
             <div className="group relative pin-icon-container">
-              <img  
+              <img
                 alt="badge"
                 width={16}
                 src={"/assets/icons/top-creator.png"}

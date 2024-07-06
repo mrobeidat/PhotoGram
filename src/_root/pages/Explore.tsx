@@ -5,7 +5,11 @@ import {
   useSearchPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import { memo, useEffect, useState, useCallback } from "react";
-import ExploreLoader from "../../components/Shared/Loaders/ExploreLoader";
+import {
+  SkeletonSearchBar,
+  SkeletonDropdown,
+  SkeletonGridPost,
+} from "@/components/Shared/Loaders/SkeletonExplorePage";
 import Loader from "@/components/Shared/Loader";
 import { useInView } from "react-intersection-observer";
 import GridPostList from "@/components/Shared/GridPostsList";
@@ -29,7 +33,13 @@ const SearchResults = memo(
     if (isSearchFetching) {
       return <Loader />;
     } else if (searchedPosts && searchedPosts.documents?.length > 0) {
-      return <GridPostList posts={searchedPosts.documents} filter="week" />;
+      return (
+        <GridPostList
+          posts={searchedPosts.documents}
+          filter="week"
+          isLoading={false}
+        />
+      );
     } else {
       return (
         <p className="text-light-4 mt-10 text-center w-full">
@@ -105,17 +115,15 @@ const Explore = () => {
 
   if (isLoadingPosts) {
     return (
-      <div className="flex justify-center items-center w-full h-full">
-        <div className="flex flex-col sm:flex-row resize-y">
-          <div className="explore-loader-wrapper mb-2 sm:mb-0">
-            <ExploreLoader />
-          </div>
-          <div className="explore-loader-wrapper hidden sm:block">
-            <ExploreLoader />
-          </div>
-          <div className="explore-loader-wrapper hidden sm:block">
-            <ExploreLoader />
-          </div>
+      <div className="flex flex-col gap-4 w-full max-w-5xl mx-auto !mt-14">
+        <SkeletonSearchBar />
+        <div className="flex justify-between items-center w-full mt-16 mb-7">
+          <SkeletonDropdown />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 w-full">
+          {[...Array(9)].map((_, index) => (
+            <SkeletonGridPost key={index} />
+          ))}
         </div>
       </div>
     );
@@ -193,7 +201,7 @@ const Explore = () => {
           </Select>
         </FormControl>
       </div>
-      <div className="flex flex-wrap gap-9 w-full max-w-5xl">
+      <div className="flex flex-wrap gap-4 w-full max-w-5xl">
         {shouldShowSearchResults ? (
           <SearchResults
             isSearchFetching={isSearchFetching}
@@ -207,6 +215,7 @@ const Explore = () => {
               key={`page-${index}`}
               posts={item.documents}
               filter={filter}
+              isLoading={false} // Pass isLoading as false here
             />
           ))
         )}

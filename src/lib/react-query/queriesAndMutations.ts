@@ -1,10 +1,41 @@
-import { IComment, INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import {
-  SignInAccount, SignOutAccount, createUserAccount, createPost, updatePost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, deletePost, getInfinitePosts, getUserById, searchPosts, updateUser, getUsers, getUserPosts, createComment, getCommentsByPost, deleteComment,
+  IComment,
+  INewPost,
+  INewUser,
+  IUpdatePost,
+  IUpdateUser,
+} from "@/types";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
+import {
+  SignInAccount,
+  SignOutAccount,
+  createUserAccount,
+  createPost,
+  updatePost,
+  getRecentPosts,
+  likePost,
+  savePost,
+  deleteSavedPost,
+  getCurrentUser,
+  getPostById,
+  deletePost,
+  getInfinitePosts,
+  getUserById,
+  searchPosts,
+  updateUser,
+  getUsers,
+  getUserPosts,
+  createComment,
+  getCommentsByPost,
+  deleteComment,
   likeComment,
-  unlikeComment
-} from '../appwrite/api';
+  unlikeComment,
+} from "../appwrite/api";
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
@@ -17,7 +48,8 @@ export const useCreateUserAccount = () => {
 
 export const useSignInAccount = () => {
   return useMutation({
-    mutationFn: (user: { email: string, password: string }) => SignInAccount(user),
+    mutationFn: (user: { email: string; password: string }) =>
+      SignInAccount(user),
   });
 };
 
@@ -55,7 +87,8 @@ export const useUpdatePost = () => {
 export const useDeletePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, imageId }: { postId?: string; imageId: string }) => deletePost(postId || "", imageId),
+    mutationFn: ({ postId, imageId }: { postId?: string; imageId: string }) =>
+      deletePost(postId || "", imageId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -78,7 +111,13 @@ export const useGetRecentPosts = () => {
 export const useLikePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, likesArray }: { postId: string; likesArray: string[] }) => likePost(postId, likesArray),
+    mutationFn: ({
+      postId,
+      likesArray,
+    }: {
+      postId: string;
+      likesArray: string[];
+    }) => likePost(postId, likesArray),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],
@@ -99,7 +138,8 @@ export const useLikePost = () => {
 export const useSavePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ postId, userId }: { postId: string; userId: string }) => savePost(postId, userId),
+    mutationFn: ({ postId, userId }: { postId: string; userId: string }) =>
+      savePost(postId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -214,11 +254,12 @@ export const useGetUserPosts = (userId?: string) => {
 export const useCreateComment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (comment: { postId: string; userId: string; text: string }) => createComment({
-      postId: comment.postId,
-      userId: comment.userId,
-      text: comment.text,
-    }),
+    mutationFn: (comment: { postId: string; userId: string; text: string }) =>
+      createComment({
+        postId: comment.postId,
+        userId: comment.userId,
+        text: comment.text,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST],
@@ -230,8 +271,16 @@ export const useCreateComment = () => {
 export const useLikeComment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ commentId, userId }: { commentId: string; userId: string }) => {
-      console.log(`Liking comment with ID: ${commentId} by user with ID: ${userId}`);
+    mutationFn: ({
+      commentId,
+      userId,
+    }: {
+      commentId: string;
+      userId: string;
+    }) => {
+      console.log(
+        `Liking comment with ID: ${commentId} by user with ID: ${userId}`
+      );
       return likeComment(commentId, userId);
     },
     onSuccess: (data) => {
@@ -246,11 +295,16 @@ export const useLikeComment = () => {
   });
 };
 
-
 export const useUnlikeComment = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ commentId, userId }: { commentId: string; userId: string }) => unlikeComment(commentId, userId),
+    mutationFn: ({
+      commentId,
+      userId,
+    }: {
+      commentId: string;
+      userId: string;
+    }) => unlikeComment(commentId, userId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data?.postId],
@@ -290,5 +344,3 @@ export const useDeleteComment = () => {
     },
   });
 };
-
-

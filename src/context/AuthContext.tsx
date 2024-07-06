@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { IUser } from "@/types";
 import { getCurrentUser } from "@/lib/appwrite/api";
 
@@ -14,7 +15,7 @@ export const INITIAL_USER = {
 
 const INITIAL_STATE = {
   user: INITIAL_USER,
-  isPending: false,
+  isLoading: false,
   isAuthenticated: false,
   setUser: () => {},
   setIsAuthenticated: () => {},
@@ -23,7 +24,7 @@ const INITIAL_STATE = {
 
 type IContextType = {
   user: IUser;
-  isPending: boolean;
+  isLoading: boolean;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,10 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isPending, setisPending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkAuthUser = async () => {
-    setisPending(true);
+    setIsLoading(true);
     try {
       const currentAccount = await getCurrentUser();
       if (currentAccount) {
@@ -52,33 +53,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           bio: currentAccount.bio,
         });
         setIsAuthenticated(true);
-        localStorage.setItem("authToken", JSON.stringify(currentAccount.$id));
+
         return true;
       }
-      setIsAuthenticated(false);
+
       return false;
     } catch (error) {
       console.error(error);
-      setIsAuthenticated(false);
       return false;
     } finally {
-      setisPending(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
+    const cookieFallback = localStorage.getItem("cookieFallback");
+    if (
+      cookieFallback === "[]" ||
+      cookieFallback === null ||
+      cookieFallback === undefined
+    ) {
       navigate("/sign-in");
-    } else {
-      checkAuthUser();
     }
-  }, [navigate]);
+
+    checkAuthUser();
+  }, []);
 
   const value = {
     user,
     setUser,
-    isPending,
+    isLoading,
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,

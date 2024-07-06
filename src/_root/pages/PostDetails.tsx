@@ -280,10 +280,7 @@ const PostDetails = () => {
             <div className="flex items-center gap-2">
               {user.id === post?.creator.$id && (
                 <>
-                  <Link
-                    to={`/update-post/${post?.$id}`}
-                    className="hidden lg:block"
-                  >
+                  <Link to={`/update-post/${post?.$id}`} className="lg:block">
                     <img
                       src="/assets/icons/edit.svg"
                       alt="edit"

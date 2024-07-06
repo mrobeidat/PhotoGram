@@ -1,13 +1,11 @@
 import { Models } from "appwrite";
 import SavedPostsList from "@/components/Shared/SavedPostsList";
-import ExploreLoader from "@/components/Shared/Loaders/ExploreLoader";
 import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutations";
+import SkeletonSavedPost from "@/components/Shared/Loaders/SkeletonSavedPost";
 
 const Saved = () => {
-  // Fetch the current user's data using a custom React Query hook
   const { data: currentUser } = useGetCurrentUser();
 
-  // Map saved posts and reverse the order
   const savePosts = currentUser?.save
     .map((savePost: Models.Document) => ({
       ...savePost.post,
@@ -32,10 +30,9 @@ const Saved = () => {
 
       <div className="flex flex-wrap">
         {!currentUser ? (
-          // Render ExploreLoader components when currentUser is falsy
           [...Array(6)].map((_, index) => (
             <div key={index} className="w-full sm:w-1/2 lg:w-1/3 p-2">
-              <ExploreLoader />
+              <SkeletonSavedPost />
             </div>
           ))
         ) : (

@@ -1,6 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
-import UsersLoader from "@/components/Shared/Loaders/UsersLoader";
 import UserCard from "@/components/Shared/UserCard";
+import SkeletonUserCard from "@/components/Shared/Loaders/SkeletonUserCard";
 import { useGetUsers } from "@/lib/react-query/queriesAndMutations";
 import { useMemo } from "react";
 
@@ -18,7 +18,6 @@ const AllUsers = () => {
 
   let sortedCreators = creators?.documents || [];
 
-  // Memoize indices using useMemo
   const indices = useMemo(() => {
     const yousefIndex = sortedCreators.findIndex(
       (creator) => creator?.$id === YousefID
@@ -29,20 +28,16 @@ const AllUsers = () => {
     return { yousefIndex, topCreatorIndex };
   }, [sortedCreators, YousefID, TopCreator]);
 
-  // Create a new array with the desired order
   const newSortedCreators = [];
 
   if (indices.yousefIndex !== -1) {
-    // Add Yousef's card to the new array
     newSortedCreators.push(sortedCreators[indices.yousefIndex]);
   }
 
   if (indices.topCreatorIndex !== -1) {
-    // Add TOP Creator's card to the new array
     newSortedCreators.push(sortedCreators[indices.topCreatorIndex]);
   }
 
-  // Add the remaining cards to the new array
   newSortedCreators.push(
     ...sortedCreators.filter(
       (_, index) =>
@@ -55,21 +50,19 @@ const AllUsers = () => {
       <div className="user-container">
         <h2 className="h3-bold md:h2-bold text-left w-full">All Users</h2>
         {isLoading && !creators ? (
-          <div className="flex-center w-full h-full">
+          <div className="flex justify-center w-full h-full">
             <div className="flex flex-wrap">
-              {[...Array(16)].map((_, index) => (
-                <div key={index} className="w-1/4 p-2">
-                  <div className="flex flex-col-center sm:flex-row resize-y">
-                    <UsersLoader />
-                  </div>
+              {[...Array(9)].map((_, index) => (
+                <div key={index} className="w-full sm:w-1/2 md:w-1/3 p-2">
+                  <SkeletonUserCard />
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <ul className="user-grid">
+          <ul className="flex flex-wrap">
             {newSortedCreators.map((creator) => (
-              <li key={creator?.$id} className="flex-1 min-w-[200px] w-full">
+              <li key={creator?.$id} className="w-full sm:w-1/2 md:w-1/3 p-2">
                 <UserCard user={creator} />
               </li>
             ))}

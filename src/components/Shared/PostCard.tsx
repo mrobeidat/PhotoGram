@@ -199,8 +199,7 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
           {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
-            <Link to={""}>
-              <div className="pin-icon cursor-default">
+              <div className="pin-icon cursor-default mt-2">
                 <img
                   src="assets/icons/post-pin.png"
                   alt="pin"
@@ -210,7 +209,6 @@ const PostCard = ({ post }: PostCardProps) => {
                 />
                 <span className="tooltip">📌 Pinned Post</span>
               </div>
-            </Link>
           ) : (
             user.id === post.creator.$id && (
               <Link to={`/update-post/${post.$id}`}>

@@ -274,7 +274,7 @@
 
   /* Bottom bar */
   .bottom-bar {
-    @apply z-50 flex-between w-full sticky bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-4 md:hidden;
+    @apply z-50 flex-between w-full fixed bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-4 md:hidden;
   }
 
   /* File uploader */
