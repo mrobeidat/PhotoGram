@@ -15,6 +15,11 @@ import { formatDate, formatDateShort } from "@/lib/utils";
 import { Models } from "appwrite";
 import DOMPurify from "dompurify";
 import Modal from "../ui/deleteCommentConfirmationModal";
+import IconButton from "@mui/material/IconButton";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 
 type PostCardProps = {
   post: Models.Document;
@@ -31,7 +36,6 @@ const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => ({
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
   const [contentType, setContentType] = useState("");
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [isFullContent, setIsFullContent] = useState(false);
@@ -43,6 +47,8 @@ const PostCard = ({ post }: PostCardProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: userPosts } = useGetUserPosts(post.creator.$id);
   const [creatorPostCount, setCreatorPostCount] = useState<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   const YousefID = import.meta.env.VITE_APPWRITE_YOUSEF_USER_ID;
   const TopCreator = import.meta.env.VITE_APPWRITE_TOP_CREATOR;
@@ -63,32 +69,19 @@ const PostCard = ({ post }: PostCardProps) => {
           setContentType(contentTypeHeader || "");
 
           if (contentTypeHeader?.startsWith("video")) {
-            const videoElement = document.getElementById(
-              `video-${post.$id}`
-            ) as HTMLVideoElement | null;
+            const videoElement = videoRef.current;
             if (videoElement) {
-              const observer = new IntersectionObserver(
+              observerRef.current = new IntersectionObserver(
                 ([entry]) => {
                   if (entry.isIntersecting) {
-                    if (!isVideoPlaying) {
-                      setIsVideoPlaying(true);
-                      videoElement.play();
-                    }
+                    videoElement.play();
                   } else {
-                    if (isVideoPlaying) {
-                      setIsVideoPlaying(false);
-                      videoElement.pause();
-                    }
+                    videoElement.pause();
                   }
                 },
                 { root: null, rootMargin: "0px", threshold: 0.5 }
               );
-              observer.observe(videoElement);
-              return () => observer.disconnect();
-            } else {
-              console.error(
-                `Video element with ID 'video-${post.$id}' not found.`
-              );
+              observerRef.current.observe(videoElement);
             }
           }
         } else {
@@ -98,8 +91,16 @@ const PostCard = ({ post }: PostCardProps) => {
         console.error("Error fetching image:", error);
       }
     };
+
     handleVideoPlay();
-  }, [imageUrl, post.$id, isVideoPlaying]);
+
+    return () => {
+      if (observerRef.current && videoRef.current) {
+        observerRef.current.unobserve(videoRef.current);
+        observerRef.current.disconnect();
+      }
+    };
+  }, [imageUrl, post.$id]);
 
   const toggleComments = () => setShowComments(!showComments);
 
@@ -124,6 +125,33 @@ const PostCard = ({ post }: PostCardProps) => {
   if (!post.creator) return null;
 
   const sanitizedCaption = sanitizeHTML(post.caption).__html;
+
+  // Custom video player states
+  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showOverlayIcon, setShowOverlayIcon] = useState(false);
+
+  const handleMuteUnmute = () => {
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const handleVideoClick = () => {
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      if (isPlaying) {
+        videoElement.pause();
+      } else {
+        videoElement.play();
+      }
+      setIsPlaying(!isPlaying);
+      setShowOverlayIcon(true);
+      setTimeout(() => setShowOverlayIcon(false), 1000);
+    }
+  };
 
   return (
     <div
@@ -199,16 +227,16 @@ const PostCard = ({ post }: PostCardProps) => {
             </div>
           </div>
           {post.$id === import.meta.env.VITE_APPWRITE_POST_ID ? (
-              <div className="pin-icon cursor-default mt-2">
-                <img
-                  src="assets/icons/post-pin.png"
-                  alt="pin"
-                  width={35}
-                  height={20}
-                  className="resize-none pointer-events-none select-none"
-                />
-                <span className="tooltip">📌 Pinned Post</span>
-              </div>
+            <div className="pin-icon cursor-default mt-2">
+              <img
+                src="assets/icons/post-pin.png"
+                alt="pin"
+                width={35}
+                height={20}
+                className="resize-none pointer-events-none select-none"
+              />
+              <span className="tooltip">📌 Pinned Post</span>
+            </div>
           ) : (
             user.id === post.creator.$id && (
               <Link to={`/update-post/${post.$id}`}>
@@ -279,15 +307,44 @@ const PostCard = ({ post }: PostCardProps) => {
           </Link>
         ) : (
           imageUrl && (
-            <video
-              id={`video-${post.$id}`}
-              autoPlay={isVideoPlaying}
-              loop
-              controls={true}
-              className="post-card_img rounded-md shadow-lg"
-            >
-              <source src={imageUrl} type="video/mp4" />
-            </video>
+            <div className="relative">
+              <video
+                ref={videoRef}
+                id={`video-${post.$id}`}
+                loop
+                className="post-card_img rounded-md shadow-lg"
+                onClick={handleVideoClick}
+              >
+                <source src={imageUrl} type="video/mp4" />
+              </video>
+              {showOverlayIcon && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {isPlaying ? (
+                    <PauseIcon
+                      fontSize="large"
+                      className="text-white text-8xl"
+                    />
+                  ) : (
+                    <PlayArrowIcon
+                      fontSize="large"
+                      className="text-white text-8xl"
+                    />
+                  )}
+                </div>
+              )}
+              <div className="absolute bottom-2 right-2">
+                <IconButton
+                  onClick={handleMuteUnmute}
+                  className="text-white bg-gray-700 hover:bg-gray-600 rounded-full"
+                >
+                  {isMuted ? (
+                    <VolumeOffIcon htmlColor="red" />
+                  ) : (
+                    <VolumeUpIcon htmlColor="white" />
+                  )}
+                </IconButton>
+              </div>
+            </div>
           )
         )}
       </PhotoProvider>
