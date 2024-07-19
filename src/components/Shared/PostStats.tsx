@@ -126,36 +126,36 @@ const PostStats = ({
   };
 
   const handleShare = (platform: string) => {
-    sharePost({ postId: post?.$id || "", userId });
+  const baseUrl = window.location.origin;
+  const postUrl = `${baseUrl}/posts/${post?.$id}`;
 
-    const url = window.location.href;
-    const postUrl = `${url}/posts/${post?.$id}`;
+  sharePost({ postId: post?.$id || "", userId });
 
-    switch (platform) {
-      case "facebook":
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`,
-          "_blank"
-        );
-        break;
-      case "linkedin":
-        window.open(
-          `https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}`,
-          "_blank"
-        );
-        break;
-      case "twitter":
-        window.open(
-          `https://twitter.com/intent/tweet?url=${postUrl}`,
-          "_blank"
-        );
-        break;
-      default:
-        break;
-    }
+  switch (platform) {
+    case "facebook":
+      window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+        "_blank"
+      );
+      break;
+    case "linkedin":
+      window.open(
+        `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}`,
+        "_blank"
+      );
+      break;
+    case "twitter":
+      window.open(
+        `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}`,
+        "_blank"
+      );
+      break;
+    default:
+      break;
+  }
 
-    handleClose();
-  };
+  handleClose();
+};
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
