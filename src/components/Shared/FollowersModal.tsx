@@ -28,7 +28,6 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => {
         justifyContent: "center",
         height: "100%",
         textAlign: "center",
-        color: "white",
       }}
     >
       <svg
@@ -36,6 +35,7 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => {
         height={100}
         viewBox="0 0 24 24"
         fill="none"
+        opacity={0.3}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
@@ -43,7 +43,7 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => {
           fill="white"
         />
       </svg>
-      <Typography variant="h6" sx={{ mt: 2 }}>
+      <Typography color={"GrayText"} variant="h6" sx={{ mt: 2 }}>
         {message}
       </Typography>
     </Box>
@@ -70,6 +70,8 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
       <Fade in={isOpen} timeout={300}>
         <Box
           sx={{
+            borderBottomLeftRadius: "30px",
+            borderTopLeftRadius: "30px",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -77,11 +79,9 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
             width: "90%",
             maxWidth: "500px",
             maxHeight: "50%",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            backdropFilter: "blur(15px)",
-            boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "rgb(240, 240, 240,0.09)",
+            backdropFilter: "blur(50px)",
             padding: 4,
-            // borderRadius: "16px",
             color: "white",
             overflowY: "scroll",
             transition: "all 0.3s ease",
@@ -89,20 +89,20 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
               outline: "none",
             },
             "&::-webkit-scrollbar": {
-              borderRadius: "50px",
-              width: "8px",
+              borderRadius: "8px",
+              width: "3px",
             },
             "&::-webkit-scrollbar-track": {
-              borderRadius: "50px",
-              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: "8px",
+              background: "rgba(255, 255, 255, 0.3)",
             },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgb(77, 0, 112, 0.7)",
-              borderRadius: "50px",
-              border: "2px solid rgba(30, 30, 30, 0.9)",
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+              borderRadius: "8px",
+              border: "1px solid rgba(200, 200, 200, 0.9)",
             },
             "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "rgb(77, 0, 112, 1)",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
             },
           }}
         >
