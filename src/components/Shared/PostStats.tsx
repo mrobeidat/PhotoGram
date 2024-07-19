@@ -22,7 +22,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
-import ShareIcon from "@mui/icons-material/Share";
+import { Share2Icon } from "lucide-react";
 
 type postStatsProps = {
   post?: Models.Document;
@@ -219,13 +219,14 @@ const PostStats = ({
         )}
 
         <Button
+        className="!-mr-5 !-ml-2 !text-purple-700"
           id="share-button"
           aria-controls={open ? "share-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
         >
-          <ShareIcon />
+          <Share2Icon />
         </Button>
         <Menu
           id="share-menu"
