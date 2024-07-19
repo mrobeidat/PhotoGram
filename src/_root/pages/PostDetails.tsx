@@ -30,8 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Menu, MenuItem, IconButton, Typography, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackTwoTone";
 import HeartAnimation from "../../components/ui/HeartAnimation";
-import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
-import { Helmet } from "react-helmet";
+import DetailsLoader from '@/components/Shared/Loaders/DetailsLoader'
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -166,15 +165,6 @@ const PostDetails = () => {
 
   return (
     <div className="post_details-container">
-      <Helmet>
-        <title>{post.title || "Post Details"}</title>
-        <meta property="og:title" content={post.title || "Post Title"} />
-        <meta property="og:description" content={post.caption || "Post description"} />
-        <meta property="og:image" content={post.imageUrl} />
-        <meta property="og:url" content={`https://yourdomain.com/posts/${post.$id}`} />
-        <meta property="og:type" content="article" />
-      </Helmet>
-
       <div className="md:flex max-w-5xl w-full">
         <Grid item xs={12} className="max-w-5xl w-full">
           <Button

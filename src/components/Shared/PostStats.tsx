@@ -22,7 +22,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/Twitter";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Share2Icon } from "lucide-react";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
 
 type postStatsProps = {
   post?: Models.Document;
@@ -31,6 +35,12 @@ type postStatsProps = {
   onToggleComments: () => void;
   onShowLikeSvg: () => void;
 };
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
+  function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  }
+);
 
 const PostStats = ({
   post,
@@ -147,6 +157,27 @@ const PostStats = ({
     handleClose();
   };
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [backdropOpen, setBackdropOpen] = useState(false);
+
+  const handleCopyToClipboard = () => {
+    const baseUrl = window.location.origin;
+    const postUrl = `${baseUrl}/posts/${post?.$id}`;
+    navigator.clipboard.writeText(postUrl).then(() => {
+      setBackdropOpen(true);
+      setSnackbarOpen(true);
+    });
+    handleClose();
+  };
+
+  const handleSnackbarClose = (reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+    setBackdropOpen(false);
+  };
+
   return (
     <div className="flex justify-between items-center z-20">
       <div className="flex gap-2 items-center">
@@ -219,7 +250,7 @@ const PostStats = ({
         )}
 
         <Button
-        className="!-mr-5 !-ml-2 !text-purple-700"
+          className="!-mr-5 !-ml-2 !text-purple-700"
           id="share-button"
           aria-controls={open ? "share-menu" : undefined}
           aria-haspopup="true"
@@ -246,7 +277,34 @@ const PostStats = ({
           <MenuItem onClick={() => handleShare("twitter")}>
             <TwitterIcon style={{ marginRight: 8 }} /> Twitter
           </MenuItem>
+          <MenuItem onClick={handleCopyToClipboard}>
+            <ContentCopyIcon style={{ marginRight: 8 }} /> Copy Link
+          </MenuItem>
         </Menu>
+        <Backdrop
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+          open={backdropOpen}
+          onClick={() => handleSnackbarClose()}
+        >
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
+            onClose={() => handleSnackbarClose()}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            sx={{
+              "& .MuiPaper-root": {
+                backdropFilter: "blur(10px)",
+                backgroundColor: "rgba(0, 0, 255, 0.3)",
+              },
+            }}
+          >
+            <Alert onClose={() => handleSnackbarClose()} severity="success">
+              Link copied to clipboard!
+            </Alert>
+          </Snackbar>
+        </Backdrop>
       </div>
     </div>
   );
