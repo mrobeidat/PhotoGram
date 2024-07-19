@@ -250,7 +250,7 @@ const PostStats = ({
         )}
 
         <Button
-          className="!-mr-5 !-ml-2 !text-purple-700"
+          className="!-mr-5 !-ml-2 !text-purple-700 !text-md"
           id="share-button"
           aria-controls={open ? "share-menu" : undefined}
           aria-haspopup="true"
