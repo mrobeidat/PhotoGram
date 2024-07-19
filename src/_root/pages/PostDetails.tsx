@@ -30,7 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Menu, MenuItem, IconButton, Typography, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackTwoTone";
 import HeartAnimation from "../../components/ui/HeartAnimation";
-import DetailsLoader from '@/components/Shared/Loaders/DetailsLoader'
+import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -203,7 +203,7 @@ const PostDetails = () => {
                   className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
                 />
               </PhotoView>
-              {showHearts && <HeartAnimation showHearts={showHearts} />}
+              {/* {showHearts && <HeartAnimation showHearts={showHearts} />} */}
             </>
           ) : (
             <>
@@ -212,7 +212,7 @@ const PostDetails = () => {
                   videoUrl={imageUrl}
                   videoClassName="h-full object-cover rounded-xl shadow-lg"
                 />
-                {showHearts && <HeartAnimation showHearts={showHearts} />}
+                {/* {showHearts && <HeartAnimation showHearts={showHearts} />} */}
               </div>
             </>
           )}
@@ -390,13 +390,20 @@ const PostDetails = () => {
           />
 
           <div className="w-full mt-4">
-            <PostStats
-              onShowLikeSvg={handleShowHearts}
-              post={post}
-              userId={user.id}
-              commentsCount={comments?.documents.length || 0}
-              onToggleComments={toggleComments}
-            />
+            <div className="relative">
+              <PostStats
+                onShowLikeSvg={handleShowHearts}
+                post={post}
+                userId={user.id}
+                commentsCount={comments?.documents.length || 0}
+                onToggleComments={toggleComments}
+              />
+              {showHearts && (
+                <div className="absolute top-0 -bottom-5 -left-6">
+                  <HeartAnimation showHearts={showHearts} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
