@@ -21,7 +21,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import X from "@mui/icons-material/X";
+import XIcon from '@mui/icons-material/X';
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Share2Icon } from "lucide-react";
 import Snackbar from "@mui/material/Snackbar";
@@ -315,7 +315,7 @@ const PostStats = ({
             LinkedIn
           </MenuItem>
           <MenuItem onClick={() => handleShare("twitter")}>
-            <X style={{ marginRight: 8 }} /> Twitter
+            <XIcon style={{ marginRight: 8 }} /> Twitter
           </MenuItem>
           <MenuItem onClick={() => handleShare("whatsapp")}>
             <WhatsAppIcon style={{ marginRight: 8, color: "#25d366" }} />{" "}
