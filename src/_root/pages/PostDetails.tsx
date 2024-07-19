@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import PostStats from "@/components/Shared/PostStats";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
-import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
 import Loader from "@/components/Shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -31,6 +30,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Menu, MenuItem, IconButton, Typography, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackTwoTone";
 import HeartAnimation from "../../components/ui/HeartAnimation";
+import DetailsLoader from "@/components/Shared/Loaders/DetailsLoader";
+import { Helmet } from "react-helmet";
 
 interface SanitizeHTMLResult {
   __html: string;
@@ -165,6 +166,15 @@ const PostDetails = () => {
 
   return (
     <div className="post_details-container">
+      <Helmet>
+        <title>{post.title || "Post Details"}</title>
+        <meta property="og:title" content={post.title || "Post Title"} />
+        <meta property="og:description" content={post.caption || "Post description"} />
+        <meta property="og:image" content={post.imageUrl} />
+        <meta property="og:url" content={`https://yourdomain.com/posts/${post.$id}`} />
+        <meta property="og:type" content="article" />
+      </Helmet>
+
       <div className="md:flex max-w-5xl w-full">
         <Grid item xs={12} className="max-w-5xl w-full">
           <Button
