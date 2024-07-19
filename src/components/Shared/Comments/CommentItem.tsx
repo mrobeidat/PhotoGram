@@ -166,7 +166,7 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(
             />
           </Link>
           <div className="flex-1 max-w-full">
-            <div className="relative bg-white/5 p-3 rounded-lg">
+            <div className="relative bg-black/20 p-3 rounded-lg">
               <div className="absolute top-0 right-0 mt-2 mr-2">
                 {user.id === comment.userId && (
                   <DeleteButton onDelete={handleDelete} />

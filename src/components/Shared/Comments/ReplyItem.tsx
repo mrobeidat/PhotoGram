@@ -87,7 +87,7 @@ const ReplyItem: React.FC<ReplyItemProps> = ({
         />
       </Link>
       <div className="flex-1">
-        <div className="bg-white/10 p-2 rounded-lg">
+        <div className="bg-black/20 p-2 rounded-lg">
           <div className="flex items-center gap-2">
             <Link
               to={`/profile/${reply.userId}`}
