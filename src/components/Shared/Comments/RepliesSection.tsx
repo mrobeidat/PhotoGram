@@ -76,7 +76,7 @@ const RepliesSection: React.FC<RepliesSectionProps> = ({
           value={replyText}
           onChange={(e) => setReplyText(e.target.value)}
           placeholder="Reply to this comment..."
-          className="flex-1 p-2 border border-transparent rounded-xl bg-white/5 focus:bg-white/80 focus:text-black placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
+          className="flex-1 p-2 border border-transparent rounded-xl bg-gray-500/30 backdrop-blur-2xl focus:bg-white/80 focus:text-black placeholder-light-4 focus:outline-none focus:border-transparent resize-none transition duration-300 focus:shadow-theme-top"
           style={{
             height: "30px",
             overflow: "hidden",
