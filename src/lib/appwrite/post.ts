@@ -364,3 +364,39 @@ export async function getPostsFromFollowedUsers(
     throw error;
   }
 }
+
+export async function sharePost(postId: string, userId: string) {
+  try {
+    const authenticated = await checkAndHandleSession();
+    if (!authenticated) {
+      await handleLogout();
+      return;
+    }
+
+    const originalPost = await getPostById(postId);
+    if (!originalPost) throw Error;
+
+    const newPost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      ID.unique(),
+      {
+        creator: userId,
+        caption: originalPost.caption,
+        imageUrl: originalPost.imageUrl,
+        imageId: originalPost.imageId,
+        location: originalPost.location,
+        tags: originalPost.tags,
+        sharedPostId: postId,
+        sharedAt: new Date().toISOString(),
+      }
+    );
+
+    if (!newPost) throw Error;
+
+    return newPost;
+  } catch (error) {
+    console.log(error);
+  }
+}
+

@@ -31,6 +31,7 @@ import {
   getUserPosts,
   getPinnedPost,
   getPostsFromFollowedUsers,
+  sharePost,
 } from "@/lib/appwrite/post";
 import {
   getCurrentUser,
@@ -61,7 +62,6 @@ import {
   getFollowersDetails,
   getFolloweesDetails,
 } from "@/lib/appwrite/follow";
-
 
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
@@ -121,6 +121,28 @@ export const useDeletePost = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POSTS],
+      });
+    },
+  });
+};
+
+export const useSharePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, userId }: { postId: string; userId: string }) =>
+      sharePost(postId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POSTS_FROM_FOLLOWED_USERS],
       });
     },
   });
@@ -382,12 +404,12 @@ export const useDeleteComment = () => {
   });
 };
 
-
 // Reply Hooks
 export const useCreateReply = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (reply: { commentId: string; userId: string; text: string }) => createReply(reply),
+    mutationFn: (reply: { commentId: string; userId: string; text: string }) =>
+      createReply(reply),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT],
@@ -407,13 +429,8 @@ export const useGetRepliesByComment = (commentId: string) => {
 export const useLikeReply = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      replyId,
-      userId,
-    }: {
-      replyId: string;
-      userId: string;
-    }) => likeReply(replyId, userId),
+    mutationFn: ({ replyId, userId }: { replyId: string; userId: string }) =>
+      likeReply(replyId, userId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT, data?.commentId],
@@ -425,13 +442,8 @@ export const useLikeReply = () => {
 export const useUnlikeReply = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      replyId,
-      userId,
-    }: {
-      replyId: string;
-      userId: string;
-    }) => unlikeReply(replyId, userId),
+    mutationFn: ({ replyId, userId }: { replyId: string; userId: string }) =>
+      unlikeReply(replyId, userId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_REPLIES_BY_COMMENT, data?.commentId],
@@ -539,7 +551,6 @@ export const useGetPinnedPost = (postId: string) => {
     enabled: !!postId,
   });
 };
-
 
 // Query Hooks for Followers and Followees Details
 export const useGetFollowersDetails = (userId: string) => {

@@ -3,6 +3,7 @@ import {
   useGetCurrentUser,
   useLikePost,
   useSavePost,
+  useSharePost,
 } from "@/lib/react-query/queriesAndMutations";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
@@ -15,6 +16,13 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSpring, animated } from "react-spring";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import ShareIcon from "@mui/icons-material/Share";
 
 type postStatsProps = {
   post?: Models.Document;
@@ -40,6 +48,7 @@ const PostStats = ({
   const { mutate: savePost, isPending: isSavingPost } = useSavePost();
   const { mutate: deleteSavedPost, isPending: isDeletingPost } =
     useDeleteSavedPost();
+  const { mutate: sharePost } = useSharePost();
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -93,6 +102,49 @@ const PostStats = ({
       savePost({ postId: post?.$id || "", userId });
       setIsSaved(true);
     }
+  };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleShare = (platform: string) => {
+    sharePost({ postId: post?.$id || "", userId });
+
+    const url = window.location.href;
+    const postUrl = `${url}/posts/${post?.$id}`;
+
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`,
+          "_blank"
+        );
+        break;
+      case "linkedin":
+        window.open(
+          `https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${postUrl}`,
+          "_blank"
+        );
+        break;
+      default:
+        break;
+    }
+
+    handleClose();
   };
 
   return (
@@ -165,6 +217,35 @@ const PostStats = ({
             )}
           </>
         )}
+
+        <Button
+          id="share-button"
+          aria-controls={open ? "share-menu" : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? "true" : undefined}
+          onClick={handleClick}
+        >
+          <ShareIcon />
+        </Button>
+        <Menu
+          id="share-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            "aria-labelledby": "share-button",
+          }}
+        >
+          <MenuItem onClick={() => handleShare("facebook")}>
+            <FacebookIcon style={{ marginRight: 8 }} /> Facebook
+          </MenuItem>
+          <MenuItem onClick={() => handleShare("linkedin")}>
+            <LinkedInIcon style={{ marginRight: 8 }} /> LinkedIn
+          </MenuItem>
+          <MenuItem onClick={() => handleShare("twitter")}>
+            <TwitterIcon style={{ marginRight: 8 }} /> Twitter
+          </MenuItem>
+        </Menu>
       </div>
     </div>
   );
