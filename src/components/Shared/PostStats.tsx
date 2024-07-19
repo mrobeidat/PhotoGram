@@ -21,12 +21,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import TwitterIcon from "@mui/icons-material/Twitter";
+import X from "@mui/icons-material/X";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Share2Icon } from "lucide-react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp"; // Import WhatsApp icon
 
 type postStatsProps = {
   post?: Models.Document;
@@ -126,36 +127,45 @@ const PostStats = ({
   };
 
   const handleShare = (platform: string) => {
-  const baseUrl = window.location.origin;
-  const postUrl = `${baseUrl}/posts/${post?.$id}`;
+    const baseUrl = window.location.origin;
+    const postUrl = `${baseUrl}/posts/${post?.$id}`;
+    const postImage = post?.imageUrl || "";
 
-  sharePost({ postId: post?.$id || "", userId });
+    sharePost({ postId: post?.$id || "", userId });
 
-  switch (platform) {
-    case "facebook":
-      window.open(
-        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
-        "_blank"
-      );
-      break;
-    case "linkedin":
-      window.open(
-        `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}`,
-        "_blank"
-      );
-      break;
-    case "twitter":
-      window.open(
-        `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}`,
-        "_blank"
-      );
-      break;
-    default:
-      break;
-  }
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+          "_blank"
+        );
+        break;
+      case "linkedin":
+        window.open(
+          `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}`,
+          "_blank"
+        );
+        break;
+      case "whatsapp":
+        window.open(
+          `https://api.whatsapp.com/send?text=${encodeURIComponent(
+            `${postImage}\n${postUrl}`
+          )}`,
+          "_blank"
+        );
+        break;
+      default:
+        break;
+    }
 
-  handleClose();
-};
+    handleClose();
+  };
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
@@ -221,9 +231,8 @@ const PostStats = ({
           <>
             {isSaved ? (
               <BookmarkIcon
-                className="cursor-pointer"
+                className="cursor-pointer !size-6"
                 style={{
-                  fontSize: "23px",
                   backgroundImage:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                   backgroundClip: "text",
@@ -234,9 +243,8 @@ const PostStats = ({
               />
             ) : (
               <BookmarkBorderIcon
-                className="cursor-pointer"
+                className="cursor-pointer !size-6"
                 style={{
-                  fontSize: "23px",
                   backgroundImage:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                   backgroundClip: "text",
@@ -250,17 +258,47 @@ const PostStats = ({
         )}
 
         <Button
-          className="!-mr-5 !-ml-2 !text-purple-700 !text-md"
+          className="!-mr-5 !-ml-2 !text-purple-700"
           id="share-button"
           aria-controls={open ? "share-menu" : undefined}
           aria-haspopup="true"
           aria-expanded={open ? "true" : undefined}
           onClick={handleClick}
         >
-          <Share2Icon />
+          <Share2Icon className="size-5" />
         </Button>
         <Menu
           id="share-menu"
+          sx={{
+            "& .MuiPaper-root": {
+              backdropFilter: "blur(10px)",
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              color: "#fff",
+              overflowY: "auto",
+              maxHeight: "175px",
+              boxShadow: "inset 0 -25px 20px -10px rgba(255, 255, 255, 0.2)",
+              "&::-moz-scrollbar": {
+                width: "5px",
+              },
+              "&::-moz-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar": {
+                width: "5px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#888",
+                borderRadius: "10px",
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                backgroundColor: "#555",
+              },
+            },
+          }}
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -269,13 +307,19 @@ const PostStats = ({
           }}
         >
           <MenuItem onClick={() => handleShare("facebook")}>
-            <FacebookIcon style={{ marginRight: 8 }} /> Facebook
+            <FacebookIcon style={{ marginRight: 8, color: "#316FF6" }} />{" "}
+            Facebook
           </MenuItem>
           <MenuItem onClick={() => handleShare("linkedin")}>
-            <LinkedInIcon style={{ marginRight: 8 }} /> LinkedIn
+            <LinkedInIcon style={{ marginRight: 8, color: "#0077B5" }} />{" "}
+            LinkedIn
           </MenuItem>
           <MenuItem onClick={() => handleShare("twitter")}>
-            <TwitterIcon style={{ marginRight: 8 }} /> Twitter
+            <X style={{ marginRight: 8 }} /> Twitter
+          </MenuItem>
+          <MenuItem onClick={() => handleShare("whatsapp")}>
+            <WhatsAppIcon style={{ marginRight: 8, color: "#25d366" }} />{" "}
+            WhatsApp
           </MenuItem>
           <MenuItem onClick={handleCopyToClipboard}>
             <ContentCopyIcon style={{ marginRight: 8 }} /> Copy Link
@@ -295,8 +339,8 @@ const PostStats = ({
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             sx={{
               "& .MuiPaper-root": {
-                backdropFilter: "blur(10px)",
-                backgroundColor: "rgba(0, 0, 255, 0.3)",
+                backdropFilter: "blur(50px)",
+                backgroundColor: "#7F00FF",
               },
             }}
           >

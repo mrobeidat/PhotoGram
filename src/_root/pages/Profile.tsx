@@ -24,11 +24,11 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import "react-photo-view/dist/react-photo-view.css";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import Button from "@mui/material/Button";
-import EditIcon from "@mui/icons-material/Edit";
 import PostsIcon from "@mui/icons-material/Article";
 import LikeIcon from "@mui/icons-material/ThumbUp";
 import FollowersModal from "@/components/Shared/FollowersModal";
 import { IUser } from "@/types";
+import { Settings } from "@mui/icons-material";
 
 interface StatBlockProps {
   value: string | number;
@@ -334,9 +334,9 @@ const Profile = () => {
                 user.id !== currentUser.$id && "hidden"
               }`}
             >
-              <EditIcon />
+              <Settings />
               <p className="flex whitespace-nowrap small-medium">
-                Edit Profile
+                Manage Profile
               </p>
             </Link>
             <div className={`${user.id !== currentUser.$id && "hidden"}`}>
