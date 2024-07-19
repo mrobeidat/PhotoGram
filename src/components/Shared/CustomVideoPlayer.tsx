@@ -213,7 +213,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
       <video
         ref={videoRef}
         id={`video-${videoUrl}`}
-        loop
+        
         className={`post-card_img !rounded-md shadow-lg ${videoClassName}`}
         playsInline
       >
