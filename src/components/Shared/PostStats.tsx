@@ -130,15 +130,16 @@ const PostStats = ({
     const baseUrl = window.location.origin;
     const postUrl = `${baseUrl}/posts/${post?.$id}`;
 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     sharePost({ postId: post?.$id || "", userId });
 
-    switch (platform) {
-      case "facebook":
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
-          "_blank"
-        );
-        break;
+   let url;
+   switch (platform) {
+    case "facebook":
+      url = isMobile
+        ? `fb://facewebmodal/f?href=${encodeURIComponent(postUrl)}`
+        : `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`;
+      break;
       case "linkedin":
         window.open(
           `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}`,
