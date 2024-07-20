@@ -129,7 +129,6 @@ const PostStats = ({
   const handleShare = (platform: string) => {
     const baseUrl = window.location.origin;
     const postUrl = `${baseUrl}/posts/${post?.$id}`;
-    const postImage = post?.imageUrl || "";
 
     sharePost({ postId: post?.$id || "", userId });
 
@@ -154,9 +153,7 @@ const PostStats = ({
         break;
       case "whatsapp":
         window.open(
-          `https://api.whatsapp.com/send?text=${encodeURIComponent(
-            `${postImage}\n${postUrl}`
-          )}`,
+          `https://api.whatsapp.com/send?text=${encodeURIComponent(postUrl)}`,
           "_blank"
         );
         break;
