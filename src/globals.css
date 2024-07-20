@@ -652,7 +652,7 @@
     background-image: linear-gradient(
       85.2deg,
       rgb(52, 7, 63) 7.5%,
-y      rgb(39, 3, 43) 88.7%
+      y rgb(39, 3, 43) 88.7%
     );
     @apply h-auto bg-dark-3 rounded-xl focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
@@ -728,8 +728,8 @@ y      rgb(39, 3, 43) 88.7%
 
 .heart {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 25px;
+  left: 25px;
   color: red;
   opacity: 0;
   animation: fly 1.2s ease-in-out forwards;
@@ -776,5 +776,5 @@ y      rgb(39, 3, 43) 88.7%
   border-radius: 100px;
   display: flex;
   outline: none;
-  color:rgb(0, 65, 126)
+  color: rgb(0, 65, 126);
 }
