@@ -552,19 +552,19 @@
   @keyframes moveBorder {
     0%,
     100% {
-      box-shadow: 0 0 5px rgba(89, 159, 205, 0.5);
+      box-shadow: 0 0 5px rgba(124, 13, 87, 0.692);
     }
 
     25% {
-      box-shadow: 5px 0 5px rgba(52, 152, 219, 0.5);
+      box-shadow: 5px 0 5px rgba(136, 23, 98, 0.5);
     }
 
     50% {
-      box-shadow: 0 5px 5px rgba(52, 152, 219, 0.5);
+      box-shadow: 0 5px 5px rgba(136, 23, 98, 0.5);
     }
 
     75% {
-      box-shadow: -5px 0 5px rgba(52, 152, 219, 0.5);
+      box-shadow: -5px 0 5px rgba(136, 23, 98, 0.5);
     }
   }
 

@@ -27,7 +27,7 @@ import { Share2Icon } from "lucide-react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp"; // Import WhatsApp icon
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 type postStatsProps = {
   post?: Models.Document;
@@ -133,13 +133,13 @@ const PostStats = ({
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     sharePost({ postId: post?.$id || "", userId });
 
-   let url: string | null = null;
-   switch (platform) {
-    case "facebook":
-      url = isMobile
-        ? `fb://facewebmodal/f?href=${encodeURIComponent(postUrl)}`
-        : `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`;
-      break;
+    let url: string | null = null;
+    switch (platform) {
+      case "facebook":
+        url = isMobile
+          ? `fb://facewebmodal/f?href=${encodeURIComponent(postUrl)}`
+          : `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`;
+        break;
       case "linkedin":
         window.open(
           `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}`,
@@ -161,10 +161,10 @@ const PostStats = ({
       default:
         break;
     }
-    
-  if (url) {
-    window.open(url, "_blank");
-  }
+
+    if (url) {
+      window.open(url, "_blank");
+    }
     handleClose();
   };
 
@@ -272,21 +272,17 @@ const PostStats = ({
           id="share-menu"
           sx={{
             "& .MuiPaper-root": {
+              display: "flex",
+              flexDirection: "row",
+              overflowX: "hidden",
+              maxWidth: "100%",
               backdropFilter: "blur(10px)",
               backgroundColor: "rgba(0, 0, 0, 0.2)",
               color: "#fff",
-              overflowY: "auto",
-              maxHeight: "175px",
               boxShadow: "inset 0 -25px 20px -10px rgba(255, 255, 255, 0.2)",
-              "&::-moz-scrollbar": {
-                width: "5px",
-              },
-              "&::-moz-scrollbar-thumb": {
-                backgroundColor: "#888",
-                borderRadius: "10px",
-              },
+              borderRadius: "500px !important",
               "&::-webkit-scrollbar": {
-                width: "5px",
+                height: "5px",
               },
               "&::-webkit-scrollbar-thumb": {
                 backgroundColor: "#888",
@@ -305,25 +301,76 @@ const PostStats = ({
           onClose={handleClose}
           MenuListProps={{
             "aria-labelledby": "share-button",
+            style: { display: "flex", flexDirection: "row", padding: 0 },
+          }}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          transformOrigin={{
+            vertical: "bottom",
+            horizontal: "center",
           }}
         >
-          <MenuItem onClick={() => handleShare("facebook")}>
-            <FacebookIcon style={{ marginRight: 8, color: "#316FF6" }} />{" "}
-            Facebook
+          <MenuItem
+            onClick={() => handleShare("facebook")}
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1) translateY(-2px)",
+                transition: "transform 0.2s ease-in-out",
+              },
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <FacebookIcon style={{ color: "#316FF6" }} />
           </MenuItem>
-          <MenuItem onClick={() => handleShare("linkedin")}>
-            <LinkedInIcon style={{ marginRight: 8, color: "#0077B5" }} />{" "}
-            LinkedIn
+          <MenuItem
+            onClick={() => handleShare("linkedin")}
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1) translateY(-2px)",
+                transition: "transform 0.2s ease-in-out",
+              },
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <LinkedInIcon style={{ color: "#0077B5" }} />
           </MenuItem>
-          <MenuItem onClick={() => handleShare("twitter")}>
-            <Twitter style={{ marginRight: 8 }} /> Twitter
+          <MenuItem
+            onClick={() => handleShare("twitter")}
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1) translateY(-2px)",
+                transition: "transform 0.2s ease-in-out",
+              },
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <Twitter style={{ color: "#1DA1F2" }} />
           </MenuItem>
-          <MenuItem onClick={() => handleShare("whatsapp")}>
-            <WhatsAppIcon style={{ marginRight: 8, color: "#25d366" }} />{" "}
-            WhatsApp
+          <MenuItem
+            onClick={() => handleShare("whatsapp")}
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1) translateY(-2px)",
+                transition: "transform 0.2s ease-in-out",
+              },
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <WhatsAppIcon style={{ color: "#25d366" }} />
           </MenuItem>
-          <MenuItem onClick={handleCopyToClipboard}>
-            <ContentCopyIcon style={{ marginRight: 8 }} /> Copy Link
+          <MenuItem
+            onClick={handleCopyToClipboard}
+            sx={{
+              "&:hover": {
+                transform: "scale(1.1) translateY(-2px)",
+                transition: "transform 0.2s ease-in-out",
+              },
+              transition: "transform 0.2s ease-in-out",
+            }}
+          >
+            <ContentCopyIcon style={{ color: "#888" }} />
           </MenuItem>
         </Menu>
         <Backdrop
