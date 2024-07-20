@@ -133,7 +133,7 @@ const PostStats = ({
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     sharePost({ postId: post?.$id || "", userId });
 
-   let url;
+   let url: string | null = null;
    switch (platform) {
     case "facebook":
       url = isMobile
@@ -161,7 +161,10 @@ const PostStats = ({
       default:
         break;
     }
-
+    
+  if (url) {
+    window.open(url, "_blank");
+  }
     handleClose();
   };
 
