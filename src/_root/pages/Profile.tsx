@@ -283,7 +283,7 @@ const Profile = () => {
                       className="ml-2 object-contain pointer-events-none select-none"
                     />
                     <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                      Photogram Founder & Developer
+                      Photogram Founder
                     </div>
                   </div>
                 )}
