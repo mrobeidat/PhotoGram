@@ -14,7 +14,6 @@ import {
   useFollowUser,
   useUnfollowUser,
   useGetFollowers,
-  useGetFollowees,
   useGetFollowersDetails,
   useGetFolloweesDetails,
 } from "@/lib/react-query/queriesAndMutations";
@@ -58,12 +57,14 @@ const Profile = () => {
     data: followeesData,
     refetch: refetchFollowees,
     isLoading: isFolloweesLoading,
-  } = useGetFollowees(id || "");
+  } = useGetFolloweesDetails(id || "");
+
   const {
     data: followersDetails,
     refetch: refetchFollowersDetails,
     isLoading: isFollowersLoading,
   } = useGetFollowersDetails(id || "");
+
   const { data: followeesDetails, refetch: refetchFolloweesDetails } =
     useGetFolloweesDetails(id || "");
 
