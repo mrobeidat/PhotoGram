@@ -88,7 +88,7 @@ const LeftSidebar = () => {
                     className="ml-2 text-blue-500"
                   />
                   <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                    Website Creator
+                    Photogram Founder & Developer
                   </div>
                 </div>
               )}

@@ -260,7 +260,7 @@ const PostDetails = () => {
                         draggable="false"
                       />
                       <div className="tooltip-verified absolute transition-opacity duration-300">
-                        Website Creator
+                        PhotoGram Founder
                       </div>
                     </div>
                   )}
