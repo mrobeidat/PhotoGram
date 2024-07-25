@@ -345,14 +345,14 @@ const PostDetails = () => {
               dangerouslySetInnerHTML={{
                 __html: isFullContent
                   ? sanitizedCaption
-                  : `${sanitizedCaption.substring(0, 500)}${
-                      sanitizedCaption.length > 500
+                  : `${sanitizedCaption.substring(0, 300)}${
+                      sanitizedCaption.length > 300
                         ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
                         : ""
                     }`,
               }}
             />
-            {isFullContent && sanitizedCaption.length > 500 && (
+            {isFullContent && sanitizedCaption.length > 300 && (
               <a
                 onClick={() => setIsFullContent(false)}
                 className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
