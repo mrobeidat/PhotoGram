@@ -200,7 +200,7 @@ const PostDetails = () => {
                 <img
                   src={post.imageUrl}
                   alt="Image"
-                  className="post_details-img h-auto xl:min-h-full object-cover hover:cursor-pointer"
+                  className="post_details-img max-h-96 xl:max-h-full object-cover hover:cursor-pointer"
                 />
               </PhotoView>
               {/* {showHearts && <HeartAnimation showHearts={showHearts} />} */}
@@ -345,8 +345,8 @@ const PostDetails = () => {
               dangerouslySetInnerHTML={{
                 __html: isFullContent
                   ? sanitizedCaption
-                  : `${sanitizedCaption.substring(0, 300)}${
-                      sanitizedCaption.length > 300
+                  : `${sanitizedCaption.substring(0, 250)}${
+                    sanitizedCaption.length > 300
                         ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
                         : ""
                     }`,

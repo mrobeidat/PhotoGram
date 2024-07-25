@@ -202,14 +202,14 @@ const PostCard = ({ post }: PostCardProps) => {
           dangerouslySetInnerHTML={{
             __html: isFullContent
               ? sanitizedCaption
-              : `${sanitizedCaption.substring(0, 300)}${
-                  sanitizedCaption.length > 300
+              : `${sanitizedCaption.substring(0, 250)}${
+                  sanitizedCaption.length > 350
                     ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
                     : ""
                 }`,
           }}
         />
-        {isFullContent && sanitizedCaption.length > 300 && (
+        {isFullContent && sanitizedCaption.length > 370 && (
           <a
             onClick={() => setIsFullContent(false)}
             className="text-neutral-500 hover:text-blue-500 text-sm underline focus:outline-none transition-transform transform active:scale-95 cursor-pointer"
