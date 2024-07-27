@@ -3,8 +3,8 @@ import * as z from "zod";
 export const SignupValidation = z.object({
   name: z
     .string()
-    .regex(/^[a-zA-Z\s]+$/, {
-      message: "Name should only contain letters and spaces",
+    .regex(/^[a-zA-Z\u0600-\u06FF\s]+$/, {
+      message: "Name should only contain letters, spaces, or Arabic characters",
     })
     .min(2, { message: "Name must be at least 2 characters" }),
   username: z
@@ -34,8 +34,7 @@ export const CommentValidation = z.object({
 
 export const SigninValidation = z.object({
   email: z.string().email(),
-  password: z
-    .string()
+  password: z.string(),
   // .min(8, { message: "Password must be at least 8 characters." }),
 });
 
@@ -49,17 +48,19 @@ export const PostValidation = z.object({
     .string()
     .min(1, { message: "Location field is required" })
     .max(1000, { message: "Location can't exceed 1000 characters." }),
-  tags: z
-    .string()
-    .regex(/^[\w\s,]+$/, {
-      message: "Tags should only contain letters, numbers, and spaces separated by commas",
-    }),
+  tags: z.string().regex(/^[\w\s,]+$/, {
+    message:
+      "Tags should only contain letters, numbers, and spaces separated by commas",
+  }),
 });
 
 export const ProfileValidation = z.object({
   file: z.custom<File[]>(),
   name: z
     .string()
+    .regex(/^[a-zA-Z\u0600-\u06FF\s]+$/, {
+      message: "Name should only contain letters, spaces, or Arabic characters",
+    })
     .min(2, { message: "Name must be at least 2 characters." }),
   username: z
     .string()
