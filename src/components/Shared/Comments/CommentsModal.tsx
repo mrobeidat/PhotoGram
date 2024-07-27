@@ -136,14 +136,12 @@ const CommentsModal: React.FC<ModalProps> = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: { xs: "100%", sm: "80%", md: "70%" },
+            width: { xs: "100%", sm: "80%", md: "40%" },
             maxWidth: "100%",
             maxHeight: "80%",
             backgroundColor: "rgb(240, 240, 240,0.09)",
-            backdropFilter: "blur(50px)",
+            backdropFilter: "blur(180px)",
             boxShadow: 24,
-            pr: 1,
-            pl: 1,
             overflowY: "auto",
             transition: "all 0.3s ease",
             "&:focus-visible": {
@@ -160,7 +158,7 @@ const CommentsModal: React.FC<ModalProps> = ({
             "&::-webkit-scrollbar-thumb": {
               backgroundColor: "rgb(77, 0, 112, 0.7)",
               borderRadius: "50px",
-              border: "2px solid rgba(30, 30, 30, 0.9)",
+              border: "1px solid rgba(30, 30, 30, 0.7)",
             },
             "&::-webkit-scrollbar-thumb:hover": {
               backgroundColor: "rgb(77, 0, 112, 1)",
@@ -176,6 +174,12 @@ const CommentsModal: React.FC<ModalProps> = ({
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              top: 0,
+              position: "sticky",
+              backgroundColor: "rgb(240, 240, 240,0.05)",
+              backdropFilter: "blur(50px)",
+              zIndex: 1,
+              width: "100%",
               mb: 2,
             }}
           >

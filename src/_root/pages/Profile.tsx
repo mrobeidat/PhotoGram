@@ -27,7 +27,7 @@ import PostsIcon from "@mui/icons-material/Article";
 import LikeIcon from "@mui/icons-material/ThumbUp";
 import FollowersModal from "@/components/Shared/FollowersModal";
 import { IUser } from "@/types";
-import { Settings } from "@mui/icons-material";
+import { EditNote } from "@mui/icons-material";
 
 interface StatBlockProps {
   value: string | number;
@@ -335,9 +335,9 @@ const Profile = () => {
                 user.id !== currentUser.$id && "hidden"
               }`}
             >
-              <Settings />
+              <EditNote />
               <p className="flex whitespace-nowrap small-medium">
-                Manage Profile
+                Edit Profile
               </p>
             </Link>
             <div className={`${user.id !== currentUser.$id && "hidden"}`}>
@@ -390,7 +390,7 @@ const Profile = () => {
             element={
               <img
                 draggable="false"
-                className="w-80 h-50 mt-32 pointer-events-none select-none"
+                className="w-80 h-50 mt-32 opacity-30 pointer-events-none select-none"
                 width={700}
                 src="/assets/icons/NoPostsYet.png"
               />

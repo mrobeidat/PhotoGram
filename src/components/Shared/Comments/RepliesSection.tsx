@@ -37,12 +37,12 @@ const RepliesSection: React.FC<RepliesSectionProps> = ({
   return (
     <div className="border-l-2 border-[#4b5563] pl-4 ml-4 mt-2">
       {repliesLoading ? (
-        <RepliesLoader/>
+        <RepliesLoader />
       ) : (
         replies &&
         replies.length > 0 &&
         replies
-          .slice(0, repliesExpanded ? replies.length : 3)
+          .slice(0, repliesExpanded ? replies.length : 0)
           .map((reply: IReply) => (
             <div key={reply.$id} className="reply-container">
               <div className="reply-content">
@@ -60,14 +60,14 @@ const RepliesSection: React.FC<RepliesSectionProps> = ({
           ))
       )}
 
-      {replies && replies.length > 3 && (
+      {replies && replies.length > 0 && (
         <button
           onClick={() => setRepliesExpanded(!repliesExpanded)}
           className="text-light-3 text-xs mt-2"
         >
           {repliesExpanded
             ? "Hide replies"
-            : `View more replies (${replies.length - 3})`}
+            : `View more replies (${replies.length})`}
         </button>
       )}
 

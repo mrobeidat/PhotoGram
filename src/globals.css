@@ -652,7 +652,7 @@
     background-image: linear-gradient(
       85.2deg,
       rgb(52, 7, 63) 7.5%,
-      y rgb(39, 3, 43) 88.7%
+      rgb(39, 3, 43) 88.7%
     );
     @apply h-auto bg-dark-3 rounded-xl focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
@@ -766,7 +766,7 @@
 }
 
 .shimmer {
-  animation: shimmer 2s infinite linear;
+  animation: shimmer 3s infinite linear;
   background: linear-gradient(to right, #333 0%, #777 50%, #333 100%);
   background-size: 1000px 100%;
 }
