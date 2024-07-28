@@ -200,14 +200,14 @@ const PostDetails = () => {
                 <img
                   src={post.imageUrl}
                   alt="Image"
-                  className="post_details-img max-h-96 xl:max-h-full object-cover hover:cursor-pointer"
+                  className="post_details-img  xl:max-h-full object-cover hover:cursor-pointer"
                 />
               </PhotoView>
               {/* {showHearts && <HeartAnimation showHearts={showHearts} />} */}
             </>
           ) : (
             <>
-              <div className="post_details-img object-cover lg:mb-2 -mb-10 relative rounded-lg">
+              <div className="post_details-video object-cover lg:mb-2 -mb-10 relative rounded-lg">
                 <CustomVideoPlayer
                   videoUrl={imageUrl}
                   videoClassName="h-full object-cover rounded-xl shadow-lg"
