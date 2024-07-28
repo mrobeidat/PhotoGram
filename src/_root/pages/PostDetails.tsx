@@ -339,14 +339,14 @@ const PostDetails = () => {
           <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
             <p
               onClick={() => setIsFullContent(!isFullContent)}
-              className={`transition-max-height ${
+              className={`transition-all duration-700 overflow-hidden cursor-pointer ${
                 isFullContent ? "max-h-full" : "max-h-36"
-              } cursor-default`}
+              }`}
               dangerouslySetInnerHTML={{
                 __html: isFullContent
                   ? sanitizedCaption
                   : `${sanitizedCaption.substring(0, 250)}${
-                    sanitizedCaption.length > 300
+                      sanitizedCaption.length > 300
                         ? '... <span class="text-slate-500 hover:text-blue-500 text-sm underline cursor-pointer">see more</span>'
                         : ""
                     }`,
@@ -360,16 +360,6 @@ const PostDetails = () => {
                 ...see less
               </a>
             )}
-            <ul className="flex gap-1 mt-2">
-              {post?.tags.map((tag: string, index: number) => (
-                <li
-                  key={`${tag}${index}`}
-                  className="text-light-3 small-regular"
-                >
-                  #{tag}
-                </li>
-              ))}
-            </ul>
           </div>
           <CommentsModal
             isOpen={showComments}

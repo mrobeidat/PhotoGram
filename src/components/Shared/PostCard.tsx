@@ -196,9 +196,9 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="small-medium lg:base-medium py-5">
         <p
           onClick={() => setIsFullContent(true)}
-          className={`transition-max-height ${
-            isFullContent ? "max-h-full" : "max-h-36"
-          } cursor-default`}
+          className={`transition-all duration-700 overflow-hidden cursor-auto ${
+            isFullContent ? "max-h-[3000px]" : "max-h-36"
+          }`}
           dangerouslySetInnerHTML={{
             __html: isFullContent
               ? sanitizedCaption
