@@ -280,7 +280,7 @@
 
   /* Bottom bar */
   .bottom-bar {
-    @apply z-50 flex justify-between w-full sticky bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-4 md:hidden;
+    @apply z-50 flex justify-between w-full sticky bottom-0 backdrop-blur-xl rounded-t-[20px] px-5 py-1 md:hidden;
     background-image: radial-gradient(
       circle farthest-corner at 10% 20%,
       rgb(85, 38, 97) 0%,
