@@ -8,8 +8,6 @@ import {
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
 import React, { useEffect, useState } from "react";
-import "primeicons/primeicons.css";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -23,7 +21,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import Twitter from "@mui/icons-material/Twitter";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Share2Icon } from "lucide-react";
+import { MessageCircleIcon, Share2Icon } from "lucide-react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
@@ -216,9 +214,7 @@ const PostStats = ({
           className="flex items-center cursor-pointer"
           onClick={onToggleComments}
         >
-          <ChatBubbleOutlineIcon
-            style={{ fontSize: "20px", color: "#667eea" }}
-          />
+          <MessageCircleIcon style={{ fontSize: "20px", color: "#667eea" }} />
           <p className="small-medium lg:base-medium ml-2">
             {commentsCount > 0 && commentsCount}
           </p>

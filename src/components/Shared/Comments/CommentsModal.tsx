@@ -139,7 +139,7 @@ const CommentsModal: React.FC<ModalProps> = ({
             width: { xs: "100%", sm: "80%", md: "40%" },
             maxWidth: "100%",
             maxHeight: "80%",
-            backgroundColor: "rgb(240, 240, 240,0.09)",
+            backgroundColor: "rgba(150, 100, 200, 0.1)",
             backdropFilter: "blur(180px)",
             boxShadow: 24,
             overflowY: "auto",

@@ -79,7 +79,7 @@ const FollowersModal: React.FC<FollowersModalProps> = ({
             width: "90%",
             maxWidth: "500px",
             maxHeight: "50%",
-            backgroundColor: "rgb(240, 240, 240,0.09)",
+            backgroundColor: "rgba(150, 100, 200, 0.1)",
             backdropFilter: "blur(50px)",
             padding: 4,
             color: "white",
