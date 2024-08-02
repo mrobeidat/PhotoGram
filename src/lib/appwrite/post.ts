@@ -325,9 +325,10 @@ export async function getPinnedPost(postId: string) {
     return post;
   } catch (error) {
     console.error("Failed to get pinned post:", error);
-    throw error;
+    return null;
   }
 }
+
 
 export async function getPostsFromFollowedUsers(
   userId: string,
