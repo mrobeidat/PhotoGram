@@ -377,7 +377,7 @@ export const useGetCommentsByPost = (postId: string) => {
         return { documents: [] };
       }
       const commentsWithUser = await Promise.all(
-        comments.documents.map(async (comment) => {
+        comments.documents.map(async (comment: any) => {
           const user = await getUserById(comment.userId);
           return { ...comment, user } as IComment;
         })
