@@ -69,9 +69,6 @@ const SigninForm = () => {
         return;
       }
     } catch (error) {
-      // Handle other errors
-      console.error("Login error:", error);
-
       toast({
         title: "Login failed. Something went wrong. Please try again later.",
         style: {
@@ -79,6 +76,7 @@ const SigninForm = () => {
             "linear-gradient(to top, #a90329 0%, #8f0222 44%, #6d0019 100%)",
         },
       });
+      throw error;
     }
   };
 
@@ -159,22 +157,23 @@ const SigninForm = () => {
             )}
           />
 
-<Button
-  type="submit"
-  className={`shad-button_primary ${
-    isPending || isUserLoading || !formState.isDirty ? "opacity-50 cursor-not-allowed" : ""
-  }`}
-  disabled={isPending || isUserLoading || !formState.isDirty}
->
-  {isPending || isUserLoading ? (
-    <div className="flex-center gap-2">
-      <span className="general-loader"></span> Loading...
-    </div>
-  ) : (
-    "Log in"
-  )}
-</Button>
-
+          <Button
+            type="submit"
+            className={`shad-button_primary ${
+              isPending || isUserLoading || !formState.isDirty
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            disabled={isPending || isUserLoading || !formState.isDirty}
+          >
+            {isPending || isUserLoading ? (
+              <div className="flex-center gap-2">
+                <span className="general-loader"></span> Loading...
+              </div>
+            ) : (
+              "Log in"
+            )}
+          </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
             Don&apos;t have an account?

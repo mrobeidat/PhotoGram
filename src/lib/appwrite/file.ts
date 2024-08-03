@@ -17,7 +17,7 @@ export async function uploadFile(file: File) {
 
     return uploadedFile;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -36,7 +36,7 @@ export function getFilePreview(fileId: string) {
 
     return fileUrl;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -51,7 +51,7 @@ export async function deleteFile(fileId: string) {
 
     return { status: "ok" };
   } catch (error) {
-    console.error(error);
+    throw Error;
     throw error;
   }
 }

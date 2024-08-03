@@ -57,11 +57,9 @@ const PostCard = ({ post }: PostCardProps) => {
         if (response.ok) {
           const contentTypeHeader = response.headers.get("Content-Type");
           setContentType(contentTypeHeader || "");
-        } else {
-          console.error("Failed to fetch image");
         }
       } catch (error) {
-        console.error("Error fetching image:", error);
+        throw error;
       }
     };
 

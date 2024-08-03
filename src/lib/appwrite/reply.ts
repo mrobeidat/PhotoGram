@@ -22,7 +22,6 @@ export async function createReply(reply: {
     );
     return newReply;
   } catch (error) {
-    console.error("Failed to create reply:", error);
     throw error;
   }
 }
@@ -48,7 +47,6 @@ export async function getRepliesByComment(commentId: string): Promise<IReply[]> 
 
     return replies;
   } catch (error) {
-    console.error("Failed to retrieve replies:", error);
     throw error;
   }
 }
@@ -83,7 +81,6 @@ export async function likeReply(replyId: string, userId: string) {
 
     return updatedReply;
   } catch (error) {
-    console.error("Failed to like reply:", error);
     throw error;
   }
 }
@@ -118,7 +115,6 @@ export async function unlikeReply(replyId: string, userId: string) {
 
     return updatedReply;
   } catch (error) {
-    console.error("Failed to unlike reply:", error);
     throw error;
   }
 }
@@ -137,7 +133,6 @@ export async function deleteReply(replyId: string) {
     );
     return result;
   } catch (error) {
-    console.error("Failed to delete reply:", error);
     throw error;
   }
 }

@@ -20,7 +20,7 @@ export async function saveUserToDB(user: {
     );
     return newUser;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -45,7 +45,7 @@ export async function getCurrentUser() {
 
     return currentUser.documents[0];
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -107,7 +107,7 @@ export async function updateUser(user: IUpdateUser) {
 
     return updatedUser;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -129,7 +129,7 @@ export async function getUsers(limit?: number) {
 
     return users;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -145,7 +145,7 @@ export async function getUserById(userId: string) {
 
     return user;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 }
 
@@ -171,9 +171,6 @@ export async function getInfiniteUsers({ pageParam }: { pageParam?: string }) {
 
     if (!users) throw Error;
 
-    console.log(`Fetched ${users.documents.length} users`);
-    console.log("Fetched users:", users.documents);
-
     return {
       data: users.documents,
       nextCursor: users.documents.length
@@ -181,7 +178,7 @@ export async function getInfiniteUsers({ pageParam }: { pageParam?: string }) {
         : null,
     };
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
@@ -202,6 +199,6 @@ export async function searchUsers(searchTerm: string) {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }

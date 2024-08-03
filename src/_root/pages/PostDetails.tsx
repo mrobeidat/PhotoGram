@@ -80,11 +80,9 @@ const PostDetails = () => {
         if (response.ok) {
           const contentTypeHeader = response.headers.get("Content-Type");
           setContentType(contentTypeHeader || "");
-        } else {
-          console.error("Failed to fetch image");
         }
       } catch (error) {
-        console.error("Error fetching image:", error);
+        throw error;
       }
     };
 
@@ -100,7 +98,6 @@ const PostDetails = () => {
     const result = CommentValidation.safeParse(commentData);
 
     if (!result.success) {
-      console.log(result.error.errors);
       return;
     }
 

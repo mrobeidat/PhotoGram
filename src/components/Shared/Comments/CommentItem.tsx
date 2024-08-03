@@ -82,8 +82,6 @@ const CommentItem = forwardRef<HTMLDivElement, CommentItemProps>(
           onSuccess: (data) => {
             if (isIReply(data)) {
               setReplies((prevReplies) => [...prevReplies, data]);
-            } else {
-              console.error("Received data is not of type IReply", data);
             }
           },
         }

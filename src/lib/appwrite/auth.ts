@@ -24,7 +24,6 @@ export async function createUserAccount(user: INewUser) {
 
     return newUser;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }
@@ -45,7 +44,6 @@ export async function saveUserToDB(user: {
     );
     return newUser;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -57,7 +55,7 @@ export async function logoutAllSessions() {
       await account.deleteSession(session.$id);
     }
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -66,7 +64,6 @@ export async function checkActiveSession() {
     const sessions = await account.listSessions();
     return sessions.total > 0;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -81,7 +78,6 @@ export async function SignInAccount(user: { email: string; password: string }) {
     const session = await account.createEmailSession(user.email, user.password);
     return session;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -91,7 +87,7 @@ export async function SignOutAccount() {
     const session = await account.deleteSession("current");
     return session;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -112,7 +108,6 @@ export async function handleLogout() {
     localStorage.removeItem("userProfile");
     localStorage.clear();
   } catch (error) {
-    console.log("Failed to log out:", error);
     localStorage.removeItem("userToken");
     localStorage.removeItem("userProfile");
   }

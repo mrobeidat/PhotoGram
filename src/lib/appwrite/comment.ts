@@ -21,7 +21,6 @@ export async function createComment(comment: {
     );
     return newComment;
   } catch (error) {
-    console.error("Failed to create comment:", error);
     throw error;
   }
 }
@@ -60,7 +59,6 @@ export async function likeComment(commentId: string, userId: string) {
 
     return updatedComment;
   } catch (error) {
-    console.error("Failed to like comment:", error);
     throw error;
   }
 }
@@ -99,7 +97,6 @@ export async function unlikeComment(commentId: string, userId: string) {
 
     return updatedComment;
   } catch (error) {
-    console.error("Failed to unlike comment:", error);
     throw error;
   }
 }
@@ -118,7 +115,6 @@ export async function getCommentsByPost(postId: string) {
     );
     return comments;
   } catch (error) {
-    console.error("Failed to retrieve comments:", error);
     throw error;
   }
 }
@@ -137,7 +133,6 @@ export async function deleteComment(commentId: string) {
     );
     return result;
   } catch (error) {
-    console.error("Failed to delete comment:", error);
     throw error;
   }
 }

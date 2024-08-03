@@ -43,7 +43,7 @@ export async function createPost(post: INewPost) {
 
     return newPost;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -103,7 +103,7 @@ export async function updatePost(post: IUpdatePost) {
 
     return updatedPost;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -124,7 +124,7 @@ export async function getRecentPosts() {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -148,7 +148,7 @@ export async function likePost(postId: string, likesArray: string[]) {
 
     return likedPost;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -173,7 +173,7 @@ export async function savePost(postId: string, userId: string) {
 
     return updatedPost;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -193,7 +193,7 @@ export async function deleteSavedPost(savedRecordId: string) {
     if (!statusCode) throw Error;
     return statusCode;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -214,7 +214,7 @@ export async function getPostById(postId: string) {
 
     return post;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -236,7 +236,7 @@ export async function deletePost(postId: string, imageId: string) {
     if (!statusCode) throw Error;
     return statusCode;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -262,9 +262,6 @@ export async function getInfinitePosts({ pageParam }: { pageParam?: string }) {
 
     if (!posts) throw Error;
 
-    console.log(`Fetched ${posts.documents.length} posts`);
-    console.log("Fetched posts:", posts.documents);
-
     return {
       data: posts.documents,
       nextCursor: posts.documents.length
@@ -272,7 +269,7 @@ export async function getInfinitePosts({ pageParam }: { pageParam?: string }) {
         : null,
     };
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -293,7 +290,7 @@ export async function searchPosts(searchTerm: string) {
 
     return posts;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -311,7 +308,7 @@ export async function getUserPosts(userId?: string) {
 
     return post;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
 
@@ -324,11 +321,9 @@ export async function getPinnedPost(postId: string) {
     );
     return post;
   } catch (error) {
-    console.error("Failed to get pinned post:", error);
     return null;
   }
 }
-
 
 export async function getPostsFromFollowedUsers(
   userId: string,
@@ -361,7 +356,6 @@ export async function getPostsFromFollowedUsers(
 
     return posts;
   } catch (error) {
-    console.error("Failed to get posts from followed users:", error);
     throw error;
   }
 }
@@ -397,7 +391,6 @@ export async function sharePost(postId: string, userId: string) {
 
     return newPost;
   } catch (error) {
-    console.log(error);
+    throw Error;
   }
 }
-

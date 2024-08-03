@@ -21,7 +21,6 @@ export async function followUser({
 
     return follow;
   } catch (error) {
-    console.log("Failed to follow user:", error);
     throw error;
   }
 }
@@ -54,7 +53,6 @@ export async function unfollowUser({
 
     return;
   } catch (error) {
-    console.log("Failed to unfollow user:", error);
     throw error;
   }
 }
@@ -71,7 +69,6 @@ export async function getFollowers(userId: string) {
 
     return followers.documents;
   } catch (error) {
-    console.log("Failed to get followers:", error);
     throw error;
   }
 }
@@ -88,7 +85,6 @@ export async function getFollowees(userId: string) {
 
     return followees.documents;
   } catch (error) {
-    console.log("Failed to get followees:", error);
     throw error;
   }
 }
@@ -124,7 +120,6 @@ export async function getPostsFromFollowedUsers(
 
     return posts;
   } catch (error) {
-    console.error("Failed to get posts from followed users:", error);
     throw error;
   }
 }
@@ -141,7 +136,6 @@ async function getUsersByIds(userIds: string[]) {
 
     return users.documents;
   } catch (error) {
-    console.error("Failed to fetch user details:", error);
     throw error;
   }
 }
@@ -154,7 +148,6 @@ export async function getFollowersDetails(userId: string) {
 
     return followerDetails;
   } catch (error) {
-    console.error("Failed to get follower details:", error);
     throw error;
   }
 }
@@ -167,7 +160,6 @@ export async function getFolloweesDetails(userId: string) {
 
     return followeeDetails;
   } catch (error) {
-    console.error("Failed to get followee details:", error);
     throw error;
   }
 }

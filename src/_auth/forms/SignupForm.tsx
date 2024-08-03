@@ -90,7 +90,7 @@ const SignupForm = () => {
         return;
       }
     } catch (error) {
-      console.log({ error });
+     throw error
     }
   };
   return (

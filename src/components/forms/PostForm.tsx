@@ -114,10 +114,10 @@ const PostForm = ({ post, action }: PostFormProps) => {
         });
       }
     } catch (error) {
-      console.error("Error handling form submission:", error);
       toast({
         title: "An unexpected error occurred. Please try again.",
       });
+      throw error
     }
   };
 

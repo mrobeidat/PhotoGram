@@ -337,19 +337,15 @@ export const useLikeComment = () => {
       commentId: string;
       userId: string;
     }) => {
-      console.log(
-        `Liking comment with ID: ${commentId} by user with ID: ${userId}`
-      );
       return likeComment(commentId, userId);
     },
     onSuccess: (data) => {
-      console.log(`Successfully liked comment. Data:`, data);
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS_BY_POST, data?.postId],
       });
     },
     onError: (error) => {
-      console.log(`Error liking comment:`, error);
+      return error.message;
     },
   });
 };
