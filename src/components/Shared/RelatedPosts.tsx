@@ -64,7 +64,7 @@ const RelatedPostsList = ({
                       draggable="false"
                     />
                     <div className="tooltip-verified absolute transition-opacity duration-300 top-0 left-1/2 transform -translate-x-1/2 z-9999">
-                      Photogram Founder & Developer
+                      photogram Developer
                     </div>
                   </div>
                 )}

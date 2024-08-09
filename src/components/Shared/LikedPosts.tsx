@@ -50,7 +50,7 @@ const LikedPostsList = ({
                     "assets/icons/profile-placeholder.svg"
                   }
                   alt="creator"
-                  className="w-8 h-8 rounded-full"
+                  className="w-8 h-8 rounded-full object-cover"
                 />
                 <div className="flex items-center">
                   <p className="line-clamp-1">{post?.creator?.name}</p>
@@ -77,7 +77,7 @@ const LikedPostsList = ({
                         draggable="false"
                       />
                       <div className="tooltip-verified absolute transition-opacity duration-300 ">
-                        Photogram Founder & Developer
+                        Photogram Developer
                       </div>
                     </div>
                   )}

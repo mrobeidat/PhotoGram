@@ -126,7 +126,7 @@ const PostCreator = ({
               draggable="false"
             />
             <div className="tooltip-verified absolute transition-opacity duration-300 ">
-              Photogram Founder & Developer
+              photogram Developer
             </div>
           </div>
         )}
