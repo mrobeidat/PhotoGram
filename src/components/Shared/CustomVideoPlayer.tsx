@@ -133,9 +133,12 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   };
 
   const handleToggleControls = () => {
-    if (isPlaying) {
-      setShowControls(!showControls);
-    }
+    setShowControls((prev) => !prev);
+  };
+
+  const handleVideoPause = () => {
+    setIsPlaying(false);
+    setShowControls(true);
   };
 
   return (
@@ -181,6 +184,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
             setShowControls(true);
           }
         }}
+        onPause={handleVideoPause} // Ensure controls appear on pause
       />
       <div
         style={{
