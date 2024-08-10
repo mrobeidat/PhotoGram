@@ -59,9 +59,11 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         if (entry.isIntersecting) {
           videoRef.current?.play();
           setIsPlaying(true);
+          setShowControls(false);
         } else {
           videoRef.current?.pause();
           setIsPlaying(false);
+          setShowControls(true);
         }
       },
       {
@@ -82,8 +84,10 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (videoElement) {
       if (videoElement.paused) {
         videoElement.play();
+        setShowControls(false); // Hide controls when playing
       } else {
         videoElement.pause();
+        setShowControls(true); // Show controls when paused
       }
       setIsPlaying(!videoElement.paused);
     }
@@ -123,7 +127,15 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   };
 
   const handleMouseLeave = () => {
-    setShowControls(false);
+    if (isPlaying) {
+      setShowControls(false);
+    }
+  };
+
+  const handleToggleControls = () => {
+    if (isPlaying) {
+      setShowControls(!showControls);
+    }
   };
 
   return (
@@ -141,6 +153,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
       }}
       onMouseOver={handleMouseOver}
       onMouseLeave={handleMouseLeave}
+      onClick={handleToggleControls}
     >
       {isVideoLoading && (
         <div
@@ -164,6 +177,9 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         onLoadedData={() => {
           setIsVideoLoading(false);
           setIsPlaying(!videoRef.current?.paused);
+          if (videoRef.current?.paused) {
+            setShowControls(true);
+          }
         }}
       />
       <div
@@ -182,6 +198,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
           borderRadius: "50px",
           visibility: showControls ? "visible" : "hidden",
           transition: "opacity 0.3s, visibility 0.3s",
+          pointerEvents: showControls ? "auto" : "none",
         }}
       >
         <IconButton onClick={() => skipTime(-5)}>
@@ -206,6 +223,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
           opacity: showControls ? 1 : 0,
           visibility: showControls ? "visible" : "hidden",
           transition: "opacity 0.3s, visibility 0.3s",
+          pointerEvents: showControls ? "auto" : "none",
         }}
       >
         <IconButton onClick={toggleMute}>
