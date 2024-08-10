@@ -84,10 +84,10 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (videoElement) {
       if (videoElement.paused) {
         videoElement.play();
-        setShowControls(false); // Hide controls when playing
+        setShowControls(false);
       } else {
         videoElement.pause();
-        setShowControls(true); // Show controls when paused
+        setShowControls(true);
       }
       setIsPlaying(!videoElement.paused);
     }
@@ -98,6 +98,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (videoElement) {
       videoElement.muted = !videoElement.muted;
       setIsMuted(videoElement.muted);
+      setShowControls(true);
     }
   };
 
@@ -108,6 +109,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
         0,
         Math.min(videoElement.currentTime + seconds, videoElement.duration)
       );
+      setShowControls(true);
     }
   };
 
@@ -119,6 +121,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
       const newTime = (offsetX / rect.width) * videoRef.current.duration;
       videoRef.current.currentTime = newTime;
       setVideoProgress((newTime / videoRef.current.duration) * 100);
+      setShowControls(true);
     }
   };
 
@@ -184,7 +187,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
             setShowControls(true);
           }
         }}
-        onPause={handleVideoPause} // Ensure controls appear on pause
+        onPause={handleVideoPause}
       />
       <div
         style={{
