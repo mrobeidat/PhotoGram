@@ -207,7 +207,7 @@ const PostDetails = () => {
               <div className="post_details-video object-cover lg:mb-2 -mb-10 relative rounded-lg">
                 <CustomVideoPlayer
                   videoUrl={imageUrl}
-                  videoClassName="h-full object-cover rounded-xl shadow-lg"
+                  videoClassName="sm:h-[450px] h-[300px] object-cover rounded-xl shadow-lg"
                 />
                 {/* {showHearts && <HeartAnimation showHearts={showHearts} />} */}
               </div>
