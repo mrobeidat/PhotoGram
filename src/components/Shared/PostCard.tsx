@@ -151,7 +151,7 @@ const PostCard = ({ post }: PostCardProps) => {
                       draggable="false"
                     />
                     <div className="tooltip-verified absolute transition-opacity duration-300">
-                      photogram Developer
+                      Photogram Developer
                     </div>
                   </div>
                 )}
