@@ -122,6 +122,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
   };
 
   const COLORS = [
+    "#00000000",
     "#000000",
     "#e60000",
     "#ff9900",
