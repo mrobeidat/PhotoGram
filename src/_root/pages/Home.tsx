@@ -102,12 +102,17 @@ const Home = () => {
   const sortedCreators = useMemo(() => {
     if (!creatorsData?.pages) return [];
     const allCreators = creatorsData.pages.flatMap((page) => page?.data ?? []);
-    return [...allCreators].sort((a, b) => {
+
+    const filteredCreators = allCreators.filter(
+      (creator) => creator.$id !== user.id
+    );
+
+    return filteredCreators.sort((a, b) => {
       if (a.$id === YousefID) return -1;
       if (b.$id === YousefID) return 1;
       return 0;
     });
-  }, [creatorsData, YousefID]);
+  }, [creatorsData, YousefID, user.id]);
 
   return (
     <div className="flex flex-1">
