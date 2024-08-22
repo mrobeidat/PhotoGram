@@ -1,7 +1,7 @@
 import PostForm from "@/components/forms/PostForm";
 import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
-import EditLoader from "../../components/Shared/Loaders/EditLoader";
 import { useParams } from "react-router-dom";
+import Loader from "@/components/Shared/Loader";
 
 const EditPost = () => {
   const { id } = useParams();
@@ -11,7 +11,7 @@ const EditPost = () => {
       <div className="flex flex-1">
         <div className="home-container">
           <div className="home-posts">
-            <EditLoader />
+            <Loader />
           </div>
         </div>
       </div>
