@@ -6,17 +6,7 @@ import Loader from "@/components/Shared/Loader";
 const EditPost = () => {
   const { id } = useParams();
   const { data: post, isPending } = useGetPostById(id || "");
-  if (isPending)
-    return (
-      <div className="flex flex-1">
-        <div className="home-container">
-          <div className="home-posts">
-            <Loader />
-          </div>
-        </div>
-      </div>
-    );
-
+  if (isPending) return <Loader />
   return (
     <div className="flex flex-1">
       <div className="common-container">
