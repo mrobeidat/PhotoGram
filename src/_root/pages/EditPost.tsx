@@ -1,12 +1,31 @@
 import PostForm from "@/components/forms/PostForm";
 import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
 import { useParams } from "react-router-dom";
-import Loader from "@/components/Shared/Loader";
+import { CSSProperties } from "react";
+import ScaleLoader from "react-spinners/ScaleLoader";
 
 const EditPost = () => {
   const { id } = useParams();
   const { data: post, isPending } = useGetPostById(id || "");
-  if (isPending) return <Loader />
+
+  const override: CSSProperties = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+
+  if (isPending)
+    return (
+      <ScaleLoader
+        color={"#ff014f"}
+        cssOverride={override}
+        height={35}
+        width={5}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    );
   return (
     <div className="flex flex-1">
       <div className="common-container">

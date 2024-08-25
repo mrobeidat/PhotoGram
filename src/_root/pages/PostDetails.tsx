@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, CSSProperties } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import PostStats from "@/components/Shared/PostStats";
 import RelatedPosts from "@/components/Shared/RelatedPosts";
-import Loader from "@/components/Shared/Loader";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import CommentsModal from "@/components/Shared/Comments/CommentsModal";
@@ -39,6 +39,13 @@ interface SanitizeHTMLResult {
 const sanitizeHTML = (htmlString: string): SanitizeHTMLResult => ({
   __html: DOMPurify.sanitize(htmlString),
 });
+
+const OverRide: CSSProperties = {
+  position: "fixed",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+};
 
 const PostDetails = () => {
   const navigate = useNavigate();
@@ -158,7 +165,17 @@ const PostDetails = () => {
     }, 1500);
   };
 
-  if (isPending || !post) return <Loader />;
+  if (isPending || !post)
+    return (
+      <ScaleLoader
+        color={"#ff014f"}
+        cssOverride={OverRide}
+        height={35}
+        width={5}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+    );
 
   return (
     <div className="post_details-container">
